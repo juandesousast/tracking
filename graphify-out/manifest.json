@@ -30,8 +30,8 @@
     "semantic_hash": ""
   },
   "next.config.ts": {
-    "mtime": 1786281767.509174,
-    "ast_hash": "300c28f8f4d1667c417d488d8ab6f864",
+    "mtime": 1786283129.246166,
+    "ast_hash": "df7eac5bb01d0107ee453ca73b154843",
     "semantic_hash": ""
   },
   "package.json": {
@@ -120,8 +120,8 @@
     "semantic_hash": ""
   },
   "src/types/database.ts": {
-    "mtime": 1786218133.1807456,
-    "ast_hash": "c6f4f3958808c0d7356d7ce5d8dbfc1a",
+    "mtime": 1786297725.321617,
+    "ast_hash": "faf0013c3f7581ea67e9fff283f92051",
     "semantic_hash": ""
   },
   "src/app/dashboard-layout.tsx": {
@@ -145,8 +145,8 @@
     "semantic_hash": ""
   },
   "src/components/layout/header.tsx": {
-    "mtime": 1786278656.2418418,
-    "ast_hash": "8d5811cfb52b5ebfef459e41269e384d",
+    "mtime": 1786297747.6549978,
+    "ast_hash": "a00ca75a48b1e362f8691ff926f17304",
     "semantic_hash": ""
   },
   "src/components/layout/mobile-nav.tsx": {
@@ -155,8 +155,8 @@
     "semantic_hash": ""
   },
   "src/components/layout/sidebar.tsx": {
-    "mtime": 1786278654.5001304,
-    "ast_hash": "e2e35cfb6120bb493afcc48ea8f30bdd",
+    "mtime": 1786297746.5779436,
+    "ast_hash": "e94ef138dc84e7ad6de79e9a554a69cb",
     "semantic_hash": ""
   },
   "src/components/ui/avatar.tsx": {
@@ -375,8 +375,8 @@
     "semantic_hash": ""
   },
   "src/lib/validations/schemas.ts": {
-    "mtime": 1786278637.5990114,
-    "ast_hash": "807e426b240f035d469ad58823d38cbe",
+    "mtime": 1786297741.8919857,
+    "ast_hash": "adc77d570d637cc0fc8c0c23280b9956",
     "semantic_hash": ""
   },
   "src/components/ui/receipt-scanner.tsx": {
@@ -402,6 +402,41 @@
   "src/lib/match-account.ts": {
     "mtime": 1786281589.367713,
     "ast_hash": "d4506e9fc8faa49699515ab38f728423",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/003_copier_schema.sql": {
+    "mtime": 1786297667.6455643,
+    "ast_hash": "5357c345735935cab1220e6eb80acb65",
+    "semantic_hash": ""
+  },
+  "src/app/copier/page.tsx": {
+    "mtime": 1786297760.4612272,
+    "ast_hash": "c8450721ea4346439d30020bf147d55a",
+    "semantic_hash": ""
+  },
+  "src/components/modals/copier-rule-modal.tsx": {
+    "mtime": 1786297752.42372,
+    "ast_hash": "cfa2044122014abc9e59e89018828beb",
+    "semantic_hash": ""
+  },
+  "src/components/ui/switch.tsx": {
+    "mtime": 1786297809.4772727,
+    "ast_hash": "2594873d2063f59d5905294b631cfde1",
+    "semantic_hash": ""
+  },
+  "src/lib/services/copier.test.ts": {
+    "mtime": 1786297735.405161,
+    "ast_hash": "1ffa1f26d6c48d23630ad879b88ecc34",
+    "semantic_hash": ""
+  },
+  "src/lib/services/copier.ts": {
+    "mtime": 1786297727.758161,
+    "ast_hash": "83e58e44a47e4387a62a61acaea700bf",
+    "semantic_hash": ""
+  },
+  "src/lib/validations/copier-schemas.test.ts": {
+    "mtime": 1786297740.3341563,
+    "ast_hash": "01f607615b94f80352506a62bdcdc371",
     "semantic_hash": ""
   }
 }

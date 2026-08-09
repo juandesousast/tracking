@@ -69,8 +69,31 @@ export const withdrawalSchema = z.object({
   date: z.string().trim().min(1, { message: 'La fecha es obligatoria' }),
 })
 
+export const saveTradovateCredentialSchema = z.object({
+  account_environment: z.enum(['demo', 'live'], { message: 'El entorno debe ser demo o live' }),
+  username_encrypted: z.string().trim().min(1, { message: 'El usuario de Tradovate es obligatorio' }),
+  app_id: z.string().trim().min(1, { message: 'El App ID es obligatorio' }),
+  access_token_encrypted: z.string().trim().optional().nullable(),
+  is_connected: z.boolean().optional(),
+})
+
+export const copierRuleSchema = z.object({
+  master_account_id: z.string().min(1, { message: 'La cuenta Master es obligatoria' }),
+  master_account_name: z.string().trim().min(1, { message: 'El nombre de la cuenta Master es obligatorio' }),
+  slave_account_id: z.string().min(1, { message: 'La cuenta Slave es obligatoria' }),
+  slave_account_name: z.string().trim().min(1, { message: 'El nombre de la cuenta Slave es obligatorio' }),
+  multiplier: z.number().gt(0, { message: 'El multiplicador debe ser mayor a 0' }),
+  convert_mini_to_micro: z.boolean(),
+  max_daily_loss: z.number().nullable().optional(),
+  is_active: z.boolean().optional(),
+})
+
+export type SaveTradovateCredentialInput = z.infer<typeof saveTradovateCredentialSchema>
+export type CopierRuleInput = z.infer<typeof copierRuleSchema>
+
 export type LoginInput = z.infer<typeof loginSchema>
 export type FirmInput = z.infer<typeof firmSchema>
 export type AccountInput = z.infer<typeof accountSchema>
 export type ExpenseInput = z.infer<typeof expenseSchema>
 export type WithdrawalInput = z.infer<typeof withdrawalSchema>
+

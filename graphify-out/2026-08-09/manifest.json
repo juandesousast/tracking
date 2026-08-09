@@ -30,8 +30,8 @@
     "semantic_hash": ""
   },
   "next.config.ts": {
-    "mtime": 1786281767.509174,
-    "ast_hash": "300c28f8f4d1667c417d488d8ab6f864",
+    "mtime": 1786283129.246166,
+    "ast_hash": "df7eac5bb01d0107ee453ca73b154843",
     "semantic_hash": ""
   },
   "package.json": {
@@ -380,18 +380,18 @@
     "semantic_hash": ""
   },
   "src/components/ui/receipt-scanner.tsx": {
-    "mtime": 1786281835.6652784,
-    "ast_hash": "6a210617c236b0ad229001f0496b3f37",
+    "mtime": 1786282101.433202,
+    "ast_hash": "5aa4b51d1693bf22722ad5b39f00e02d",
     "semantic_hash": ""
   },
   "src/lib/actions/scan-receipt.test.ts": {
-    "mtime": 1786281615.536336,
-    "ast_hash": "69c99c22251f94cb3c5390ce80d50dd0",
+    "mtime": 1786282106.0351458,
+    "ast_hash": "b8142d6c02fda4f40d56d3e66af3b6a9",
     "semantic_hash": ""
   },
   "src/lib/actions/scan-receipt.ts": {
-    "mtime": 1786281961.6249344,
-    "ast_hash": "bc72aec85a0520a98bf6f06d39262941",
+    "mtime": 1786282099.9449842,
+    "ast_hash": "d198d53f08735371a6935f15d0ab1642",
     "semantic_hash": ""
   },
   "src/app/empresas/page.tsx": {
@@ -402,6 +402,11 @@
   "src/lib/match-account.ts": {
     "mtime": 1786281589.367713,
     "ast_hash": "d4506e9fc8faa49699515ab38f728423",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/003_copier_schema.sql": {
+    "mtime": 1786297667.6455643,
+    "ast_hash": "5357c345735935cab1220e6eb80acb65",
     "semantic_hash": ""
   }
 }

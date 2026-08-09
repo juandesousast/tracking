@@ -66,6 +66,7 @@ export function Header() {
     if (pathname === "/cuentas") return "Cuentas";
     if (pathname === "/gastos") return "Gastos";
     if (pathname === "/retiros") return "Retiros";
+    if (pathname === "/copier") return "Copiador de Operaciones";
     if (pathname === "/settings") return "Ajustes";
     if (pathname === "/support") return "Soporte";
     return "Dashboard";

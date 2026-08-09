@@ -58,3 +58,42 @@ export interface FirmFinancialSummary {
   summary: FinancialSummary;
   accountCount: number;
 }
+
+export interface TradovateCredential {
+  id: string;
+  user_id: string;
+  account_environment: 'demo' | 'live';
+  username_encrypted: string;
+  app_id: string;
+  access_token_encrypted?: string | null;
+  is_connected: boolean;
+  created_at: string;
+}
+
+export interface CopierRule {
+  id: string;
+  user_id: string;
+  master_account_id: string;
+  master_account_name: string;
+  slave_account_id: string;
+  slave_account_name: string;
+  multiplier: number;
+  convert_mini_to_micro: boolean;
+  max_daily_loss?: number | null;
+  is_active: boolean;
+  created_at: string;
+}
+
+export interface CopierLog {
+  id: string;
+  user_id: string;
+  master_order_id: string;
+  symbol: string;
+  action: 'BUY' | 'SELL';
+  quantity: number;
+  slaves_count: number;
+  latency_ms: number;
+  status: 'SUCCESS' | 'PARTIAL' | 'FAILED';
+  created_at: string;
+}
+

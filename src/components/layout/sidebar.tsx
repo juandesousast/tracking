@@ -12,6 +12,7 @@ import {
   HelpCircle,
   ShieldCheck,
   Building2,
+  Repeat,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -21,6 +22,7 @@ export const menuItems = [
   { name: "Cuentas", href: "/cuentas", icon: Wallet },
   { name: "Gastos", href: "/gastos", icon: Receipt },
   { name: "Retiros", href: "/retiros", icon: ArrowDownToLine },
+  { name: "Copiador", href: "/copier", icon: Repeat },
 ];
 
 export const supportItems = [
