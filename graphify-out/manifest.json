@@ -280,8 +280,8 @@
     "semantic_hash": ""
   },
   "src/lib/supabase/middleware.ts": {
-    "mtime": 1786217048.2398195,
-    "ast_hash": "3a40585cbbf08aa29ad484fcaddcee64",
+    "mtime": 1786298349.3147075,
+    "ast_hash": "b58f1bce60a19dda2a7cd3c800b7585c",
     "semantic_hash": ""
   },
   "src/lib/supabase/server.ts": {
