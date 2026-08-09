@@ -10,8 +10,6 @@ import {
   Bell,
   LogOut,
   ChevronRight,
-  Calendar,
-  ChevronDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -39,7 +37,6 @@ export function Header() {
   const router = useRouter();
   const supabase = createClient();
   const [userEmail, setUserEmail] = useState<string | null>(null);
-  const [period, setPeriod] = useState<string>("Este Mes");
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
@@ -154,48 +151,15 @@ export function Header() {
           </span>
         </div>
 
-        {/* Desktop Breadcrumbs & Welcome Message */}
-        <div className="hidden md:flex flex-col justify-center">
-          <div className="flex items-center gap-1.5 text-xs text-slate-400 dark:text-slate-500 font-medium">
-            <span>PropFirm Tracker</span>
-            <ChevronRight className="h-3.5 w-3.5 text-slate-300 dark:text-slate-600" />
-            <span className="text-slate-700 dark:text-slate-300 font-semibold">{getPageTitle()}</span>
-          </div>
-          <h2 className="text-sm font-bold text-slate-900 dark:text-white tracking-tight">
-            Welcome back! 👋
-          </h2>
+        {/* Desktop Breadcrumbs */}
+        <div className="hidden md:flex items-center gap-1.5 text-xs text-slate-400 dark:text-slate-500 font-medium">
+          <span>PropFirm Tracker</span>
+          <ChevronRight className="h-3.5 w-3.5 text-slate-300 dark:text-slate-600" />
+          <span className="text-slate-700 dark:text-slate-300 font-semibold">{getPageTitle()}</span>
         </div>
 
-        {/* Period Selector & User Profile */}
+        {/* User Profile */}
         <div className="flex items-center gap-3">
-          {/* Period Selector Dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger render={
-              <Button
-                variant="outline"
-                size="sm"
-                className="hidden sm:flex items-center gap-2 h-9 px-3 text-xs font-medium bg-slate-50 dark:bg-slate-800 border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
-              />
-            }>
-              <Calendar className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
-              <span>{period}</span>
-              <ChevronDown className="h-3.5 w-3.5 text-slate-400" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-40 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
-              <DropdownMenuItem onClick={() => setPeriod("Este Mes")} className="text-xs cursor-pointer">
-                Este Mes
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setPeriod("Últimos 30 días")} className="text-xs cursor-pointer">
-                Últimos 30 días
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setPeriod("Últimos 90 días")} className="text-xs cursor-pointer">
-                Últimos 90 días
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setPeriod("Todo el año")} className="text-xs cursor-pointer">
-                Todo el año
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
 
           {/* Notifications button */}
           <Button
