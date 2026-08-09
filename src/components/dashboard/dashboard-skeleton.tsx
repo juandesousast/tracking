@@ -4,6 +4,9 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 export function DashboardSkeleton() {
   return (
     <div className="space-y-6 animate-pulse">
+      {/* Filters Bar Skeleton */}
+      <Skeleton className="h-14 w-full rounded-2xl" />
+
       {/* KPI Skeletons */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {Array.from({ length: 4 }).map((_, i) => (

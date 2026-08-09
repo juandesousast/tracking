@@ -168,7 +168,24 @@ export default function GastosPage() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
+      {isLoading ? (
+        <div className="space-y-6 animate-pulse">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="space-y-2">
+              <div className="h-7 w-56 bg-slate-200/80 dark:bg-slate-800 rounded-lg" />
+              <div className="h-3 w-80 bg-slate-200/80 dark:bg-slate-800 rounded-lg" />
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="h-8 w-24 bg-slate-200/80 dark:bg-slate-800 rounded-lg" />
+              <div className="h-8 w-32 bg-slate-200/80 dark:bg-slate-800 rounded-lg" />
+            </div>
+          </div>
+          <div className="h-20 bg-slate-200/60 dark:bg-slate-800/80 rounded-2xl" />
+          <div className="h-14 bg-slate-200/60 dark:bg-slate-800/80 rounded-xl" />
+          <div className="h-96 bg-slate-200/60 dark:bg-slate-800/60 rounded-2xl" />
+        </div>
+      ) : (
+        <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
@@ -270,9 +287,7 @@ export default function GastosPage() {
 
         {/* Table */}
         <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/60 dark:border-slate-800 shadow-xs overflow-hidden">
-          {isLoading ? (
-            <div className="p-8 text-center text-xs text-slate-400">Cargando gastos...</div>
-          ) : filteredExpenses.length === 0 ? (
+          {filteredExpenses.length === 0 ? (
             <div className="p-12 text-center">
               <Receipt className="h-10 w-10 text-slate-400 mx-auto mb-3" />
               <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
@@ -350,6 +365,7 @@ export default function GastosPage() {
           )}
         </div>
       </div>
+      )}
 
       {/* Modals */}
       <AddExpenseModal
