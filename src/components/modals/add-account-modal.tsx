@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PropFirm } from "@/types/database";
-import { Wallet } from "lucide-react";
+import { Wallet, Loader2 } from "lucide-react";
 
 interface AddAccountModalProps {
   open: boolean;
@@ -19,7 +19,7 @@ interface AddAccountModalProps {
     status: string;
     account_number?: string | null;
     alias?: string | null;
-  }) => void;
+  }) => Promise<void> | void;
 }
 
 export function AddAccountModal({
@@ -35,8 +35,9 @@ export function AddAccountModal({
   const [accountNumber, setAccountNumber] = useState("");
   const [alias, setAlias] = useState("");
   const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const size = parseFloat(accountSize);
     const selectedFirm = firmId || firms[0]?.id;
@@ -52,18 +53,25 @@ export function AddAccountModal({
     }
 
     setError("");
-    onSubmit({
-      firm_id: selectedFirm,
-      account_size: size,
-      account_type: accountType,
-      status,
-      account_number: accountNumber.trim() || null,
-      alias: alias.trim() || null,
-    });
+    setIsSubmitting(true);
+    try {
+      await onSubmit({
+        firm_id: selectedFirm,
+        account_size: size,
+        account_type: accountType,
+        status,
+        account_number: accountNumber.trim() || null,
+        alias: alias.trim() || null,
+      });
 
-    setAccountNumber("");
-    setAlias("");
-    onOpenChange(false);
+      setAccountNumber("");
+      setAlias("");
+      onOpenChange(false);
+    } catch (err) {
+      console.error("Error adding account:", err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -191,8 +199,12 @@ export function AddAccountModal({
           >
             Cancelar
           </Button>
-          <Button type="submit" size="sm" className="text-xs gap-1.5" disabled={firms.length === 0}>
-            <Wallet className="h-3.5 w-3.5" />
+          <Button type="submit" size="sm" className="text-xs gap-1.5" disabled={isSubmitting || firms.length === 0}>
+            {isSubmitting ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Wallet className="h-3.5 w-3.5" />
+            )}
             Guardar Cuenta
           </Button>
         </div>

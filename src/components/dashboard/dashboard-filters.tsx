@@ -1,9 +1,9 @@
 "use client";
 
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
-import { useCallback, useState, useEffect, Suspense } from "react";
+import { useCallback, useState, useEffect, Suspense, useTransition } from "react";
 import { PropFirm } from "@/types/database";
-import { Calendar, ChevronDown, Filter, RotateCcw } from "lucide-react";
+import { Calendar, ChevronDown, Filter, RotateCcw, Loader2 } from "lucide-react";
 
 interface DashboardFiltersProps {
   firms: PropFirm[];
@@ -19,6 +19,7 @@ function DashboardFiltersContent({ firms, onFilterChange }: DashboardFiltersProp
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
+  const [isPending, startTransition] = useTransition();
 
   const currentPreset = searchParams.get("preset") || "this_month";
   const currentStartDate = searchParams.get("startDate") || "";
@@ -57,18 +58,20 @@ function DashboardFiltersContent({ firms, onFilterChange }: DashboardFiltersProp
       const newQuery = params.toString();
       const currentQuery = searchParams.toString();
 
-      if (newQuery !== currentQuery) {
-        router.push(`${pathname}?${newQuery}`);
-      }
+      startTransition(() => {
+        if (newQuery !== currentQuery) {
+          router.push(`${pathname}?${newQuery}`);
+        }
 
-      if (onFilterChange) {
-        onFilterChange({
-          preset: newPreset,
-          startDate: newStart || null,
-          endDate: newEnd || null,
-          firmId: newFirm,
-        });
-      }
+        if (onFilterChange) {
+          onFilterChange({
+            preset: newPreset,
+            startDate: newStart || null,
+            endDate: newEnd || null,
+            firmId: newFirm,
+          });
+        }
+      });
     },
     [searchParams, router, pathname, onFilterChange]
   );
@@ -144,9 +147,17 @@ function DashboardFiltersContent({ firms, onFilterChange }: DashboardFiltersProp
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-3 bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200/60 dark:border-slate-800 shadow-xs">
+    <div
+      className={`flex flex-wrap items-center gap-3 bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200/60 dark:border-slate-800 shadow-xs transition-opacity duration-200 ${
+        isPending ? "opacity-60 pointer-events-none" : "opacity-100"
+      }`}
+    >
       <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 pr-1 border-r border-slate-200 dark:border-slate-800">
-        <Filter className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
+        {isPending ? (
+          <Loader2 className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400 animate-spin" />
+        ) : (
+          <Filter className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
+        )}
         Filtros
       </div>
 

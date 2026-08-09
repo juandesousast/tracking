@@ -195,23 +195,23 @@
     "semantic_hash": ""
   },
   "src/components/modals/add-account-modal.tsx": {
-    "mtime": 1786218144.5428123,
-    "ast_hash": "a7c8eba29a16ed0105b51cc8abb96535",
+    "mtime": 1786300442.5939293,
+    "ast_hash": "bab97cdfd5c7d9bf1435ce38af2ed919",
     "semantic_hash": ""
   },
   "src/components/modals/add-expense-modal.tsx": {
-    "mtime": 1786281607.5932539,
-    "ast_hash": "82a6d3f2348cb0669c2c65a966af8889",
+    "mtime": 1786300450.9442916,
+    "ast_hash": "e86c8a5f41f1e21d903a63f66082cd3c",
     "semantic_hash": ""
   },
   "src/components/modals/add-firm-modal.tsx": {
-    "mtime": 1786216516.3322744,
-    "ast_hash": "c6752ffa00886b34782182418a1f3a59",
+    "mtime": 1786300436.7056847,
+    "ast_hash": "ab919d338e1331678d86720b3cfa207e",
     "semantic_hash": ""
   },
   "src/components/modals/add-withdrawal-modal.tsx": {
-    "mtime": 1786281609.5238576,
-    "ast_hash": "2dc1f9f820cd7cd1d037f93eb53635dc",
+    "mtime": 1786300462.2684329,
+    "ast_hash": "37a18a825fc5cd6331ea3967ee82d382",
     "semantic_hash": ""
   },
   "src/components/modals/responsive-modal.tsx": {
@@ -310,23 +310,23 @@
     "semantic_hash": ""
   },
   "src/components/modals/edit-account-modal.tsx": {
-    "mtime": 1786218152.1429832,
-    "ast_hash": "1107de3abbf8b697ea86db49deded3be",
+    "mtime": 1786300446.9377415,
+    "ast_hash": "622d23df77091b11136fb9bf6d2f82e8",
     "semantic_hash": ""
   },
   "src/components/modals/edit-expense-modal.tsx": {
-    "mtime": 1786281611.255006,
-    "ast_hash": "6f94adb9f29b6bc6a2a04214725d3013",
+    "mtime": 1786300456.6261177,
+    "ast_hash": "b3373daac5c97a5f9500e5fb86fdb45c",
     "semantic_hash": ""
   },
   "src/components/modals/edit-firm-modal.tsx": {
-    "mtime": 1786218150.0899234,
-    "ast_hash": "ed4e1a259aae4a21993fe9ff8fbd836c",
+    "mtime": 1786300439.9900935,
+    "ast_hash": "725f5e891e07dc47f33a294461afb219",
     "semantic_hash": ""
   },
   "src/components/modals/edit-withdrawal-modal.tsx": {
-    "mtime": 1786281613.7687235,
-    "ast_hash": "9e826b92346b94d4f5955b1aa39e1a24",
+    "mtime": 1786300467.3435113,
+    "ast_hash": "f296bf2ae0d22f87ef4d2edeb1e9d16d",
     "semantic_hash": ""
   },
   "src/components/ui/alert-dialog.tsx": {
@@ -365,8 +365,8 @@
     "semantic_hash": ""
   },
   "src/components/dashboard/dashboard-filters.tsx": {
-    "mtime": 1786282030.4031837,
-    "ast_hash": "c5c7ece494cb8313bdce4916885c7da8",
+    "mtime": 1786300480.623178,
+    "ast_hash": "a22d6f5a48df0a3fb382770d302d713b",
     "semantic_hash": ""
   },
   "src/lib/validations/schemas.test.ts": {
@@ -415,8 +415,8 @@
     "semantic_hash": ""
   },
   "src/components/modals/copier-rule-modal.tsx": {
-    "mtime": 1786300009.4921381,
-    "ast_hash": "9123636a7f7bef569685b7eb2482af59",
+    "mtime": 1786300475.5063272,
+    "ast_hash": "10d74c6125d1f94a6a0bebf211f703da",
     "semantic_hash": ""
   },
   "src/components/ui/switch.tsx": {
@@ -450,13 +450,43 @@
     "semantic_hash": ""
   },
   "src/components/modals/add-tradovate-connection-modal.tsx": {
-    "mtime": 1786300003.72017,
-    "ast_hash": "52019e360ef0462b520bafb29d828e3d",
+    "mtime": 1786300472.3855486,
+    "ast_hash": "2aa73340118f4ed6c2907a9766222f13",
     "semantic_hash": ""
   },
   "supabase/migrations/004_copier_multi_connections.sql": {
     "mtime": 1786299976.209096,
     "ast_hash": "998dc8eb7368d76a69c9a4dc78b32503",
+    "semantic_hash": ""
+  },
+  "src/app/copier/loading.tsx": {
+    "mtime": 1786300425.1807306,
+    "ast_hash": "6a74e0045bf397c767df7a42436cad87",
+    "semantic_hash": ""
+  },
+  "src/app/cuentas/loading.tsx": {
+    "mtime": 1786300426.6379566,
+    "ast_hash": "29ad6acda3b97952b68155628a6d7b9a",
+    "semantic_hash": ""
+  },
+  "src/app/empresas/loading.tsx": {
+    "mtime": 1786300428.0905738,
+    "ast_hash": "7f705120e05e9b4ce5b9217f2567ae61",
+    "semantic_hash": ""
+  },
+  "src/app/gastos/loading.tsx": {
+    "mtime": 1786300429.7930915,
+    "ast_hash": "41533aff015b2f25ad69c0c26c41deb0",
+    "semantic_hash": ""
+  },
+  "src/app/loading.tsx": {
+    "mtime": 1786300423.3406572,
+    "ast_hash": "3562217ddcf3122373f7b96b13afc6d2",
+    "semantic_hash": ""
+  },
+  "src/app/retiros/loading.tsx": {
+    "mtime": 1786300431.116891,
+    "ast_hash": "35320bb8836bce0794dd2a6482b91523",
     "semantic_hash": ""
   }
 }

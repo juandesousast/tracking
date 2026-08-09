@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PropFirm, Account, Expense } from "@/types/database";
-import { Receipt } from "lucide-react";
+import { Receipt, Loader2 } from "lucide-react";
 import { ReceiptScanner } from "@/components/ui/receipt-scanner";
 import { ScannedReceiptResult } from "@/lib/actions/scan-receipt";
 import { matchAccountFromScan } from "@/lib/match-account";
@@ -27,7 +27,7 @@ interface EditExpenseModalProps {
       description: string | null;
       date: string;
     }
-  ) => void;
+  ) => Promise<void> | void;
 }
 
 export function EditExpenseModal({
@@ -46,6 +46,7 @@ export function EditExpenseModal({
   const [description, setDescription] = useState("");
   const [error, setError] = useState("");
   const [ambiguityFirmName, setAmbiguityFirmName] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const filteredAccounts = accounts.filter((acc) => acc.firm_id === firmId);
 
@@ -67,7 +68,7 @@ export function EditExpenseModal({
     }
   }, [open]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!expense) return;
 
@@ -84,17 +85,24 @@ export function EditExpenseModal({
     }
 
     setError("");
-    onSubmit(expense.id, {
-      firm_id: firmId,
-      account_id: accountId || null,
-      amount: parsedAmount,
-      category,
-      description: description.trim() ? description.trim() : null,
-      date,
-    });
+    setIsSubmitting(true);
+    try {
+      await onSubmit(expense.id, {
+        firm_id: firmId,
+        account_id: accountId || null,
+        amount: parsedAmount,
+        category,
+        description: description.trim() ? description.trim() : null,
+        date,
+      });
 
-    setAmbiguityFirmName(null);
-    onOpenChange(false);
+      setAmbiguityFirmName(null);
+      onOpenChange(false);
+    } catch (err) {
+      console.error("Error updating expense:", err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleScanComplete = (scannedData: ScannedReceiptResult) => {
@@ -292,8 +300,17 @@ export function EditExpenseModal({
           >
             Cancelar
           </Button>
-          <Button type="submit" size="sm" className="text-xs gap-1.5 bg-amber-600 hover:bg-amber-700 text-white">
-            <Receipt className="h-3.5 w-3.5" />
+          <Button
+            type="submit"
+            size="sm"
+            className="text-xs gap-1.5 bg-amber-600 hover:bg-amber-700 text-white"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Receipt className="h-3.5 w-3.5" />
+            )}
             Actualizar Gasto
           </Button>
         </div>

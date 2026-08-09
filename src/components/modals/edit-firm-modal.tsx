@@ -6,13 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PropFirm } from "@/types/database";
-import { Building2 } from "lucide-react";
+import { Building2, Loader2 } from "lucide-react";
 
 interface EditFirmModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   firm: PropFirm | null;
-  onSubmit: (id: string, firm: { name: string; website: string | null }) => void;
+  onSubmit: (id: string, firm: { name: string; website: string | null }) => Promise<void> | void;
 }
 
 export function EditFirmModal({
@@ -24,6 +24,7 @@ export function EditFirmModal({
   const [name, setName] = useState("");
   const [website, setWebsite] = useState("");
   const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (firm) {
@@ -32,7 +33,7 @@ export function EditFirmModal({
     }
   }, [firm]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!firm) return;
 
@@ -41,11 +42,18 @@ export function EditFirmModal({
       return;
     }
     setError("");
-    onSubmit(firm.id, {
-      name: name.trim(),
-      website: website.trim() ? website.trim() : null,
-    });
-    onOpenChange(false);
+    setIsSubmitting(true);
+    try {
+      await onSubmit(firm.id, {
+        name: name.trim(),
+        website: website.trim() ? website.trim() : null,
+      });
+      onOpenChange(false);
+    } catch (err) {
+      console.error("Error updating firm:", err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -99,8 +107,17 @@ export function EditFirmModal({
           >
             Cancelar
           </Button>
-          <Button type="submit" size="sm" className="text-xs gap-1.5">
-            <Building2 className="h-3.5 w-3.5" />
+          <Button
+            type="submit"
+            size="sm"
+            className="text-xs gap-1.5"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Building2 className="h-3.5 w-3.5" />
+            )}
             Actualizar Empresa
           </Button>
         </div>

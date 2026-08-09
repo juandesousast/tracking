@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PropFirm, Account } from "@/types/database";
-import { Receipt, Plus, Building2 } from "lucide-react";
+import { Receipt, Plus, Building2, Loader2 } from "lucide-react";
 import { ReceiptScanner } from "@/components/ui/receipt-scanner";
 import { ScannedReceiptResult } from "@/lib/actions/scan-receipt";
 import { matchAccountFromScan } from "@/lib/match-account";
@@ -26,7 +26,7 @@ interface AddExpenseModalProps {
     category: string;
     description: string | null;
     date: string;
-  }) => void;
+  }) => Promise<void> | void;
 }
 
 export function AddExpenseModal({
@@ -49,6 +49,7 @@ export function AddExpenseModal({
   const [ambiguityFirmName, setAmbiguityFirmName] = useState<string | null>(null);
   const [scannedNewFirmName, setScannedNewFirmName] = useState<string | null>(null);
   const [isCreatingFirm, setIsCreatingFirm] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Update filtered accounts when firmId changes
   const filteredAccounts = accounts.filter((acc) => acc.firm_id === firmId);
@@ -66,7 +67,7 @@ export function AddExpenseModal({
     }
   }, [open]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const parsedAmount = parseFloat(amount);
 
@@ -81,20 +82,27 @@ export function AddExpenseModal({
     }
 
     setError("");
-    onSubmit({
-      firm_id: firmId || null,
-      account_id: accountId || null,
-      amount: parsedAmount,
-      category,
-      description: description.trim() ? description.trim() : null,
-      date,
-    });
+    setIsSubmitting(true);
+    try {
+      await onSubmit({
+        firm_id: firmId || null,
+        account_id: accountId || null,
+        amount: parsedAmount,
+        category,
+        description: description.trim() ? description.trim() : null,
+        date,
+      });
 
-    setAmount("");
-    setDescription("");
-    setAmbiguityFirmName(null);
-    setScannedNewFirmName(null);
-    onOpenChange(false);
+      setAmount("");
+      setDescription("");
+      setAmbiguityFirmName(null);
+      setScannedNewFirmName(null);
+      onOpenChange(false);
+    } catch (err) {
+      console.error("Error adding expense:", err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleAutoCreateFirm = async (firmName: string) => {
@@ -349,8 +357,17 @@ export function AddExpenseModal({
           >
             Cancelar
           </Button>
-          <Button type="submit" size="sm" className="text-xs gap-1.5 bg-amber-600 hover:bg-amber-700 text-white">
-            <Receipt className="h-3.5 w-3.5" />
+          <Button
+            type="submit"
+            size="sm"
+            className="text-xs gap-1.5 bg-amber-600 hover:bg-amber-700 text-white"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Receipt className="h-3.5 w-3.5" />
+            )}
             Guardar Gasto
           </Button>
         </div>

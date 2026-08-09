@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { TradovateCredential } from "@/types/database";
-import { Key } from "lucide-react";
+import { Key, Loader2 } from "lucide-react";
 
 interface AddTradovateConnectionModalProps {
   open: boolean;
@@ -195,13 +195,18 @@ export function AddTradovateConnectionModal({
               type="submit"
               size="sm"
               disabled={isSubmitting}
-              className="text-xs bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+              className="text-xs bg-blue-600 hover:bg-blue-700 text-white font-semibold flex items-center gap-1.5"
             >
-              {isSubmitting
-                ? "Guardando..."
-                : connection
-                ? "Guardar Cambios"
-                : "Guardar Conexión"}
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  <span>Guardando...</span>
+                </>
+              ) : connection ? (
+                "Guardar Cambios"
+              ) : (
+                "Guardar Conexión"
+              )}
             </Button>
           </DialogFooter>
         </form>

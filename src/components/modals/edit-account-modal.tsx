@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PropFirm, Account } from "@/types/database";
-import { Wallet } from "lucide-react";
+import { Wallet, Loader2 } from "lucide-react";
 
 interface EditAccountModalProps {
   open: boolean;
@@ -23,7 +23,7 @@ interface EditAccountModalProps {
       account_number?: string | null;
       alias?: string | null;
     }
-  ) => void;
+  ) => Promise<void> | void;
 }
 
 export function EditAccountModal({
@@ -40,6 +40,7 @@ export function EditAccountModal({
   const [accountNumber, setAccountNumber] = useState("");
   const [alias, setAlias] = useState("");
   const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (account) {
@@ -52,7 +53,7 @@ export function EditAccountModal({
     }
   }, [account]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!account) return;
 
@@ -68,16 +69,22 @@ export function EditAccountModal({
     }
 
     setError("");
-    onSubmit(account.id, {
-      firm_id: firmId,
-      account_size: size,
-      account_type: accountType,
-      status,
-      account_number: accountNumber.trim() || null,
-      alias: alias.trim() || null,
-    });
-
-    onOpenChange(false);
+    setIsSubmitting(true);
+    try {
+      await onSubmit(account.id, {
+        firm_id: firmId,
+        account_size: size,
+        account_type: accountType,
+        status,
+        account_number: accountNumber.trim() || null,
+        alias: alias.trim() || null,
+      });
+      onOpenChange(false);
+    } catch (err) {
+      console.error("Error updating account:", err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -201,8 +208,12 @@ export function EditAccountModal({
           >
             Cancelar
           </Button>
-          <Button type="submit" size="sm" className="text-xs gap-1.5">
-            <Wallet className="h-3.5 w-3.5" />
+          <Button type="submit" size="sm" className="text-xs gap-1.5" disabled={isSubmitting}>
+            {isSubmitting ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Wallet className="h-3.5 w-3.5" />
+            )}
             Actualizar Cuenta
           </Button>
         </div>

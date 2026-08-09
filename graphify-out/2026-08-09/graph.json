@@ -593,8 +593,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "package_dependencies_react",
-      "community": 7,
-      "community_name": "responsive-modal.tsx",
+      "community": 3,
+      "community_name": "dependencies",
       "norm_label": "react"
     },
     {
@@ -604,8 +604,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "react",
-      "community": 7,
-      "community_name": "responsive-modal.tsx",
+      "community": 3,
+      "community_name": "dependencies",
       "norm_label": "react"
     },
     {
@@ -1044,15 +1044,15 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_app_copier_page",
-      "community": 16,
-      "community_name": "retiros/page.tsx",
+      "community": 19,
+      "community_name": "app/page.tsx",
       "norm_label": "copier/page.tsx"
     },
     {
       "label": "CopierPage()",
       "file_type": "code",
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L55",
+      "source_location": "L57",
       "_callable": true,
       "_origin": "ast",
       "id": "src_app_copier_page_copierpage",
@@ -1090,8 +1090,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_app_dashboard_layout",
-      "community": 16,
-      "community_name": "retiros/page.tsx",
+      "community": 9,
+      "community_name": "utils.ts",
       "norm_label": "dashboard-layout.tsx"
     },
     {
@@ -1216,8 +1216,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_app_login_page_loginpage",
-      "community": 16,
-      "community_name": "retiros/page.tsx",
+      "community": 24,
+      "community_name": "header.tsx",
       "norm_label": "loginpage()"
     },
     {
@@ -1297,8 +1297,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_app_settings_page_settingspage",
-      "community": 16,
-      "community_name": "retiros/page.tsx",
+      "community": 24,
+      "community_name": "header.tsx",
       "norm_label": "settingspage()"
     },
     {
@@ -1331,8 +1331,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_accounts_due_widget",
-      "community": 8,
-      "community_name": "database.ts",
+      "community": 21,
+      "community_name": "financials.ts",
       "norm_label": "accounts-due-widget.tsx"
     },
     {
@@ -1367,8 +1367,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_charts_cumulative_profit_chart",
-      "community": 8,
-      "community_name": "database.ts",
+      "community": 16,
+      "community_name": "retiros/page.tsx",
       "norm_label": "cumulative-profit-chart.tsx"
     },
     {
@@ -1380,8 +1380,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_dashboard_charts_cumulative_profit_chart_cumulativeprofitchartprops",
-      "community": 8,
-      "community_name": "database.ts",
+      "community": 21,
+      "community_name": "financials.ts",
       "norm_label": "cumulativeprofitchartprops"
     },
     {
@@ -1393,8 +1393,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_dashboard_charts_cumulative_profit_chart_chartpoint",
-      "community": 8,
-      "community_name": "database.ts",
+      "community": 16,
+      "community_name": "retiros/page.tsx",
       "norm_label": "chartpoint"
     },
     {
@@ -1452,8 +1452,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_charts_net_profit_sparkline",
-      "community": 8,
-      "community_name": "database.ts",
+      "community": 21,
+      "community_name": "financials.ts",
       "norm_label": "net-profit-sparkline.tsx"
     },
     {
@@ -1465,8 +1465,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_dashboard_charts_net_profit_sparkline_netprofitsparklineprops",
-      "community": 8,
-      "community_name": "database.ts",
+      "community": 21,
+      "community_name": "financials.ts",
       "norm_label": "netprofitsparklineprops"
     },
     {
@@ -1501,8 +1501,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_dashboard_charts_performance_line_chart_performancelinechartprops",
-      "community": 8,
-      "community_name": "database.ts",
+      "community": 21,
+      "community_name": "financials.ts",
       "norm_label": "performancelinechartprops"
     },
     {
@@ -1524,8 +1524,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_dashboard_filters",
-      "community": 8,
-      "community_name": "database.ts",
+      "community": 16,
+      "community_name": "retiros/page.tsx",
       "norm_label": "dashboard-filters.tsx"
     },
     {
@@ -1549,8 +1549,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_dashboard_filters_dashboardfilterscontent",
-      "community": 8,
-      "community_name": "database.ts",
+      "community": 16,
+      "community_name": "retiros/page.tsx",
       "norm_label": "dashboardfilterscontent()"
     },
     {
@@ -1572,8 +1572,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_dashboard_skeleton",
-      "community": 9,
-      "community_name": "utils.ts",
+      "community": 23,
+      "community_name": "dashboard-skeleton.tsx",
       "norm_label": "dashboard-skeleton.tsx"
     },
     {
@@ -1584,8 +1584,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_dashboard_skeleton_dashboardskeleton",
-      "community": 9,
-      "community_name": "utils.ts",
+      "community": 23,
+      "community_name": "dashboard-skeleton.tsx",
       "norm_label": "dashboardskeleton()"
     },
     {
@@ -1680,8 +1680,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_dashboard_transaction_table_transactiontableprops",
-      "community": 8,
-      "community_name": "database.ts",
+      "community": 21,
+      "community_name": "financials.ts",
       "norm_label": "transactiontableprops"
     },
     {
@@ -1728,8 +1728,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_layout_header_header",
-      "community": 16,
-      "community_name": "retiros/page.tsx",
+      "community": 24,
+      "community_name": "header.tsx",
       "norm_label": "header()"
     },
     {
@@ -1739,8 +1739,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_layout_mobile_nav",
-      "community": 24,
-      "community_name": "header.tsx",
+      "community": 9,
+      "community_name": "utils.ts",
       "norm_label": "mobile-nav.tsx"
     },
     {
@@ -1751,8 +1751,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_layout_mobile_nav_mobilenav",
-      "community": 24,
-      "community_name": "header.tsx",
+      "community": 9,
+      "community_name": "utils.ts",
       "norm_label": "mobilenav()"
     },
     {
@@ -1762,8 +1762,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_layout_sidebar",
-      "community": 24,
-      "community_name": "header.tsx",
+      "community": 9,
+      "community_name": "utils.ts",
       "norm_label": "sidebar.tsx"
     },
     {
@@ -1773,8 +1773,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "src_components_layout_sidebar_menuitems",
-      "community": 24,
-      "community_name": "header.tsx",
+      "community": 9,
+      "community_name": "utils.ts",
       "norm_label": "menuitems"
     },
     {
@@ -1784,8 +1784,8 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "src_components_layout_sidebar_supportitems",
-      "community": 24,
-      "community_name": "header.tsx",
+      "community": 9,
+      "community_name": "utils.ts",
       "norm_label": "supportitems"
     },
     {
@@ -1795,8 +1795,8 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "src_components_layout_sidebar_navigationitems",
-      "community": 24,
-      "community_name": "header.tsx",
+      "community": 9,
+      "community_name": "utils.ts",
       "norm_label": "navigationitems"
     },
     {
@@ -1807,8 +1807,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_layout_sidebar_sidebar",
-      "community": 24,
-      "community_name": "header.tsx",
+      "community": 9,
+      "community_name": "utils.ts",
       "norm_label": "sidebar()"
     },
     {
@@ -1818,8 +1818,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_modals_add_account_modal",
-      "community": 16,
-      "community_name": "retiros/page.tsx",
+      "community": 8,
+      "community_name": "database.ts",
       "norm_label": "add-account-modal.tsx"
     },
     {
@@ -1890,8 +1890,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_modals_add_firm_modal",
-      "community": 16,
-      "community_name": "retiros/page.tsx",
+      "community": 8,
+      "community_name": "database.ts",
       "norm_label": "add-firm-modal.tsx"
     },
     {
@@ -1903,8 +1903,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_modals_add_firm_modal_addfirmmodalprops",
-      "community": 16,
-      "community_name": "retiros/page.tsx",
+      "community": 8,
+      "community_name": "database.ts",
       "norm_label": "addfirmmodalprops"
     },
     {
@@ -1915,9 +1915,45 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_modals_add_firm_modal_addfirmmodal",
-      "community": 16,
-      "community_name": "retiros/page.tsx",
+      "community": 19,
+      "community_name": "app/page.tsx",
       "norm_label": "addfirmmodal()"
+    },
+    {
+      "label": "add-tradovate-connection-modal.tsx",
+      "file_type": "code",
+      "source_file": "src/components/modals/add-tradovate-connection-modal.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_components_modals_add_tradovate_connection_modal",
+      "community": 8,
+      "community_name": "database.ts",
+      "norm_label": "add-tradovate-connection-modal.tsx"
+    },
+    {
+      "label": "AddTradovateConnectionModalProps",
+      "file_type": "code",
+      "source_file": "src/components/modals/add-tradovate-connection-modal.tsx",
+      "source_location": "L18",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "src_components_modals_add_tradovate_connection_modal_addtradovateconnectionmodalprops",
+      "community": 8,
+      "community_name": "database.ts",
+      "norm_label": "addtradovateconnectionmodalprops"
+    },
+    {
+      "label": "AddTradovateConnectionModal()",
+      "file_type": "code",
+      "source_file": "src/components/modals/add-tradovate-connection-modal.tsx",
+      "source_location": "L32",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_components_modals_add_tradovate_connection_modal_addtradovateconnectionmodal",
+      "community": 8,
+      "community_name": "database.ts",
+      "norm_label": "addtradovateconnectionmodal()"
     },
     {
       "label": "add-withdrawal-modal.tsx",
@@ -1962,8 +1998,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_modals_copier_rule_modal",
-      "community": 23,
-      "community_name": "copier-rule-modal.tsx",
+      "community": 8,
+      "community_name": "database.ts",
       "norm_label": "copier-rule-modal.tsx"
     },
     {
@@ -1983,12 +2019,12 @@
       "label": "CopierRuleModal()",
       "file_type": "code",
       "source_file": "src/components/modals/copier-rule-modal.tsx",
-      "source_location": "L34",
+      "source_location": "L36",
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_modals_copier_rule_modal_copierrulemodal",
-      "community": 23,
-      "community_name": "copier-rule-modal.tsx",
+      "community": 8,
+      "community_name": "database.ts",
       "norm_label": "copierrulemodal()"
     },
     {
@@ -1998,8 +2034,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_modals_edit_account_modal",
-      "community": 16,
-      "community_name": "retiros/page.tsx",
+      "community": 8,
+      "community_name": "database.ts",
       "norm_label": "edit-account-modal.tsx"
     },
     {
@@ -2023,8 +2059,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_modals_edit_account_modal_editaccountmodal",
-      "community": 16,
-      "community_name": "retiros/page.tsx",
+      "community": 19,
+      "community_name": "app/page.tsx",
       "norm_label": "editaccountmodal()"
     },
     {
@@ -2070,8 +2106,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_modals_edit_firm_modal",
-      "community": 16,
-      "community_name": "retiros/page.tsx",
+      "community": 8,
+      "community_name": "database.ts",
       "norm_label": "edit-firm-modal.tsx"
     },
     {
@@ -2095,8 +2131,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_modals_edit_firm_modal_editfirmmodal",
-      "community": 16,
-      "community_name": "retiros/page.tsx",
+      "community": 19,
+      "community_name": "app/page.tsx",
       "norm_label": "editfirmmodal()"
     },
     {
@@ -2142,8 +2178,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_modals_responsive_modal",
-      "community": 7,
-      "community_name": "responsive-modal.tsx",
+      "community": 8,
+      "community_name": "database.ts",
       "norm_label": "responsive-modal.tsx"
     },
     {
@@ -2155,8 +2191,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_modals_responsive_modal_responsivemodalprops",
-      "community": 7,
-      "community_name": "responsive-modal.tsx",
+      "community": 8,
+      "community_name": "database.ts",
       "norm_label": "responsivemodalprops"
     },
     {
@@ -2579,8 +2615,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_dialog",
-      "community": 23,
-      "community_name": "copier-rule-modal.tsx",
+      "community": 8,
+      "community_name": "database.ts",
       "norm_label": "dialog.tsx"
     },
     {
@@ -2591,8 +2627,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dialog_dialog",
-      "community": 23,
-      "community_name": "copier-rule-modal.tsx",
+      "community": 8,
+      "community_name": "database.ts",
       "norm_label": "dialog()"
     },
     {
@@ -2603,8 +2639,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dialog_dialogtrigger",
-      "community": 23,
-      "community_name": "copier-rule-modal.tsx",
+      "community": 8,
+      "community_name": "database.ts",
       "norm_label": "dialogtrigger()"
     },
     {
@@ -2615,8 +2651,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dialog_dialogportal",
-      "community": 23,
-      "community_name": "copier-rule-modal.tsx",
+      "community": 8,
+      "community_name": "database.ts",
       "norm_label": "dialogportal()"
     },
     {
@@ -2627,8 +2663,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dialog_dialogclose",
-      "community": 23,
-      "community_name": "copier-rule-modal.tsx",
+      "community": 8,
+      "community_name": "database.ts",
       "norm_label": "dialogclose()"
     },
     {
@@ -2639,8 +2675,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dialog_dialogoverlay",
-      "community": 23,
-      "community_name": "copier-rule-modal.tsx",
+      "community": 8,
+      "community_name": "database.ts",
       "norm_label": "dialogoverlay()"
     },
     {
@@ -2651,8 +2687,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dialog_dialogcontent",
-      "community": 23,
-      "community_name": "copier-rule-modal.tsx",
+      "community": 8,
+      "community_name": "database.ts",
       "norm_label": "dialogcontent()"
     },
     {
@@ -2663,8 +2699,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dialog_dialogheader",
-      "community": 23,
-      "community_name": "copier-rule-modal.tsx",
+      "community": 8,
+      "community_name": "database.ts",
       "norm_label": "dialogheader()"
     },
     {
@@ -2675,8 +2711,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dialog_dialogfooter",
-      "community": 23,
-      "community_name": "copier-rule-modal.tsx",
+      "community": 8,
+      "community_name": "database.ts",
       "norm_label": "dialogfooter()"
     },
     {
@@ -2687,8 +2723,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dialog_dialogtitle",
-      "community": 23,
-      "community_name": "copier-rule-modal.tsx",
+      "community": 8,
+      "community_name": "database.ts",
       "norm_label": "dialogtitle()"
     },
     {
@@ -2699,8 +2735,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dialog_dialogdescription",
-      "community": 23,
-      "community_name": "copier-rule-modal.tsx",
+      "community": 8,
+      "community_name": "database.ts",
       "norm_label": "dialogdescription()"
     },
     {
@@ -2711,7 +2747,7 @@
       "_origin": "ast",
       "id": "src_components_ui_drawer",
       "community": 7,
-      "community_name": "responsive-modal.tsx",
+      "community_name": "drawer.tsx",
       "norm_label": "drawer.tsx"
     },
     {
@@ -2724,7 +2760,7 @@
       "_origin": "ast",
       "id": "src_components_ui_drawer_drawercontextprops",
       "community": 7,
-      "community_name": "responsive-modal.tsx",
+      "community_name": "drawer.tsx",
       "norm_label": "drawercontextprops"
     },
     {
@@ -2735,7 +2771,7 @@
       "_origin": "ast",
       "id": "src_components_ui_drawer_drawercontext",
       "community": 7,
-      "community_name": "responsive-modal.tsx",
+      "community_name": "drawer.tsx",
       "norm_label": "drawercontext"
     },
     {
@@ -2747,7 +2783,7 @@
       "_origin": "ast",
       "id": "src_components_ui_drawer_usedrawer",
       "community": 7,
-      "community_name": "responsive-modal.tsx",
+      "community_name": "drawer.tsx",
       "norm_label": "usedrawer()"
     },
     {
@@ -2758,8 +2794,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_drawer_drawer",
-      "community": 7,
-      "community_name": "responsive-modal.tsx",
+      "community": 3,
+      "community_name": "dependencies",
       "norm_label": "drawer()"
     },
     {
@@ -2771,7 +2807,7 @@
       "_origin": "ast",
       "id": "src_components_ui_drawer_drawertrigger",
       "community": 7,
-      "community_name": "responsive-modal.tsx",
+      "community_name": "drawer.tsx",
       "norm_label": "drawertrigger()"
     },
     {
@@ -2783,7 +2819,7 @@
       "_origin": "ast",
       "id": "src_components_ui_drawer_drawerportal",
       "community": 7,
-      "community_name": "responsive-modal.tsx",
+      "community_name": "drawer.tsx",
       "norm_label": "drawerportal()"
     },
     {
@@ -2795,7 +2831,7 @@
       "_origin": "ast",
       "id": "src_components_ui_drawer_drawerclose",
       "community": 7,
-      "community_name": "responsive-modal.tsx",
+      "community_name": "drawer.tsx",
       "norm_label": "drawerclose()"
     },
     {
@@ -2807,7 +2843,7 @@
       "_origin": "ast",
       "id": "src_components_ui_drawer_draweroverlay",
       "community": 7,
-      "community_name": "responsive-modal.tsx",
+      "community_name": "drawer.tsx",
       "norm_label": "draweroverlay()"
     },
     {
@@ -2819,7 +2855,7 @@
       "_origin": "ast",
       "id": "src_components_ui_drawer_drawerswipehandle",
       "community": 7,
-      "community_name": "responsive-modal.tsx",
+      "community_name": "drawer.tsx",
       "norm_label": "drawerswipehandle()"
     },
     {
@@ -2831,7 +2867,7 @@
       "_origin": "ast",
       "id": "src_components_ui_drawer_drawercontent",
       "community": 7,
-      "community_name": "responsive-modal.tsx",
+      "community_name": "drawer.tsx",
       "norm_label": "drawercontent()"
     },
     {
@@ -2843,7 +2879,7 @@
       "_origin": "ast",
       "id": "src_components_ui_drawer_drawerheader",
       "community": 7,
-      "community_name": "responsive-modal.tsx",
+      "community_name": "drawer.tsx",
       "norm_label": "drawerheader()"
     },
     {
@@ -2855,7 +2891,7 @@
       "_origin": "ast",
       "id": "src_components_ui_drawer_drawerfooter",
       "community": 7,
-      "community_name": "responsive-modal.tsx",
+      "community_name": "drawer.tsx",
       "norm_label": "drawerfooter()"
     },
     {
@@ -2867,7 +2903,7 @@
       "_origin": "ast",
       "id": "src_components_ui_drawer_drawertitle",
       "community": 7,
-      "community_name": "responsive-modal.tsx",
+      "community_name": "drawer.tsx",
       "norm_label": "drawertitle()"
     },
     {
@@ -2879,7 +2915,7 @@
       "_origin": "ast",
       "id": "src_components_ui_drawer_drawerdescription",
       "community": 7,
-      "community_name": "responsive-modal.tsx",
+      "community_name": "drawer.tsx",
       "norm_label": "drawerdescription()"
     },
     {
@@ -3080,8 +3116,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_input",
-      "community": 16,
-      "community_name": "retiros/page.tsx",
+      "community": 8,
+      "community_name": "database.ts",
       "norm_label": "input.tsx"
     },
     {
@@ -3092,8 +3128,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_input_input",
-      "community": 16,
-      "community_name": "retiros/page.tsx",
+      "community": 8,
+      "community_name": "database.ts",
       "norm_label": "input()"
     },
     {
@@ -3103,8 +3139,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_label",
-      "community": 16,
-      "community_name": "retiros/page.tsx",
+      "community": 8,
+      "community_name": "database.ts",
       "norm_label": "label.tsx"
     },
     {
@@ -3115,8 +3151,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_label_label",
-      "community": 16,
-      "community_name": "retiros/page.tsx",
+      "community": 8,
+      "community_name": "database.ts",
       "norm_label": "label()"
     },
     {
@@ -3412,8 +3448,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_skeleton",
-      "community": 9,
-      "community_name": "utils.ts",
+      "community": 23,
+      "community_name": "dashboard-skeleton.tsx",
       "norm_label": "skeleton.tsx"
     },
     {
@@ -3424,8 +3460,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_skeleton_skeleton",
-      "community": 9,
-      "community_name": "utils.ts",
+      "community": 23,
+      "community_name": "dashboard-skeleton.tsx",
       "norm_label": "skeleton()"
     },
     {
@@ -4261,10 +4297,22 @@
       "norm_label": "gettradovatecredentials()"
     },
     {
-      "label": "saveTradovateCredentials()",
+      "label": "saveTradovateCredential()",
       "file_type": "code",
       "source_file": "src/lib/services/copier.ts",
       "source_location": "L26",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_lib_services_copier_savetradovatecredential",
+      "community": 19,
+      "community_name": "app/page.tsx",
+      "norm_label": "savetradovatecredential()"
+    },
+    {
+      "label": "saveTradovateCredentials()",
+      "file_type": "code",
+      "source_file": "src/lib/services/copier.ts",
+      "source_location": "L79",
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_services_copier_savetradovatecredentials",
@@ -4273,10 +4321,22 @@
       "norm_label": "savetradovatecredentials()"
     },
     {
+      "label": "deleteTradovateCredential()",
+      "file_type": "code",
+      "source_file": "src/lib/services/copier.ts",
+      "source_location": "L95",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_lib_services_copier_deletetradovatecredential",
+      "community": 19,
+      "community_name": "app/page.tsx",
+      "norm_label": "deletetradovatecredential()"
+    },
+    {
       "label": "getCopierRules()",
       "file_type": "code",
       "source_file": "src/lib/services/copier.ts",
-      "source_location": "L61",
+      "source_location": "L115",
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_services_copier_getcopierrules",
@@ -4288,7 +4348,7 @@
       "label": "saveCopierRule()",
       "file_type": "code",
       "source_file": "src/lib/services/copier.ts",
-      "source_location": "L84",
+      "source_location": "L138",
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_services_copier_savecopierrule",
@@ -4300,7 +4360,7 @@
       "label": "updateCopierRule()",
       "file_type": "code",
       "source_file": "src/lib/services/copier.ts",
-      "source_location": "L127",
+      "source_location": "L181",
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_services_copier_updatecopierrule",
@@ -4312,7 +4372,7 @@
       "label": "deleteCopierRule()",
       "file_type": "code",
       "source_file": "src/lib/services/copier.ts",
-      "source_location": "L165",
+      "source_location": "L219",
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_services_copier_deletecopierrule",
@@ -4324,7 +4384,7 @@
       "label": "getCopierLogs()",
       "file_type": "code",
       "source_file": "src/lib/services/copier.ts",
-      "source_location": "L185",
+      "source_location": "L239",
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_services_copier_getcopierlogs",
@@ -4336,7 +4396,7 @@
       "label": "executeKillSwitch()",
       "file_type": "code",
       "source_file": "src/lib/services/copier.ts",
-      "source_location": "L210",
+      "source_location": "L264",
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_services_copier_executekillswitch",
@@ -4363,8 +4423,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_supabase_client_createclient",
-      "community": 16,
-      "community_name": "retiros/page.tsx",
+      "community": 24,
+      "community_name": "header.tsx",
       "norm_label": "createclient()"
     },
     {
@@ -4420,8 +4480,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_use_media_query",
-      "community": 7,
-      "community_name": "responsive-modal.tsx",
+      "community": 8,
+      "community_name": "database.ts",
       "norm_label": "use-media-query.ts"
     },
     {
@@ -4432,8 +4492,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_use_media_query_usemediaquery",
-      "community": 7,
-      "community_name": "responsive-modal.tsx",
+      "community": 8,
+      "community_name": "database.ts",
       "norm_label": "usemediaquery()"
     },
     {
@@ -4740,8 +4800,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_types_database_expense",
-      "community": 8,
-      "community_name": "database.ts",
+      "community": 21,
+      "community_name": "financials.ts",
       "norm_label": "expense"
     },
     {
@@ -4753,8 +4813,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_types_database_withdrawal",
-      "community": 8,
-      "community_name": "database.ts",
+      "community": 21,
+      "community_name": "financials.ts",
       "norm_label": "withdrawal"
     },
     {
@@ -4792,15 +4852,15 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_types_database_tradovatecredential",
-      "community": 19,
-      "community_name": "app/page.tsx",
+      "community": 8,
+      "community_name": "database.ts",
       "norm_label": "tradovatecredential"
     },
     {
       "label": "CopierRule",
       "file_type": "code",
       "source_file": "src/types/database.ts",
-      "source_location": "L73",
+      "source_location": "L75",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
@@ -4813,7 +4873,7 @@
       "label": "CopierLog",
       "file_type": "code",
       "source_file": "src/types/database.ts",
-      "source_location": "L87",
+      "source_location": "L89",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
@@ -6321,7 +6381,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L55",
+      "source_location": "L57",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page",
@@ -6357,6 +6417,30 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/copier/page.tsx",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_components_modals_add_tradovate_connection_modal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_components_modals_add_tradovate_connection_modal_addtradovateconnectionmodal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
       "source_location": "L29",
       "weight": 1.0,
       "_origin": "ast",
@@ -6381,7 +6465,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L30",
+      "source_location": "L31",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page",
@@ -6393,7 +6477,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L30",
+      "source_location": "L31",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page",
@@ -6405,7 +6489,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L30",
+      "source_location": "L31",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page",
@@ -6417,7 +6501,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L30",
+      "source_location": "L31",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page",
@@ -6429,7 +6513,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L30",
+      "source_location": "L31",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page",
@@ -6441,7 +6525,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L30",
+      "source_location": "L31",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page",
@@ -6453,7 +6537,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L30",
+      "source_location": "L31",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page",
@@ -6465,7 +6549,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L30",
+      "source_location": "L31",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page",
@@ -6477,7 +6561,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L30",
+      "source_location": "L31",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page",
@@ -6489,7 +6573,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L25",
+      "source_location": "L27",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page",
@@ -6501,7 +6585,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L25",
+      "source_location": "L27",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page",
@@ -6513,7 +6597,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L24",
+      "source_location": "L26",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page",
@@ -6525,7 +6609,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L24",
+      "source_location": "L26",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page",
@@ -6537,7 +6621,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L23",
+      "source_location": "L25",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page",
@@ -6549,7 +6633,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L23",
+      "source_location": "L25",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page",
@@ -6561,7 +6645,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L23",
+      "source_location": "L25",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page",
@@ -6573,7 +6657,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L23",
+      "source_location": "L25",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page",
@@ -6585,7 +6669,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L23",
+      "source_location": "L25",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page",
@@ -6597,59 +6681,11 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L23",
+      "source_location": "L25",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page",
       "target": "src_components_ui_card_cardtitle",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/copier/page.tsx",
-      "source_location": "L26",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_app_copier_page",
-      "target": "src_components_ui_input",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/copier/page.tsx",
-      "source_location": "L26",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_app_copier_page",
-      "target": "src_components_ui_input_input",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/copier/page.tsx",
-      "source_location": "L27",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_app_copier_page",
-      "target": "src_components_ui_label",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/copier/page.tsx",
-      "source_location": "L27",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_app_copier_page",
-      "target": "src_components_ui_label_label",
       "confidence_score": 1.0
     },
     {
@@ -6681,7 +6717,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L21",
+      "source_location": "L23",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page",
@@ -6693,7 +6729,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L21",
+      "source_location": "L23",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page",
@@ -6701,11 +6737,23 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_lib_actions_actions_getfirms",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L11",
+      "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page",
@@ -6717,7 +6765,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L11",
+      "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page",
@@ -6729,7 +6777,19 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L11",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_lib_services_copier_deletetradovatecredential",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page",
@@ -6741,7 +6801,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L11",
+      "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page",
@@ -6753,7 +6813,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L11",
+      "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page",
@@ -6765,7 +6825,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L11",
+      "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page",
@@ -6777,7 +6837,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L11",
+      "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page",
@@ -6789,11 +6849,11 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L11",
+      "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page",
-      "target": "src_lib_services_copier_savetradovatecredentials",
+      "target": "src_lib_services_copier_savetradovatecredential",
       "confidence_score": 1.0
     },
     {
@@ -6801,7 +6861,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L11",
+      "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page",
@@ -6865,6 +6925,18 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page",
+      "target": "src_types_database_propfirm",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
       "target": "src_types_database_tradovatecredential",
       "confidence_score": 1.0
     },
@@ -6874,7 +6946,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L85",
+      "source_location": "L86",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page_copierpage",
@@ -6886,7 +6958,19 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L165",
+      "source_location": "L87",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page_copierpage",
+      "target": "src_lib_actions_actions_getfirms"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L175",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page_copierpage",
@@ -6898,7 +6982,19 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L176",
+      "source_location": "L132",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page_copierpage",
+      "target": "src_lib_services_copier_deletetradovatecredential"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L186",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page_copierpage",
@@ -6910,7 +7006,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L84",
+      "source_location": "L85",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page_copierpage",
@@ -6922,7 +7018,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L83",
+      "source_location": "L84",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page_copierpage",
@@ -6934,7 +7030,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L82",
+      "source_location": "L83",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page_copierpage",
@@ -6946,7 +7042,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L144",
+      "source_location": "L154",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page_copierpage",
@@ -6958,11 +7054,11 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L115",
+      "source_location": "L116",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page_copierpage",
-      "target": "src_lib_services_copier_savetradovatecredentials"
+      "target": "src_lib_services_copier_savetradovatecredential"
     },
     {
       "relation": "calls",
@@ -6970,7 +7066,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/copier/page.tsx",
-      "source_location": "L141",
+      "source_location": "L151",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_copier_page_copierpage",
@@ -14264,6 +14360,220 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/add-tradovate-connection-modal.tsx",
+      "source_location": "L32",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_add_tradovate_connection_modal",
+      "target": "src_components_modals_add_tradovate_connection_modal_addtradovateconnectionmodal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/add-tradovate-connection-modal.tsx",
+      "source_location": "L18",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_add_tradovate_connection_modal",
+      "target": "src_components_modals_add_tradovate_connection_modal_addtradovateconnectionmodalprops",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/add-tradovate-connection-modal.tsx",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_add_tradovate_connection_modal",
+      "target": "src_components_ui_button",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/add-tradovate-connection-modal.tsx",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_add_tradovate_connection_modal",
+      "target": "src_components_ui_button_button",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/add-tradovate-connection-modal.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_add_tradovate_connection_modal",
+      "target": "src_components_ui_dialog",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/add-tradovate-connection-modal.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_add_tradovate_connection_modal",
+      "target": "src_components_ui_dialog_dialog",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/add-tradovate-connection-modal.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_add_tradovate_connection_modal",
+      "target": "src_components_ui_dialog_dialogcontent",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/add-tradovate-connection-modal.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_add_tradovate_connection_modal",
+      "target": "src_components_ui_dialog_dialogdescription",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/add-tradovate-connection-modal.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_add_tradovate_connection_modal",
+      "target": "src_components_ui_dialog_dialogfooter",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/add-tradovate-connection-modal.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_add_tradovate_connection_modal",
+      "target": "src_components_ui_dialog_dialogheader",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/add-tradovate-connection-modal.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_add_tradovate_connection_modal",
+      "target": "src_components_ui_dialog_dialogtitle",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/add-tradovate-connection-modal.tsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_add_tradovate_connection_modal",
+      "target": "src_components_ui_input",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/add-tradovate-connection-modal.tsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_add_tradovate_connection_modal",
+      "target": "src_components_ui_input_input",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/add-tradovate-connection-modal.tsx",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_add_tradovate_connection_modal",
+      "target": "src_components_ui_label",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/add-tradovate-connection-modal.tsx",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_add_tradovate_connection_modal",
+      "target": "src_components_ui_label_label",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/add-tradovate-connection-modal.tsx",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_add_tradovate_connection_modal",
+      "target": "src_types_database",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/add-tradovate-connection-modal.tsx",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_add_tradovate_connection_modal",
+      "target": "src_types_database_tradovatecredential",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "field",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/add-tradovate-connection-modal.tsx",
+      "source_location": "L21",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_add_tradovate_connection_modal_addtradovateconnectionmodalprops",
+      "target": "src_types_database_tradovatecredential",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "src/components/modals/add-withdrawal-modal.tsx",
       "source_location": "L32",
       "weight": 1.0,
@@ -14563,7 +14873,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/modals/copier-rule-modal.tsx",
-      "source_location": "L34",
+      "source_location": "L36",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_modals_copier_rule_modal",
@@ -14786,6 +15096,30 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/copier-rule-modal.tsx",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_copier_rule_modal",
+      "target": "src_types_database_propfirm",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/copier-rule-modal.tsx",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_copier_rule_modal",
+      "target": "src_types_database_tradovatecredential",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "references",
       "context": "field",
       "confidence": "EXTRACTED",
@@ -14807,6 +15141,30 @@
       "_origin": "ast",
       "source": "src_components_modals_copier_rule_modal_copierrulemodalprops",
       "target": "src_types_database_copierrule",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "field",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/copier-rule-modal.tsx",
+      "source_location": "L22",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_copier_rule_modal_copierrulemodalprops",
+      "target": "src_types_database_propfirm",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "field",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/copier-rule-modal.tsx",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_copier_rule_modal_copierrulemodalprops",
+      "target": "src_types_database_tradovatecredential",
       "confidence_score": 1.0
     },
     {
@@ -20083,6 +20441,18 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_services_copier_test",
+      "target": "src_lib_services_copier_deletetradovatecredential",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/services/copier.test.ts",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_services_copier_test",
       "target": "src_lib_services_copier_executekillswitch",
       "confidence_score": 1.0
     },
@@ -20132,6 +20502,18 @@
       "_origin": "ast",
       "source": "src_lib_services_copier_test",
       "target": "src_lib_services_copier_savecopierrule",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/services/copier.test.ts",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_services_copier_test",
+      "target": "src_lib_services_copier_savetradovatecredential",
       "confidence_score": 1.0
     },
     {
@@ -20186,7 +20568,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/services/copier.ts",
-      "source_location": "L165",
+      "source_location": "L219",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_services_copier",
@@ -20197,7 +20579,18 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/services/copier.ts",
-      "source_location": "L210",
+      "source_location": "L95",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_services_copier",
+      "target": "src_lib_services_copier_deletetradovatecredential",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/services/copier.ts",
+      "source_location": "L264",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_services_copier",
@@ -20208,7 +20601,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/services/copier.ts",
-      "source_location": "L185",
+      "source_location": "L239",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_services_copier",
@@ -20219,7 +20612,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/services/copier.ts",
-      "source_location": "L61",
+      "source_location": "L115",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_services_copier",
@@ -20241,7 +20634,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/services/copier.ts",
-      "source_location": "L84",
+      "source_location": "L138",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_services_copier",
@@ -20256,6 +20649,17 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_services_copier",
+      "target": "src_lib_services_copier_savetradovatecredential",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/services/copier.ts",
+      "source_location": "L79",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_services_copier",
       "target": "src_lib_services_copier_savetradovatecredentials",
       "confidence_score": 1.0
     },
@@ -20263,7 +20667,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/services/copier.ts",
-      "source_location": "L127",
+      "source_location": "L181",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_services_copier",
@@ -20360,10 +20764,34 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/lib/services/copier.ts",
-      "source_location": "L33",
+      "source_location": "L36",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_services_copier_savetradovatecredential",
+      "target": "src_lib_supabase_server_createclient"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/services/copier.ts",
+      "source_location": "L89",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_services_copier_savetradovatecredentials",
+      "target": "src_lib_services_copier_savetradovatecredential",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/lib/services/copier.ts",
+      "source_location": "L96",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_services_copier_deletetradovatecredential",
       "target": "src_lib_supabase_server_createclient"
     },
     {
@@ -20372,7 +20800,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/lib/services/copier.ts",
-      "source_location": "L62",
+      "source_location": "L116",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_services_copier_getcopierrules",
@@ -20384,7 +20812,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/lib/services/copier.ts",
-      "source_location": "L94",
+      "source_location": "L148",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_services_copier_savecopierrule",
@@ -20396,7 +20824,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/lib/services/copier.ts",
-      "source_location": "L140",
+      "source_location": "L194",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_services_copier_updatecopierrule",
@@ -20408,7 +20836,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/lib/services/copier.ts",
-      "source_location": "L166",
+      "source_location": "L220",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_services_copier_deletecopierrule",
@@ -20420,7 +20848,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/lib/services/copier.ts",
-      "source_location": "L186",
+      "source_location": "L240",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_services_copier_getcopierlogs",
@@ -20432,7 +20860,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/lib/services/copier.ts",
-      "source_location": "L211",
+      "source_location": "L265",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_services_copier_executekillswitch",
@@ -20828,7 +21256,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/types/database.ts",
-      "source_location": "L87",
+      "source_location": "L89",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_types_database",
@@ -20839,7 +21267,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/types/database.ts",
-      "source_location": "L73",
+      "source_location": "L75",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_types_database",

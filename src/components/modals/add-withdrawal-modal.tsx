@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PropFirm, Account } from "@/types/database";
-import { ArrowUpRight, Plus, Building2 } from "lucide-react";
+import { ArrowUpRight, Plus, Building2, Loader2 } from "lucide-react";
 import { ReceiptScanner } from "@/components/ui/receipt-scanner";
 import { ScannedReceiptResult } from "@/lib/actions/scan-receipt";
 import { matchAccountFromScan } from "@/lib/match-account";
@@ -26,7 +26,7 @@ interface AddWithdrawalModalProps {
     fee_amount: number;
     status: string;
     date: string;
-  }) => void;
+  }) => Promise<void> | void;
 }
 
 export function AddWithdrawalModal({
@@ -49,6 +49,7 @@ export function AddWithdrawalModal({
   const [ambiguityFirmName, setAmbiguityFirmName] = useState<string | null>(null);
   const [scannedNewFirmName, setScannedNewFirmName] = useState<string | null>(null);
   const [isCreatingFirm, setIsCreatingFirm] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const filteredAccounts = accounts.filter((acc) => acc.firm_id === firmId);
 
@@ -65,7 +66,7 @@ export function AddWithdrawalModal({
     }
   }, [open]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const gross = parseFloat(grossAmount);
     const fee = parseFloat(feeAmount) || 0;
@@ -86,20 +87,27 @@ export function AddWithdrawalModal({
     }
 
     setError("");
-    onSubmit({
-      firm_id: firmId || null,
-      account_id: accountId || null,
-      gross_amount: gross,
-      fee_amount: fee,
-      status,
-      date,
-    });
+    setIsSubmitting(true);
+    try {
+      await onSubmit({
+        firm_id: firmId || null,
+        account_id: accountId || null,
+        gross_amount: gross,
+        fee_amount: fee,
+        status,
+        date,
+      });
 
-    setGrossAmount("");
-    setFeeAmount("0");
-    setAmbiguityFirmName(null);
-    setScannedNewFirmName(null);
-    onOpenChange(false);
+      setGrossAmount("");
+      setFeeAmount("0");
+      setAmbiguityFirmName(null);
+      setScannedNewFirmName(null);
+      onOpenChange(false);
+    } catch (err) {
+      console.error("Error adding withdrawal:", err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const calculatedNet = Math.max(
@@ -361,8 +369,17 @@ export function AddWithdrawalModal({
           >
             Cancelar
           </Button>
-          <Button type="submit" size="sm" className="text-xs gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white">
-            <ArrowUpRight className="h-3.5 w-3.5" />
+          <Button
+            type="submit"
+            size="sm"
+            className="text-xs gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <ArrowUpRight className="h-3.5 w-3.5" />
+            )}
             Guardar Retiro
           </Button>
         </div>

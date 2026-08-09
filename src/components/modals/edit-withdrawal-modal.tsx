@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PropFirm, Account, Withdrawal } from "@/types/database";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Loader2 } from "lucide-react";
 import { ReceiptScanner } from "@/components/ui/receipt-scanner";
 import { ScannedReceiptResult } from "@/lib/actions/scan-receipt";
 import { matchAccountFromScan } from "@/lib/match-account";
@@ -27,7 +27,7 @@ interface EditWithdrawalModalProps {
       status: string;
       date: string;
     }
-  ) => void;
+  ) => Promise<void> | void;
 }
 
 export function EditWithdrawalModal({
@@ -46,6 +46,7 @@ export function EditWithdrawalModal({
   const [date, setDate] = useState("");
   const [error, setError] = useState("");
   const [ambiguityFirmName, setAmbiguityFirmName] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const filteredAccounts = accounts.filter((acc) => acc.firm_id === firmId);
 
@@ -67,7 +68,7 @@ export function EditWithdrawalModal({
     }
   }, [open]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!withdrawal) return;
 
@@ -90,17 +91,24 @@ export function EditWithdrawalModal({
     }
 
     setError("");
-    onSubmit(withdrawal.id, {
-      firm_id: firmId,
-      account_id: accountId || null,
-      gross_amount: gross,
-      fee_amount: fee,
-      status,
-      date,
-    });
+    setIsSubmitting(true);
+    try {
+      await onSubmit(withdrawal.id, {
+        firm_id: firmId,
+        account_id: accountId || null,
+        gross_amount: gross,
+        fee_amount: fee,
+        status,
+        date,
+      });
 
-    setAmbiguityFirmName(null);
-    onOpenChange(false);
+      setAmbiguityFirmName(null);
+      onOpenChange(false);
+    } catch (err) {
+      console.error("Error updating withdrawal:", err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const calculatedNet = Math.max(
@@ -305,8 +313,17 @@ export function EditWithdrawalModal({
           >
             Cancelar
           </Button>
-          <Button type="submit" size="sm" className="text-xs gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white">
-            <ArrowUpRight className="h-3.5 w-3.5" />
+          <Button
+            type="submit"
+            size="sm"
+            className="text-xs gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <ArrowUpRight className="h-3.5 w-3.5" />
+            )}
             Actualizar Retiro
           </Button>
         </div>
