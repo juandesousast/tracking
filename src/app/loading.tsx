@@ -1,10 +1,5 @@
-import DashboardLayout from "@/app/dashboard-layout";
-import { DashboardSkeleton } from "@/components/dashboard/dashboard-skeleton";
+import { PageSkeleton } from "@/components/ui/page-skeleton";
 
 export default function Loading() {
-  return (
-    <DashboardLayout>
-      <DashboardSkeleton />
-    </DashboardLayout>
-  );
+  return <PageSkeleton />;
 }

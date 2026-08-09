@@ -14,6 +14,7 @@ import {
 
 import { DashboardFilters } from "@/components/dashboard/dashboard-filters";
 import { AddAccountModal } from "@/components/modals/add-account-modal";
+import { PageSkeleton } from "@/components/ui/page-skeleton";
 
 
 import { EditAccountModal } from "@/components/modals/edit-account-modal";
@@ -176,27 +177,9 @@ export default function CuentasPage() {
   };
 
   return (
-    <DashboardLayout>
+    <>
       {isLoading ? (
-        <div className="space-y-6 animate-pulse">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="space-y-2">
-              <div className="h-7 w-56 bg-slate-200/80 dark:bg-slate-800 rounded-lg" />
-              <div className="h-3 w-80 bg-slate-200/80 dark:bg-slate-800 rounded-lg" />
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="h-8 w-24 bg-slate-200/80 dark:bg-slate-800 rounded-lg" />
-              <div className="h-8 w-32 bg-slate-200/80 dark:bg-slate-800 rounded-lg" />
-            </div>
-          </div>
-          <div className="h-14 bg-slate-200/60 dark:bg-slate-800/80 rounded-2xl" />
-          <div className="h-12 bg-slate-200/60 dark:bg-slate-800/80 rounded-xl" />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="h-44 rounded-2xl bg-slate-200/60 dark:bg-slate-800/60" />
-            ))}
-          </div>
-        </div>
+        <PageSkeleton />
       ) : (
         <div className="space-y-6">
         {/* Header */}
@@ -395,6 +378,6 @@ export default function CuentasPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </DashboardLayout>
+    </>
   );
 }

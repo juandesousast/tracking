@@ -28,6 +28,7 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { CopierRuleModal } from "@/components/modals/copier-rule-modal";
 import { AddTradovateConnectionModal } from "@/components/modals/add-tradovate-connection-modal";
+import { PageSkeleton } from "@/components/ui/page-skeleton";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -196,8 +197,11 @@ export default function CopierPage() {
   const activeConnectionsCount = credentialsList.filter((c) => c.is_connected).length;
 
   return (
-    <DashboardLayout>
-      <div className="space-y-6">
+    <>
+      {isLoading ? (
+        <PageSkeleton />
+      ) : (
+        <div className="space-y-6">
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
           <div>
@@ -285,12 +289,7 @@ export default function CopierPage() {
           </CardHeader>
 
           <CardContent className="pt-4">
-            {isLoading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div className="h-36 bg-slate-100 dark:bg-slate-800 rounded-xl animate-pulse" />
-                <div className="h-36 bg-slate-100 dark:bg-slate-800 rounded-xl animate-pulse" />
-              </div>
-            ) : credentialsList.length === 0 ? (
+            {credentialsList.length === 0 ? (
               <div className="text-center py-10 px-4">
                 <Building2 className="h-8 w-8 text-slate-400 mx-auto mb-2" />
                 <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
@@ -415,12 +414,7 @@ export default function CopierPage() {
           </CardHeader>
 
           <CardContent className="pt-4 p-0 sm:p-6">
-            {isLoading ? (
-              <div className="p-6 space-y-3">
-                <div className="h-12 bg-slate-100 dark:bg-slate-800 rounded-xl animate-pulse" />
-                <div className="h-12 bg-slate-100 dark:bg-slate-800 rounded-xl animate-pulse" />
-              </div>
-            ) : rules.length === 0 ? (
+            {rules.length === 0 ? (
               <div className="text-center py-10 px-4">
                 <Repeat className="h-8 w-8 text-slate-400 mx-auto mb-2" />
                 <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
@@ -565,12 +559,7 @@ export default function CopierPage() {
           </CardHeader>
 
           <CardContent className="pt-4 p-0 sm:p-6">
-            {isLoading ? (
-              <div className="p-6 space-y-2">
-                <div className="h-8 bg-slate-100 dark:bg-slate-800 rounded animate-pulse" />
-                <div className="h-8 bg-slate-100 dark:bg-slate-800 rounded animate-pulse" />
-              </div>
-            ) : logs.length === 0 ? (
+            {logs.length === 0 ? (
               <div className="text-center py-10 px-4">
                 <Activity className="h-8 w-8 text-slate-400 mx-auto mb-2" />
                 <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
@@ -654,6 +643,7 @@ export default function CopierPage() {
           </CardContent>
         </Card>
       </div>
+      )}
 
       {/* Modal Agregar / Editar Conexión */}
       <AddTradovateConnectionModal
@@ -762,6 +752,6 @@ export default function CopierPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </DashboardLayout>
+    </>
   );
 }

@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo, useCallback, Suspense } from "react";
 import DashboardLayout from "./dashboard-layout";
 import { KpiCards } from "@/components/dashboard/kpi-cards";
-import { DashboardSkeleton } from "@/components/dashboard/dashboard-skeleton";
+import { PageSkeleton } from "@/components/ui/page-skeleton";
 import { EmptyState } from "@/components/dashboard/empty-state";
 import { TransactionTable } from "@/components/dashboard/transaction-table";
 import { AccountsDueWidget } from "@/components/dashboard/accounts-due-widget";
@@ -373,7 +373,7 @@ function HomePageContent() {
   };
 
   return (
-    <DashboardLayout>
+    <>
       {/* Header section with page title & actions */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
         <div>
@@ -435,7 +435,7 @@ function HomePageContent() {
       </div>
 
       {isLoading ? (
-        <DashboardSkeleton />
+        <PageSkeleton />
       ) : !hasData ? (
         <EmptyState
           title="No se encontraron cuentas o transacciones"
@@ -559,13 +559,13 @@ function HomePageContent() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </DashboardLayout>
+    </>
   );
 }
 
 export default function HomePage() {
   return (
-    <Suspense fallback={<DashboardSkeleton />}>
+    <Suspense fallback={<PageSkeleton />}>
       <HomePageContent />
     </Suspense>
   );

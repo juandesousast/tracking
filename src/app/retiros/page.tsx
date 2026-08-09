@@ -19,6 +19,7 @@ import {
 } from "@/lib/actions/actions";
 
 import { AddWithdrawalModal } from "@/components/modals/add-withdrawal-modal";
+import { PageSkeleton } from "@/components/ui/page-skeleton";
 import { DashboardFilters } from "@/components/dashboard/dashboard-filters";
 import { EditWithdrawalModal } from "@/components/modals/edit-withdrawal-modal";
 import { Button } from "@/components/ui/button";
@@ -183,27 +184,9 @@ export default function RetirosPage() {
   };
 
   return (
-    <DashboardLayout>
+    <>
       {isLoading ? (
-        <div className="space-y-6 animate-pulse">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="space-y-2">
-              <div className="h-7 w-56 bg-slate-200/80 dark:bg-slate-800 rounded-lg" />
-              <div className="h-3 w-80 bg-slate-200/80 dark:bg-slate-800 rounded-lg" />
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="h-8 w-24 bg-slate-200/80 dark:bg-slate-800 rounded-lg" />
-              <div className="h-8 w-32 bg-slate-200/80 dark:bg-slate-800 rounded-lg" />
-            </div>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="h-24 rounded-2xl bg-slate-200/60 dark:bg-slate-800/80" />
-            ))}
-          </div>
-          <div className="h-14 bg-slate-200/60 dark:bg-slate-800/80 rounded-xl" />
-          <div className="h-96 bg-slate-200/60 dark:bg-slate-800/60 rounded-2xl" />
-        </div>
+        <PageSkeleton />
       ) : (
         <div className="space-y-6">
         {/* Header */}
@@ -436,6 +419,6 @@ export default function RetirosPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </DashboardLayout>
+    </>
   );
 }
