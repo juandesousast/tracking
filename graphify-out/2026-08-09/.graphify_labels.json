@@ -8,7 +8,7 @@
   "6": "components.json",
   "7": "responsive-modal.tsx",
   "8": "database.ts",
-  "9": "copier/page.tsx",
+  "9": "utils.ts",
   "10": "layout.tsx",
   "11": "cn",
   "12": "AGENTS.md",
@@ -24,7 +24,6 @@
   "22": "schemas.ts",
   "23": "copier-rule-modal.tsx",
   "24": "header.tsx",
-  "25": "utils.ts",
   "26": "dropdown-menu.tsx",
   "27": "tabs.tsx"
 }

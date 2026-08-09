@@ -12,13 +12,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Account, CopierRule } from "@/types/database";
+import { Account, CopierRule, PropFirm, TradovateCredential } from "@/types/database";
 
 interface CopierRuleModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   rule?: CopierRule | null;
   accounts: Account[];
+  firms?: PropFirm[];
+  credentials?: TradovateCredential[];
   onSubmit: (data: {
     master_account_id: string;
     master_account_name: string;
@@ -36,6 +38,8 @@ export function CopierRuleModal({
   onOpenChange,
   rule,
   accounts,
+  firms = [],
+  credentials = [],
   onSubmit,
 }: CopierRuleModalProps) {
   const [masterAccountId, setMasterAccountId] = useState(
@@ -58,6 +62,32 @@ export function CopierRuleModal({
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Group accounts by firm name or connection name
+  const firmMap = new Map<string, string>();
+  firms.forEach((f) => firmMap.set(f.id, f.name));
+
+  const getAccountLabel = (acc: Account) => {
+    const firmName = firmMap.get(acc.firm_id) || "Empresa";
+    const accIdentifier = acc.account_number || acc.alias || acc.id;
+    return `${firmName} - Account #${accIdentifier} (${acc.account_type} - $${acc.account_size.toLocaleString()})`;
+  };
+
+  const getAccountDisplayName = (acc: Account) => {
+    const firmName = firmMap.get(acc.firm_id) || "Empresa";
+    const accIdentifier = acc.account_number || acc.alias || acc.id;
+    return `${firmName} - Account #${accIdentifier}`;
+  };
+
+  // Group accounts by firm_id
+  const groupedAccounts = accounts.reduce((acc, curr) => {
+    const firmName = firmMap.get(curr.firm_id) || "Sin Empresa / Conexión";
+    if (!acc[firmName]) {
+      acc[firmName] = [];
+    }
+    acc[firmName].push(curr);
+    return acc;
+  }, {} as Record<string, Account[]>);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!masterAccountId || !slaveAccountId) return;
@@ -66,10 +96,10 @@ export function CopierRuleModal({
     const slaveAccount = accounts.find((a) => a.id === slaveAccountId);
 
     const masterName = masterAccount
-      ? `${masterAccount.account_number || masterAccount.alias || masterAccount.id}`
+      ? getAccountDisplayName(masterAccount)
       : masterAccountId;
     const slaveName = slaveAccount
-      ? `${slaveAccount.account_number || slaveAccount.alias || slaveAccount.id}`
+      ? getAccountDisplayName(slaveAccount)
       : slaveAccountId;
 
     setIsSubmitting(true);
@@ -104,7 +134,9 @@ export function CopierRuleModal({
         <form onSubmit={handleSubmit} className="space-y-4 py-2">
           {/* Master Account */}
           <div className="space-y-1.5">
-            <Label htmlFor="master-acc" className="text-xs font-semibold">Cuenta Master</Label>
+            <Label htmlFor="master-acc" className="text-xs font-semibold">
+              Cuenta Master (Transmisora)
+            </Label>
             <select
               id="master-acc"
               value={masterAccountId}
@@ -113,17 +145,31 @@ export function CopierRuleModal({
               required
             >
               <option value="">Selecciona cuenta Master</option>
-              {accounts.map((acc) => (
-                <option key={acc.id} value={acc.id}>
-                  {acc.alias || acc.account_number || acc.id} ({acc.account_type} - ${acc.account_size})
-                </option>
-              ))}
+              {Object.keys(groupedAccounts).length > 0 ? (
+                Object.entries(groupedAccounts).map(([groupName, accList]) => (
+                  <optgroup key={groupName} label={groupName}>
+                    {accList.map((acc) => (
+                      <option key={acc.id} value={acc.id}>
+                        {getAccountLabel(acc)}
+                      </option>
+                    ))}
+                  </optgroup>
+                ))
+              ) : (
+                accounts.map((acc) => (
+                  <option key={acc.id} value={acc.id}>
+                    {getAccountLabel(acc)}
+                  </option>
+                ))
+              )}
             </select>
           </div>
 
           {/* Slave Account */}
           <div className="space-y-1.5">
-            <Label htmlFor="slave-acc" className="text-xs font-semibold">Cuenta Slave</Label>
+            <Label htmlFor="slave-acc" className="text-xs font-semibold">
+              Cuenta Slave (Receptora)
+            </Label>
             <select
               id="slave-acc"
               value={slaveAccountId}
@@ -132,18 +178,32 @@ export function CopierRuleModal({
               required
             >
               <option value="">Selecciona cuenta Slave</option>
-              {accounts.map((acc) => (
-                <option key={acc.id} value={acc.id}>
-                  {acc.alias || acc.account_number || acc.id} ({acc.account_type} - ${acc.account_size})
-                </option>
-              ))}
+              {Object.keys(groupedAccounts).length > 0 ? (
+                Object.entries(groupedAccounts).map(([groupName, accList]) => (
+                  <optgroup key={groupName} label={groupName}>
+                    {accList.map((acc) => (
+                      <option key={acc.id} value={acc.id}>
+                        {getAccountLabel(acc)}
+                      </option>
+                    ))}
+                  </optgroup>
+                ))
+              ) : (
+                accounts.map((acc) => (
+                  <option key={acc.id} value={acc.id}>
+                    {getAccountLabel(acc)}
+                  </option>
+                ))
+              )}
             </select>
           </div>
 
           {/* Multiplier & Max Daily Loss */}
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <Label htmlFor="multiplier" className="text-xs font-semibold">Multiplicador</Label>
+              <Label htmlFor="multiplier" className="text-xs font-semibold">
+                Multiplicador
+              </Label>
               <Input
                 id="multiplier"
                 type="number"
@@ -157,7 +217,9 @@ export function CopierRuleModal({
               />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="max-loss" className="text-xs font-semibold">Pérdida Máx. Diaria ($)</Label>
+              <Label htmlFor="max-loss" className="text-xs font-semibold">
+                Pérdida Máx. Diaria ($)
+              </Label>
               <Input
                 id="max-loss"
                 type="number"
@@ -173,8 +235,12 @@ export function CopierRuleModal({
           {/* Switch Mini to Micro */}
           <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-800">
             <div className="space-y-0.5">
-              <Label className="text-xs font-semibold text-slate-900 dark:text-white">Convertir Mini a Micro</Label>
-              <p className="text-[11px] text-slate-500">Convierte automáticamente contratos NQ/ES a MNQ/MES</p>
+              <Label className="text-xs font-semibold text-slate-900 dark:text-white">
+                Convertir Mini a Micro
+              </Label>
+              <p className="text-[11px] text-slate-500">
+                Convierte automáticamente contratos NQ/ES a MNQ/MES
+              </p>
             </div>
             <Switch
               checked={convertMiniToMicro}
@@ -185,8 +251,12 @@ export function CopierRuleModal({
           {/* Activo switch */}
           <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-800">
             <div className="space-y-0.5">
-              <Label className="text-xs font-semibold text-slate-900 dark:text-white">Regla Activa</Label>
-              <p className="text-[11px] text-slate-500">Activa o pausa esta copia de operaciones</p>
+              <Label className="text-xs font-semibold text-slate-900 dark:text-white">
+                Regla Activa
+              </Label>
+              <p className="text-[11px] text-slate-500">
+                Activa o pausa esta copia de operaciones
+              </p>
             </div>
             <Switch
               checked={isActive}
@@ -208,7 +278,7 @@ export function CopierRuleModal({
               type="submit"
               size="sm"
               disabled={isSubmitting}
-              className="text-xs bg-blue-600 hover:bg-blue-700 text-white"
+              className="text-xs bg-blue-600 hover:bg-blue-700 text-white font-semibold"
             >
               {isSubmitting ? "Guardando..." : rule ? "Guardar Cambios" : "Crear Regla"}
             </Button>

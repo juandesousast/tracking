@@ -7,10 +7,12 @@ import {
   CopierRule,
   CopierLog,
   Account,
+  PropFirm,
 } from "@/types/database";
 import {
   getTradovateCredentials,
-  saveTradovateCredentials,
+  saveTradovateCredential,
+  deleteTradovateCredential,
   getCopierRules,
   saveCopierRule,
   updateCopierRule,
@@ -18,15 +20,14 @@ import {
   getCopierLogs,
   executeKillSwitch,
 } from "@/lib/services/copier";
-import { getAccounts } from "@/lib/actions/actions";
+import { getAccounts, getFirms } from "@/lib/actions/actions";
 
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { CopierRuleModal } from "@/components/modals/copier-rule-modal";
+import { AddTradovateConnectionModal } from "@/components/modals/add-tradovate-connection-modal";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -50,25 +51,25 @@ import {
   Activity,
   ArrowRight,
   Key,
+  Building2,
 } from "lucide-react";
 
 export default function CopierPage() {
-  const [credentials, setCredentials] = useState<TradovateCredential | null>(null);
+  const [credentialsList, setCredentialsList] = useState<TradovateCredential[]>([]);
   const [rules, setRules] = useState<CopierRule[]>([]);
   const [logs, setLogs] = useState<CopierLog[]>([]);
   const [accounts, setAccounts] = useState<Account[]>([]);
+  const [firms, setFirms] = useState<PropFirm[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // Global copier toggle state
   const [isCopierEnabled, setIsCopierEnabled] = useState(true);
 
-  // Connection form inputs
-  const [tradoUser, setTradoUser] = useState("");
-  const [tradoAppId, setTradoAppId] = useState("");
-  const [tradoEnv, setTradoEnv] = useState<"demo" | "live">("demo");
-  const [isSavingCreds, setIsSavingCreds] = useState(false);
-
   // Modals & alerts
+  const [isAddConnectionModalOpen, setIsAddConnectionModalOpen] = useState(false);
+  const [editingConnection, setEditingConnection] = useState<TradovateCredential | null>(null);
+  const [deletingConnectionId, setDeletingConnectionId] = useState<string | null>(null);
+
   const [isRuleModalOpen, setIsRuleModalOpen] = useState(false);
   const [editingRule, setEditingRule] = useState<CopierRule | null>(null);
   const [deletingRuleId, setDeletingRuleId] = useState<string | null>(null);
@@ -78,22 +79,19 @@ export default function CopierPage() {
   const loadAllData = useCallback(async () => {
     setIsLoading(true);
     try {
-      const [creds, rList, lList, accList] = await Promise.all([
+      const [creds, rList, lList, accList, firmList] = await Promise.all([
         getTradovateCredentials(),
         getCopierRules(),
         getCopierLogs(),
         getAccounts(),
+        getFirms(),
       ]);
 
-      setCredentials(creds);
-      if (creds) {
-        setTradoUser(creds.username_encrypted);
-        setTradoAppId(creds.app_id);
-        setTradoEnv(creds.account_environment);
-      }
+      setCredentialsList(creds);
       setRules(rList);
       setLogs(lList);
       setAccounts(accList);
+      setFirms(firmList);
     } catch (err) {
       console.error("Error loading copier page data:", err);
     } finally {
@@ -105,24 +103,36 @@ export default function CopierPage() {
     loadAllData();
   }, [loadAllData]);
 
-  // Handle Save Credentials
-  const handleSaveCredentials = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!tradoUser || !tradoAppId) return;
-
-    setIsSavingCreds(true);
+  // Handle Save / Update Connection
+  const handleSaveConnection = async (data: {
+    id?: string;
+    connection_name: string;
+    username_encrypted: string;
+    password_encrypted?: string | null;
+    app_id: string;
+    account_environment: "demo" | "live";
+  }) => {
     try {
-      const updatedCreds = await saveTradovateCredentials({
-        account_environment: tradoEnv,
-        username_encrypted: tradoUser,
-        app_id: tradoAppId,
-        is_connected: true,
-      });
-      setCredentials(updatedCreds);
+      const saved = await saveTradovateCredential(data);
+      if (data.id) {
+        setCredentialsList((prev) =>
+          prev.map((c) => (c.id === data.id ? saved : c))
+        );
+      } else {
+        setCredentialsList((prev) => [saved, ...prev]);
+      }
     } catch (err) {
-      console.error("Error saving tradovate credentials:", err);
-    } finally {
-      setIsSavingCreds(false);
+      console.error("Error saving connection:", err);
+    }
+  };
+
+  // Handle Delete Connection
+  const handleDeleteConnection = async (id: string) => {
+    try {
+      await deleteTradovateCredential(id);
+      setCredentialsList((prev) => prev.filter((c) => c.id !== id));
+    } catch (err) {
+      console.error("Error deleting connection:", err);
     }
   };
 
@@ -183,7 +193,7 @@ export default function CopierPage() {
     }
   };
 
-  const isConnected = credentials?.is_connected ?? false;
+  const activeConnectionsCount = credentialsList.filter((c) => c.is_connected).length;
 
   return (
     <DashboardLayout>
@@ -197,28 +207,28 @@ export default function CopierPage() {
               </div>
               <div>
                 <h1 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">
-                  Copiador de Operaciones Tradovate
+                  Copiador de Operaciones Tradovate Multi-Empresa
                 </h1>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                  Motor de replicación en tiempo real entre cuentas de fondeo.
+                  Motor de replicación en tiempo real entre múltiples empresas de fondeo y cuentas.
                 </p>
               </div>
             </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-4">
-            {/* Connection Status Badge */}
+            {/* Connection Status Summary Badge */}
             <div className="flex items-center gap-2">
               <span className="text-xs text-slate-500 font-medium">Estado API:</span>
-              {isConnected ? (
+              {activeConnectionsCount > 0 ? (
                 <Badge className="bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800 gap-1.5 py-1 px-2.5 text-xs">
                   <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                  Conectado ({credentials?.account_environment.toUpperCase()})
+                  {activeConnectionsCount} {activeConnectionsCount === 1 ? "Conexión Activa" : "Conexiones Activas"}
                 </Badge>
               ) : (
                 <Badge className="bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border-slate-200 dark:border-slate-700 gap-1.5 py-1 px-2.5 text-xs">
                   <span className="h-2 w-2 rounded-full bg-slate-400" />
-                  Desconectado
+                  Sin Conexiones
                 </Badge>
               )}
             </div>
@@ -246,73 +256,133 @@ export default function CopierPage() {
           </div>
         </div>
 
-        {/* Card 1: Formulario de Conexión API Tradovate */}
+        {/* Card 1: Mis Conexiones Tradovate / Empresas */}
         <Card className="bg-white dark:bg-slate-900 border-slate-200/80 dark:border-slate-800 shadow-xs">
-          <CardHeader className="pb-3 border-b border-slate-100 dark:border-slate-800">
+          <CardHeader className="pb-3 border-b border-slate-100 dark:border-slate-800 flex flex-row items-center justify-between">
             <div className="flex items-center gap-2">
               <Key className="h-5 w-5 text-blue-600 dark:text-blue-400" />
               <div>
                 <CardTitle className="text-base font-bold text-slate-900 dark:text-white">
-                  Conexión API Tradovate
+                  Mis Conexiones Tradovate / Empresas
                 </CardTitle>
                 <CardDescription className="text-xs text-slate-500">
-                  Configura tus credenciales oficiales de acceso a la API Tradovate / NinjaTrader.
+                  Gestiona tus conexiones oficiales de API Tradovate por cada empresa de fondeo.
                 </CardDescription>
               </div>
             </div>
+
+            <Button
+              size="sm"
+              onClick={() => {
+                setEditingConnection(null);
+                setIsAddConnectionModalOpen(true);
+              }}
+              className="text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white gap-1.5"
+            >
+              <Plus className="h-4 w-4" />
+              + Conectar Nueva Empresa
+            </Button>
           </CardHeader>
+
           <CardContent className="pt-4">
-            <form onSubmit={handleSaveCredentials} className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="space-y-1.5">
-                <Label htmlFor="trado-user" className="text-xs font-semibold">Usuario Tradovate</Label>
-                <Input
-                  id="trado-user"
-                  type="text"
-                  placeholder="ej. trader_pro"
-                  value={tradoUser}
-                  onChange={(e) => setTradoUser(e.target.value)}
-                  className="h-9 text-xs"
-                  required
-                />
+            {isLoading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="h-36 bg-slate-100 dark:bg-slate-800 rounded-xl animate-pulse" />
+                <div className="h-36 bg-slate-100 dark:bg-slate-800 rounded-xl animate-pulse" />
               </div>
-
-              <div className="space-y-1.5">
-                <Label htmlFor="trado-app" className="text-xs font-semibold">App ID</Label>
-                <Input
-                  id="trado-app"
-                  type="text"
-                  placeholder="ej. EdgeFlowCopier"
-                  value={tradoAppId}
-                  onChange={(e) => setTradoAppId(e.target.value)}
-                  className="h-9 text-xs"
-                  required
-                />
+            ) : credentialsList.length === 0 ? (
+              <div className="text-center py-10 px-4">
+                <Building2 className="h-8 w-8 text-slate-400 mx-auto mb-2" />
+                <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                  No hay conexiones de empresa configuradas
+                </p>
+                <p className="text-xs text-slate-500 mt-1 mb-4">
+                  Conecta tus cuentas de Tradovate de Topstep, Apex o firmas personalizadas.
+                </p>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    setEditingConnection(null);
+                    setIsAddConnectionModalOpen(true);
+                  }}
+                  className="text-xs"
+                >
+                  <Plus className="h-3.5 w-3.5 mr-1" />
+                  Conectar Primera Empresa
+                </Button>
               </div>
-
-              <div className="space-y-1.5">
-                <Label htmlFor="trado-env" className="text-xs font-semibold">Entorno de Operación</Label>
-                <div className="flex gap-2 items-center pt-0.5">
-                  <select
-                    id="trado-env"
-                    value={tradoEnv}
-                    onChange={(e) => setTradoEnv(e.target.value as "demo" | "live")}
-                    className="flex-1 h-9 rounded-lg border border-slate-200 dark:border-slate-800 bg-background px-3 text-xs focus:outline-none focus:ring-2 focus:ring-blue-600"
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {credentialsList.map((conn) => (
+                  <div
+                    key={conn.id}
+                    className="p-4 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 flex flex-col justify-between space-y-3"
                   >
-                    <option value="demo">Demo / Simulación</option>
-                    <option value="live">Live / Cuenta Real</option>
-                  </select>
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                          {conn.connection_name}
+                        </h3>
+                        <div className="flex items-center gap-1.5">
+                          {conn.is_connected ? (
+                            <Badge className="bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800 text-[10px] py-0.5">
+                              Conectado
+                            </Badge>
+                          ) : (
+                            <Badge className="bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border-slate-200 dark:border-slate-700 text-[10px] py-0.5">
+                              Desconectado
+                            </Badge>
+                          )}
+                          <Badge variant="outline" className="text-[10px] uppercase font-mono">
+                            {conn.account_environment}
+                          </Badge>
+                        </div>
+                      </div>
 
-                  <Button
-                    type="submit"
-                    size="sm"
-                    disabled={isSavingCreds}
-                    className="h-9 text-xs bg-blue-600 hover:bg-blue-700 text-white font-semibold shrink-0"
-                  >
-                    {isSavingCreds ? "Guardando..." : "Conectar API"}
-                  </Button>
-                </div>
+                      <div className="space-y-1 text-xs text-slate-600 dark:text-slate-400 font-mono">
+                        <div className="flex justify-between">
+                          <span className="text-slate-400 font-sans">Usuario:</span>
+                          <span className="font-semibold text-slate-800 dark:text-slate-200">{conn.username_encrypted}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-400 font-sans">App ID:</span>
+                          <span>{conn.app_id}</span>
+                        </div>
+                        {conn.password_encrypted && (
+                          <div className="flex justify-between">
+                            <span className="text-slate-400 font-sans">Password:</span>
+                            <span>••••••••</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-200/50 dark:border-slate-800">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          setEditingConnection(conn);
+                          setIsAddConnectionModalOpen(true);
+                        }}
+                        className="h-7 w-7 text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                      >
+                        <Pencil className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setDeletingConnectionId(conn.id)}
+                        className="h-7 w-7 text-rose-500 hover:text-rose-700 dark:hover:text-rose-400"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
               </div>
-            </form>
+            )}
           </CardContent>
         </Card>
 
@@ -585,14 +655,55 @@ export default function CopierPage() {
         </Card>
       </div>
 
+      {/* Modal Agregar / Editar Conexión */}
+      <AddTradovateConnectionModal
+        open={isAddConnectionModalOpen}
+        onOpenChange={setIsAddConnectionModalOpen}
+        connection={editingConnection}
+        onSubmit={handleSaveConnection}
+      />
+
       {/* Modal Nueva / Editar Regla */}
       <CopierRuleModal
         open={isRuleModalOpen}
         onOpenChange={setIsRuleModalOpen}
         rule={editingRule}
         accounts={accounts}
+        firms={firms}
+        credentials={credentialsList}
         onSubmit={handleSaveRule}
       />
+
+      {/* Alert Delete Connection */}
+      <AlertDialog
+        open={!!deletingConnectionId}
+        onOpenChange={(open) => !open && setDeletingConnectionId(null)}
+      >
+        <AlertDialogContent className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-slate-900 dark:text-white text-base">
+              ¿Eliminar Conexión Tradovate?
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-xs text-slate-500">
+              Se eliminará esta credencial de acceso a la API. Las reglas asociadas pueden dejar de funcionar.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="text-xs">Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (deletingConnectionId) {
+                  handleDeleteConnection(deletingConnectionId);
+                  setDeletingConnectionId(null);
+                }
+              }}
+              className="text-xs bg-rose-600 hover:bg-rose-700 text-white"
+            >
+              Eliminar Conexión
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Alert Kill Switch */}
       <AlertDialog open={isKillSwitchAlertOpen} onOpenChange={setIsKillSwitchAlertOpen}>

@@ -6,9 +6,9 @@
   "4": "devDependencies",
   "5": "compilerOptions",
   "6": "components.json",
-  "7": "responsive-modal.tsx",
+  "7": "drawer.tsx",
   "8": "database.ts",
-  "9": "copier/page.tsx",
+  "9": "utils.ts",
   "10": "layout.tsx",
   "11": "cn",
   "12": "AGENTS.md",
@@ -22,9 +22,8 @@
   "20": "src/middleware.ts",
   "21": "financials.ts",
   "22": "schemas.ts",
-  "23": "copier-rule-modal.tsx",
+  "23": "dashboard-skeleton.tsx",
   "24": "header.tsx",
-  "25": "utils.ts",
   "26": "dropdown-menu.tsx",
   "27": "tabs.tsx"
 }

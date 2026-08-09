@@ -4,28 +4,31 @@ import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { TradovateCredential, CopierRule, CopierLog } from '@/types/database'
 
-export async function getTradovateCredentials(): Promise<TradovateCredential | null> {
+export async function getTradovateCredentials(): Promise<TradovateCredential[]> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return null
+  if (!user) return []
 
   const { data, error } = await supabase
     .from('tradovate_credentials')
     .select('*')
     .eq('user_id', user.id)
-    .maybeSingle()
+    .order('created_at', { ascending: false })
 
   if (error) {
     console.error('Error fetching tradovate_credentials:', error)
-    return null
+    return []
   }
 
-  return data as TradovateCredential | null
+  return (data || []) as TradovateCredential[]
 }
 
-export async function saveTradovateCredentials(credData: {
+export async function saveTradovateCredential(credData: {
+  id?: string
+  connection_name: string
   account_environment: 'demo' | 'live'
   username_encrypted: string
+  password_encrypted?: string | null
   app_id: string
   access_token_encrypted?: string | null
   is_connected?: boolean
@@ -36,26 +39,77 @@ export async function saveTradovateCredentials(credData: {
 
   const payload = {
     user_id: user.id,
+    connection_name: credData.connection_name,
     account_environment: credData.account_environment,
     username_encrypted: credData.username_encrypted,
+    password_encrypted: credData.password_encrypted || null,
     app_id: credData.app_id,
     access_token_encrypted: credData.access_token_encrypted || null,
     is_connected: credData.is_connected ?? true,
   }
 
-  const { data, error } = await supabase
-    .from('tradovate_credentials')
-    .upsert(payload, { onConflict: 'user_id' })
-    .select()
-    .single()
+  let query
+  if (credData.id) {
+    query = supabase
+      .from('tradovate_credentials')
+      .update(payload)
+      .eq('id', credData.id)
+      .eq('user_id', user.id)
+      .select()
+      .single()
+  } else {
+    query = supabase
+      .from('tradovate_credentials')
+      .insert(payload)
+      .select()
+      .single()
+  }
+
+  const { data, error } = await query
 
   if (error) {
-    console.error('Error saving tradovate credentials:', error)
+    console.error('Error saving tradovate credential:', error)
     throw new Error(error.message)
   }
 
   revalidatePath('/copier')
   return data as TradovateCredential
+}
+
+export async function saveTradovateCredentials(credData: {
+  id?: string
+  connection_name?: string
+  account_environment: 'demo' | 'live'
+  username_encrypted: string
+  password_encrypted?: string | null
+  app_id: string
+  access_token_encrypted?: string | null
+  is_connected?: boolean
+}): Promise<TradovateCredential> {
+  return saveTradovateCredential({
+    ...credData,
+    connection_name: credData.connection_name || 'Mi Conexión',
+  })
+}
+
+export async function deleteTradovateCredential(id: string): Promise<boolean> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Usuario no autenticado')
+
+  const { error } = await supabase
+    .from('tradovate_credentials')
+    .delete()
+    .eq('id', id)
+    .eq('user_id', user.id)
+
+  if (error) {
+    console.error('Error deleting tradovate credential:', error)
+    throw new Error(error.message)
+  }
+
+  revalidatePath('/copier')
+  return true
 }
 
 export async function getCopierRules(): Promise<CopierRule[]> {

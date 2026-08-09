@@ -15,7 +15,9 @@ vi.mock('@/lib/supabase/server', () => {
 import { createClient } from '@/lib/supabase/server'
 import {
   getTradovateCredentials,
+  saveTradovateCredential,
   saveTradovateCredentials,
+  deleteTradovateCredential,
   getCopierRules,
   saveCopierRule,
   updateCopierRule,
@@ -31,21 +33,25 @@ describe('Copier Server Actions', () => {
     vi.clearAllMocks()
   })
 
-  it('should get tradovate credentials for authenticated user', async () => {
+  it('should get tradovate credentials array for authenticated user', async () => {
     const mockFrom = vi.fn().mockReturnValue({
       select: vi.fn().mockReturnValue({
         eq: vi.fn().mockReturnValue({
-          maybeSingle: vi.fn().mockResolvedValue({
-            data: {
-              id: 'cred-1',
-              user_id: 'user-123',
-              account_environment: 'demo',
-              username_encrypted: 'user_enc',
-              app_id: 'app_1',
-              access_token_encrypted: 'token_enc',
-              is_connected: true,
-              created_at: '2026-01-01T00:00:00Z',
-            },
+          order: vi.fn().mockResolvedValue({
+            data: [
+              {
+                id: 'cred-1',
+                user_id: 'user-123',
+                connection_name: 'Mi Topstep',
+                account_environment: 'demo',
+                username_encrypted: 'user_enc',
+                password_encrypted: 'pass_enc',
+                app_id: 'app_1',
+                access_token_encrypted: 'token_enc',
+                is_connected: true,
+                created_at: '2026-01-01T00:00:00Z',
+              },
+            ],
             error: null,
           }),
         }),
@@ -60,18 +66,21 @@ describe('Copier Server Actions', () => {
     } as any)
 
     const creds = await getTradovateCredentials()
-    expect(creds).not.toBeNull()
-    expect(creds?.app_id).toBe('app_1')
-    expect(creds?.is_connected).toBe(true)
+    expect(Array.isArray(creds)).toBe(true)
+    expect(creds).toHaveLength(1)
+    expect(creds[0].connection_name).toBe('Mi Topstep')
+    expect(creds[0].is_connected).toBe(true)
   })
 
-  it('should save tradovate credentials', async () => {
+  it('should save tradovate credential', async () => {
     const mockSingle = vi.fn().mockResolvedValue({
       data: {
         id: 'cred-1',
         user_id: 'user-123',
+        connection_name: 'Lucid Cuentas',
         account_environment: 'live',
         username_encrypted: 'enc_user',
+        password_encrypted: 'enc_pass',
         app_id: 'my_app',
         access_token_encrypted: null,
         is_connected: true,
@@ -80,7 +89,7 @@ describe('Copier Server Actions', () => {
       error: null,
     })
 
-    const mockUpsert = vi.fn().mockReturnValue({
+    const mockInsert = vi.fn().mockReturnValue({
       select: vi.fn().mockReturnValue({
         single: mockSingle,
       }),
@@ -90,18 +99,37 @@ describe('Copier Server Actions', () => {
       auth: {
         getUser: vi.fn().mockResolvedValue({ data: { user: mockUser } }),
       },
-      from: vi.fn().mockReturnValue({ upsert: mockUpsert }),
+      from: vi.fn().mockReturnValue({ insert: mockInsert }),
     } as any)
 
-    const res = await saveTradovateCredentials({
+    const res = await saveTradovateCredential({
+      connection_name: 'Lucid Cuentas',
       account_environment: 'live',
       username_encrypted: 'enc_user',
+      password_encrypted: 'enc_pass',
       app_id: 'my_app',
       is_connected: true,
     })
 
+    expect(res.connection_name).toBe('Lucid Cuentas')
     expect(res.account_environment).toBe('live')
     expect(res.is_connected).toBe(true)
+  })
+
+  it('should delete tradovate credential', async () => {
+    const mockEq2 = vi.fn().mockResolvedValue({ error: null })
+    const mockEq1 = vi.fn().mockReturnValue({ eq: mockEq2 })
+    const mockDelete = vi.fn().mockReturnValue({ eq: mockEq1 })
+
+    vi.mocked(createClient).mockResolvedValue({
+      auth: {
+        getUser: vi.fn().mockResolvedValue({ data: { user: mockUser } }),
+      },
+      from: vi.fn().mockReturnValue({ delete: mockDelete }),
+    } as any)
+
+    const result = await deleteTradovateCredential('cred-1')
+    expect(result).toBe(true)
   })
 
   it('should get copier rules', async () => {

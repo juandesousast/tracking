@@ -62,8 +62,10 @@ export interface FirmFinancialSummary {
 export interface TradovateCredential {
   id: string;
   user_id: string;
+  connection_name: string;
   account_environment: 'demo' | 'live';
   username_encrypted: string;
+  password_encrypted?: string | null;
   app_id: string;
   access_token_encrypted?: string | null;
   is_connected: boolean;

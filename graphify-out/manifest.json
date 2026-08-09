@@ -120,8 +120,8 @@
     "semantic_hash": ""
   },
   "src/types/database.ts": {
-    "mtime": 1786297725.321617,
-    "ast_hash": "faf0013c3f7581ea67e9fff283f92051",
+    "mtime": 1786299988.0818791,
+    "ast_hash": "4e26a17f19c9ca75b681db475bca812f",
     "semantic_hash": ""
   },
   "src/app/dashboard-layout.tsx": {
@@ -410,13 +410,13 @@
     "semantic_hash": ""
   },
   "src/app/copier/page.tsx": {
-    "mtime": 1786297760.4612272,
-    "ast_hash": "c8450721ea4346439d30020bf147d55a",
+    "mtime": 1786300018.1336818,
+    "ast_hash": "e4e219397c14b6b850df1120b55d170f",
     "semantic_hash": ""
   },
   "src/components/modals/copier-rule-modal.tsx": {
-    "mtime": 1786297752.42372,
-    "ast_hash": "cfa2044122014abc9e59e89018828beb",
+    "mtime": 1786300009.4921381,
+    "ast_hash": "9123636a7f7bef569685b7eb2482af59",
     "semantic_hash": ""
   },
   "src/components/ui/switch.tsx": {
@@ -425,18 +425,38 @@
     "semantic_hash": ""
   },
   "src/lib/services/copier.test.ts": {
-    "mtime": 1786297735.405161,
-    "ast_hash": "1ffa1f26d6c48d23630ad879b88ecc34",
+    "mtime": 1786299996.1472306,
+    "ast_hash": "161010b883359262b76d69c2d9b63900",
     "semantic_hash": ""
   },
   "src/lib/services/copier.ts": {
-    "mtime": 1786297727.758161,
-    "ast_hash": "83e58e44a47e4387a62a61acaea700bf",
+    "mtime": 1786299991.9211283,
+    "ast_hash": "9e0b788c04d796a183fc15b35c9f1496",
     "semantic_hash": ""
   },
   "src/lib/validations/copier-schemas.test.ts": {
     "mtime": 1786297740.3341563,
     "ast_hash": "01f607615b94f80352506a62bdcdc371",
+    "semantic_hash": ""
+  },
+  "src/app/settings/page.tsx": {
+    "mtime": 1786298667.0169983,
+    "ast_hash": "2c7872d5cf7ae295cccf88acae72af87",
+    "semantic_hash": ""
+  },
+  "src/app/support/page.tsx": {
+    "mtime": 1786298710.9031374,
+    "ast_hash": "5105c1a84ba849908a21461bb3de7db6",
+    "semantic_hash": ""
+  },
+  "src/components/modals/add-tradovate-connection-modal.tsx": {
+    "mtime": 1786300003.72017,
+    "ast_hash": "52019e360ef0462b520bafb29d828e3d",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/004_copier_multi_connections.sql": {
+    "mtime": 1786299976.209096,
+    "ast_hash": "998dc8eb7368d76a69c9a4dc78b32503",
     "semantic_hash": ""
   }
 }
