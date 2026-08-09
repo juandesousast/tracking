@@ -1038,6 +1038,29 @@
       "norm_label": "config"
     },
     {
+      "label": "copier/page.tsx",
+      "file_type": "code",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_app_copier_page",
+      "community": 9,
+      "community_name": "copier/page.tsx",
+      "norm_label": "copier/page.tsx"
+    },
+    {
+      "label": "CopierPage()",
+      "file_type": "code",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L55",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_app_copier_page_copierpage",
+      "community": 9,
+      "community_name": "copier/page.tsx",
+      "norm_label": "copierpage()"
+    },
+    {
       "label": "cuentas/page.tsx",
       "file_type": "code",
       "source_file": "src/app/cuentas/page.tsx",
@@ -1067,8 +1090,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_app_dashboard_layout",
-      "community": 16,
-      "community_name": "retiros/page.tsx",
+      "community": 25,
+      "community_name": "utils.ts",
       "norm_label": "dashboard-layout.tsx"
     },
     {
@@ -1182,7 +1205,7 @@
       "_origin": "ast",
       "id": "src_app_login_page",
       "community": 9,
-      "community_name": "login/page.tsx",
+      "community_name": "copier/page.tsx",
       "norm_label": "login/page.tsx"
     },
     {
@@ -1194,7 +1217,7 @@
       "_origin": "ast",
       "id": "src_app_login_page_loginpage",
       "community": 9,
-      "community_name": "login/page.tsx",
+      "community_name": "copier/page.tsx",
       "norm_label": "loginpage()"
     },
     {
@@ -1504,7 +1527,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_dashboard_skeleton",
       "community": 9,
-      "community_name": "login/page.tsx",
+      "community_name": "copier/page.tsx",
       "norm_label": "dashboard-skeleton.tsx"
     },
     {
@@ -1516,7 +1539,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_dashboard_skeleton_dashboardskeleton",
       "community": 9,
-      "community_name": "login/page.tsx",
+      "community_name": "copier/page.tsx",
       "norm_label": "dashboardskeleton()"
     },
     {
@@ -1527,7 +1550,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_empty_state",
       "community": 9,
-      "community_name": "login/page.tsx",
+      "community_name": "copier/page.tsx",
       "norm_label": "empty-state.tsx"
     },
     {
@@ -1540,7 +1563,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_empty_state_emptystateprops",
       "community": 9,
-      "community_name": "login/page.tsx",
+      "community_name": "copier/page.tsx",
       "norm_label": "emptystateprops"
     },
     {
@@ -1552,7 +1575,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_empty_state_emptystate",
       "community": 9,
-      "community_name": "login/page.tsx",
+      "community_name": "copier/page.tsx",
       "norm_label": "emptystate()"
     },
     {
@@ -1611,8 +1634,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_dashboard_transaction_table_transactiontableprops",
-      "community": 21,
-      "community_name": "financials.ts",
+      "community": 8,
+      "community_name": "database.ts",
       "norm_label": "transactiontableprops"
     },
     {
@@ -1647,8 +1670,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_layout_header",
-      "community": 11,
-      "community_name": "cn",
+      "community": 24,
+      "community_name": "header.tsx",
       "norm_label": "header.tsx"
     },
     {
@@ -1660,7 +1683,7 @@
       "_origin": "ast",
       "id": "src_components_layout_header_header",
       "community": 9,
-      "community_name": "login/page.tsx",
+      "community_name": "copier/page.tsx",
       "norm_label": "header()"
     },
     {
@@ -1670,8 +1693,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_layout_mobile_nav",
-      "community": 11,
-      "community_name": "cn",
+      "community": 25,
+      "community_name": "utils.ts",
       "norm_label": "mobile-nav.tsx"
     },
     {
@@ -1682,8 +1705,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_layout_mobile_nav_mobilenav",
-      "community": 11,
-      "community_name": "cn",
+      "community": 25,
+      "community_name": "utils.ts",
       "norm_label": "mobilenav()"
     },
     {
@@ -1693,53 +1716,53 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_layout_sidebar",
-      "community": 11,
-      "community_name": "cn",
+      "community": 25,
+      "community_name": "utils.ts",
       "norm_label": "sidebar.tsx"
     },
     {
       "label": "menuItems",
       "file_type": "code",
       "source_file": "src/components/layout/sidebar.tsx",
-      "source_location": "L18",
+      "source_location": "L19",
       "_origin": "ast",
       "id": "src_components_layout_sidebar_menuitems",
-      "community": 11,
-      "community_name": "cn",
+      "community": 25,
+      "community_name": "utils.ts",
       "norm_label": "menuitems"
     },
     {
       "label": "supportItems",
       "file_type": "code",
       "source_file": "src/components/layout/sidebar.tsx",
-      "source_location": "L26",
+      "source_location": "L28",
       "_origin": "ast",
       "id": "src_components_layout_sidebar_supportitems",
-      "community": 11,
-      "community_name": "cn",
+      "community": 25,
+      "community_name": "utils.ts",
       "norm_label": "supportitems"
     },
     {
       "label": "navigationItems",
       "file_type": "code",
       "source_file": "src/components/layout/sidebar.tsx",
-      "source_location": "L32",
+      "source_location": "L34",
       "_origin": "ast",
       "id": "src_components_layout_sidebar_navigationitems",
-      "community": 11,
-      "community_name": "cn",
+      "community": 25,
+      "community_name": "utils.ts",
       "norm_label": "navigationitems"
     },
     {
       "label": "Sidebar()",
       "file_type": "code",
       "source_file": "src/components/layout/sidebar.tsx",
-      "source_location": "L34",
+      "source_location": "L36",
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_layout_sidebar_sidebar",
-      "community": 11,
-      "community_name": "cn",
+      "community": 25,
+      "community_name": "utils.ts",
       "norm_label": "sidebar()"
     },
     {
@@ -1885,6 +1908,42 @@
       "community": 19,
       "community_name": "app/page.tsx",
       "norm_label": "addwithdrawalmodal()"
+    },
+    {
+      "label": "copier-rule-modal.tsx",
+      "file_type": "code",
+      "source_file": "src/components/modals/copier-rule-modal.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_components_modals_copier_rule_modal",
+      "community": 23,
+      "community_name": "copier-rule-modal.tsx",
+      "norm_label": "copier-rule-modal.tsx"
+    },
+    {
+      "label": "CopierRuleModalProps",
+      "file_type": "code",
+      "source_file": "src/components/modals/copier-rule-modal.tsx",
+      "source_location": "L17",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "src_components_modals_copier_rule_modal_copierrulemodalprops",
+      "community": 23,
+      "community_name": "copier-rule-modal.tsx",
+      "norm_label": "copierrulemodalprops"
+    },
+    {
+      "label": "CopierRuleModal()",
+      "file_type": "code",
+      "source_file": "src/components/modals/copier-rule-modal.tsx",
+      "source_location": "L34",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_components_modals_copier_rule_modal_copierrulemodal",
+      "community": 23,
+      "community_name": "copier-rule-modal.tsx",
+      "norm_label": "copierrulemodal()"
     },
     {
       "label": "edit-account-modal.tsx",
@@ -2380,7 +2439,7 @@
       "_origin": "ast",
       "id": "src_components_ui_card",
       "community": 9,
-      "community_name": "login/page.tsx",
+      "community_name": "copier/page.tsx",
       "norm_label": "card.tsx"
     },
     {
@@ -2392,7 +2451,7 @@
       "_origin": "ast",
       "id": "src_components_ui_card_card",
       "community": 9,
-      "community_name": "login/page.tsx",
+      "community_name": "copier/page.tsx",
       "norm_label": "card()"
     },
     {
@@ -2404,7 +2463,7 @@
       "_origin": "ast",
       "id": "src_components_ui_card_cardheader",
       "community": 9,
-      "community_name": "login/page.tsx",
+      "community_name": "copier/page.tsx",
       "norm_label": "cardheader()"
     },
     {
@@ -2415,8 +2474,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_card_cardtitle",
-      "community": 16,
-      "community_name": "retiros/page.tsx",
+      "community": 9,
+      "community_name": "copier/page.tsx",
       "norm_label": "cardtitle()"
     },
     {
@@ -2428,7 +2487,7 @@
       "_origin": "ast",
       "id": "src_components_ui_card_carddescription",
       "community": 9,
-      "community_name": "login/page.tsx",
+      "community_name": "copier/page.tsx",
       "norm_label": "carddescription()"
     },
     {
@@ -2440,7 +2499,7 @@
       "_origin": "ast",
       "id": "src_components_ui_card_cardaction",
       "community": 9,
-      "community_name": "login/page.tsx",
+      "community_name": "copier/page.tsx",
       "norm_label": "cardaction()"
     },
     {
@@ -2452,7 +2511,7 @@
       "_origin": "ast",
       "id": "src_components_ui_card_cardcontent",
       "community": 9,
-      "community_name": "login/page.tsx",
+      "community_name": "copier/page.tsx",
       "norm_label": "cardcontent()"
     },
     {
@@ -2464,7 +2523,7 @@
       "_origin": "ast",
       "id": "src_components_ui_card_cardfooter",
       "community": 9,
-      "community_name": "login/page.tsx",
+      "community_name": "copier/page.tsx",
       "norm_label": "cardfooter()"
     },
     {
@@ -2474,8 +2533,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_dialog",
-      "community": 7,
-      "community_name": "responsive-modal.tsx",
+      "community": 23,
+      "community_name": "copier-rule-modal.tsx",
       "norm_label": "dialog.tsx"
     },
     {
@@ -2486,8 +2545,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dialog_dialog",
-      "community": 7,
-      "community_name": "responsive-modal.tsx",
+      "community": 23,
+      "community_name": "copier-rule-modal.tsx",
       "norm_label": "dialog()"
     },
     {
@@ -2498,8 +2557,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dialog_dialogtrigger",
-      "community": 7,
-      "community_name": "responsive-modal.tsx",
+      "community": 23,
+      "community_name": "copier-rule-modal.tsx",
       "norm_label": "dialogtrigger()"
     },
     {
@@ -2510,8 +2569,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dialog_dialogportal",
-      "community": 7,
-      "community_name": "responsive-modal.tsx",
+      "community": 23,
+      "community_name": "copier-rule-modal.tsx",
       "norm_label": "dialogportal()"
     },
     {
@@ -2522,8 +2581,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dialog_dialogclose",
-      "community": 7,
-      "community_name": "responsive-modal.tsx",
+      "community": 23,
+      "community_name": "copier-rule-modal.tsx",
       "norm_label": "dialogclose()"
     },
     {
@@ -2534,8 +2593,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dialog_dialogoverlay",
-      "community": 7,
-      "community_name": "responsive-modal.tsx",
+      "community": 23,
+      "community_name": "copier-rule-modal.tsx",
       "norm_label": "dialogoverlay()"
     },
     {
@@ -2546,8 +2605,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dialog_dialogcontent",
-      "community": 7,
-      "community_name": "responsive-modal.tsx",
+      "community": 23,
+      "community_name": "copier-rule-modal.tsx",
       "norm_label": "dialogcontent()"
     },
     {
@@ -2558,8 +2617,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dialog_dialogheader",
-      "community": 7,
-      "community_name": "responsive-modal.tsx",
+      "community": 23,
+      "community_name": "copier-rule-modal.tsx",
       "norm_label": "dialogheader()"
     },
     {
@@ -2570,8 +2629,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dialog_dialogfooter",
-      "community": 7,
-      "community_name": "responsive-modal.tsx",
+      "community": 23,
+      "community_name": "copier-rule-modal.tsx",
       "norm_label": "dialogfooter()"
     },
     {
@@ -2582,8 +2641,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dialog_dialogtitle",
-      "community": 7,
-      "community_name": "responsive-modal.tsx",
+      "community": 23,
+      "community_name": "copier-rule-modal.tsx",
       "norm_label": "dialogtitle()"
     },
     {
@@ -2594,8 +2653,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dialog_dialogdescription",
-      "community": 7,
-      "community_name": "responsive-modal.tsx",
+      "community": 23,
+      "community_name": "copier-rule-modal.tsx",
       "norm_label": "dialogdescription()"
     },
     {
@@ -2784,8 +2843,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_dropdown_menu",
-      "community": 11,
-      "community_name": "cn",
+      "community": 26,
+      "community_name": "dropdown-menu.tsx",
       "norm_label": "dropdown-menu.tsx"
     },
     {
@@ -2808,8 +2867,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dropdown_menu_dropdownmenuportal",
-      "community": 11,
-      "community_name": "cn",
+      "community": 26,
+      "community_name": "dropdown-menu.tsx",
       "norm_label": "dropdownmenuportal()"
     },
     {
@@ -2844,8 +2903,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dropdown_menu_dropdownmenugroup",
-      "community": 11,
-      "community_name": "cn",
+      "community": 26,
+      "community_name": "dropdown-menu.tsx",
       "norm_label": "dropdownmenugroup()"
     },
     {
@@ -2856,8 +2915,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dropdown_menu_dropdownmenulabel",
-      "community": 11,
-      "community_name": "cn",
+      "community": 24,
+      "community_name": "header.tsx",
       "norm_label": "dropdownmenulabel()"
     },
     {
@@ -2880,8 +2939,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dropdown_menu_dropdownmenusub",
-      "community": 11,
-      "community_name": "cn",
+      "community": 26,
+      "community_name": "dropdown-menu.tsx",
       "norm_label": "dropdownmenusub()"
     },
     {
@@ -2892,8 +2951,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dropdown_menu_dropdownmenusubtrigger",
-      "community": 11,
-      "community_name": "cn",
+      "community": 26,
+      "community_name": "dropdown-menu.tsx",
       "norm_label": "dropdownmenusubtrigger()"
     },
     {
@@ -2904,8 +2963,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dropdown_menu_dropdownmenusubcontent",
-      "community": 11,
-      "community_name": "cn",
+      "community": 26,
+      "community_name": "dropdown-menu.tsx",
       "norm_label": "dropdownmenusubcontent()"
     },
     {
@@ -2916,8 +2975,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dropdown_menu_dropdownmenucheckboxitem",
-      "community": 11,
-      "community_name": "cn",
+      "community": 26,
+      "community_name": "dropdown-menu.tsx",
       "norm_label": "dropdownmenucheckboxitem()"
     },
     {
@@ -2928,8 +2987,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dropdown_menu_dropdownmenuradiogroup",
-      "community": 11,
-      "community_name": "cn",
+      "community": 26,
+      "community_name": "dropdown-menu.tsx",
       "norm_label": "dropdownmenuradiogroup()"
     },
     {
@@ -2940,8 +2999,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dropdown_menu_dropdownmenuradioitem",
-      "community": 11,
-      "community_name": "cn",
+      "community": 26,
+      "community_name": "dropdown-menu.tsx",
       "norm_label": "dropdownmenuradioitem()"
     },
     {
@@ -2952,8 +3011,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dropdown_menu_dropdownmenuseparator",
-      "community": 11,
-      "community_name": "cn",
+      "community": 24,
+      "community_name": "header.tsx",
       "norm_label": "dropdownmenuseparator()"
     },
     {
@@ -2964,8 +3023,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dropdown_menu_dropdownmenushortcut",
-      "community": 11,
-      "community_name": "cn",
+      "community": 26,
+      "community_name": "dropdown-menu.tsx",
       "norm_label": "dropdownmenushortcut()"
     },
     {
@@ -3176,8 +3235,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_sheet",
-      "community": 11,
-      "community_name": "cn",
+      "community": 24,
+      "community_name": "header.tsx",
       "norm_label": "sheet.tsx"
     },
     {
@@ -3188,8 +3247,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_sheet_sheet",
-      "community": 11,
-      "community_name": "cn",
+      "community": 24,
+      "community_name": "header.tsx",
       "norm_label": "sheet()"
     },
     {
@@ -3200,8 +3259,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_sheet_sheettrigger",
-      "community": 11,
-      "community_name": "cn",
+      "community": 24,
+      "community_name": "header.tsx",
       "norm_label": "sheettrigger()"
     },
     {
@@ -3212,8 +3271,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_sheet_sheetclose",
-      "community": 11,
-      "community_name": "cn",
+      "community": 24,
+      "community_name": "header.tsx",
       "norm_label": "sheetclose()"
     },
     {
@@ -3224,8 +3283,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_sheet_sheetportal",
-      "community": 11,
-      "community_name": "cn",
+      "community": 24,
+      "community_name": "header.tsx",
       "norm_label": "sheetportal()"
     },
     {
@@ -3236,8 +3295,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_sheet_sheetoverlay",
-      "community": 11,
-      "community_name": "cn",
+      "community": 24,
+      "community_name": "header.tsx",
       "norm_label": "sheetoverlay()"
     },
     {
@@ -3248,8 +3307,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_sheet_sheetcontent",
-      "community": 11,
-      "community_name": "cn",
+      "community": 24,
+      "community_name": "header.tsx",
       "norm_label": "sheetcontent()"
     },
     {
@@ -3260,8 +3319,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_sheet_sheetheader",
-      "community": 11,
-      "community_name": "cn",
+      "community": 24,
+      "community_name": "header.tsx",
       "norm_label": "sheetheader()"
     },
     {
@@ -3272,8 +3331,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_sheet_sheetfooter",
-      "community": 11,
-      "community_name": "cn",
+      "community": 24,
+      "community_name": "header.tsx",
       "norm_label": "sheetfooter()"
     },
     {
@@ -3284,8 +3343,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_sheet_sheettitle",
-      "community": 11,
-      "community_name": "cn",
+      "community": 24,
+      "community_name": "header.tsx",
       "norm_label": "sheettitle()"
     },
     {
@@ -3296,8 +3355,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_sheet_sheetdescription",
-      "community": 11,
-      "community_name": "cn",
+      "community": 24,
+      "community_name": "header.tsx",
       "norm_label": "sheetdescription()"
     },
     {
@@ -3308,7 +3367,7 @@
       "_origin": "ast",
       "id": "src_components_ui_skeleton",
       "community": 9,
-      "community_name": "login/page.tsx",
+      "community_name": "copier/page.tsx",
       "norm_label": "skeleton.tsx"
     },
     {
@@ -3320,8 +3379,43 @@
       "_origin": "ast",
       "id": "src_components_ui_skeleton_skeleton",
       "community": 9,
-      "community_name": "login/page.tsx",
+      "community_name": "copier/page.tsx",
       "norm_label": "skeleton()"
+    },
+    {
+      "label": "switch.tsx",
+      "file_type": "code",
+      "source_file": "src/components/ui/switch.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_components_ui_switch",
+      "community": 25,
+      "community_name": "utils.ts",
+      "norm_label": "switch.tsx"
+    },
+    {
+      "label": "SwitchProps",
+      "file_type": "code",
+      "source_file": "src/components/ui/switch.tsx",
+      "source_location": "L6",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "src_components_ui_switch_switchprops",
+      "community": 25,
+      "community_name": "utils.ts",
+      "norm_label": "switchprops"
+    },
+    {
+      "label": "Switch",
+      "file_type": "code",
+      "source_file": "src/components/ui/switch.tsx",
+      "source_location": "L12",
+      "_origin": "ast",
+      "id": "src_components_ui_switch_switch",
+      "community": 25,
+      "community_name": "utils.ts",
+      "norm_label": "switch"
     },
     {
       "label": "table.tsx",
@@ -3437,8 +3531,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_tabs",
-      "community": 11,
-      "community_name": "cn",
+      "community": 27,
+      "community_name": "tabs.tsx",
       "norm_label": "tabs.tsx"
     },
     {
@@ -3449,8 +3543,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_tabs_tabs",
-      "community": 11,
-      "community_name": "cn",
+      "community": 27,
+      "community_name": "tabs.tsx",
       "norm_label": "tabs()"
     },
     {
@@ -3460,8 +3554,8 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "src_components_ui_tabs_tabslistvariants",
-      "community": 11,
-      "community_name": "cn",
+      "community": 27,
+      "community_name": "tabs.tsx",
       "norm_label": "tabslistvariants"
     },
     {
@@ -3472,8 +3566,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_tabs_tabslist",
-      "community": 11,
-      "community_name": "cn",
+      "community": 27,
+      "community_name": "tabs.tsx",
       "norm_label": "tabslist()"
     },
     {
@@ -3484,8 +3578,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_tabs_tabstrigger",
-      "community": 11,
-      "community_name": "cn",
+      "community": 27,
+      "community_name": "tabs.tsx",
       "norm_label": "tabstrigger()"
     },
     {
@@ -3496,8 +3590,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_tabs_tabscontent",
-      "community": 11,
-      "community_name": "cn",
+      "community": 27,
+      "community_name": "tabs.tsx",
       "norm_label": "tabscontent()"
     },
     {
@@ -4010,8 +4104,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_formatters",
-      "community": 21,
-      "community_name": "financials.ts",
+      "community": 16,
+      "community_name": "retiros/page.tsx",
       "norm_label": "formatters.ts"
     },
     {
@@ -4087,6 +4181,124 @@
       "norm_label": "matchaccountfromscan()"
     },
     {
+      "label": "copier.test.ts",
+      "file_type": "code",
+      "source_file": "src/lib/services/copier.test.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_lib_services_copier_test",
+      "community": 9,
+      "community_name": "copier/page.tsx",
+      "norm_label": "copier.test.ts"
+    },
+    {
+      "label": "copier.ts",
+      "file_type": "code",
+      "source_file": "src/lib/services/copier.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_lib_services_copier",
+      "community": 9,
+      "community_name": "copier/page.tsx",
+      "norm_label": "copier.ts"
+    },
+    {
+      "label": "getTradovateCredentials()",
+      "file_type": "code",
+      "source_file": "src/lib/services/copier.ts",
+      "source_location": "L7",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_lib_services_copier_gettradovatecredentials",
+      "community": 9,
+      "community_name": "copier/page.tsx",
+      "norm_label": "gettradovatecredentials()"
+    },
+    {
+      "label": "saveTradovateCredentials()",
+      "file_type": "code",
+      "source_file": "src/lib/services/copier.ts",
+      "source_location": "L26",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_lib_services_copier_savetradovatecredentials",
+      "community": 9,
+      "community_name": "copier/page.tsx",
+      "norm_label": "savetradovatecredentials()"
+    },
+    {
+      "label": "getCopierRules()",
+      "file_type": "code",
+      "source_file": "src/lib/services/copier.ts",
+      "source_location": "L61",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_lib_services_copier_getcopierrules",
+      "community": 9,
+      "community_name": "copier/page.tsx",
+      "norm_label": "getcopierrules()"
+    },
+    {
+      "label": "saveCopierRule()",
+      "file_type": "code",
+      "source_file": "src/lib/services/copier.ts",
+      "source_location": "L84",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_lib_services_copier_savecopierrule",
+      "community": 9,
+      "community_name": "copier/page.tsx",
+      "norm_label": "savecopierrule()"
+    },
+    {
+      "label": "updateCopierRule()",
+      "file_type": "code",
+      "source_file": "src/lib/services/copier.ts",
+      "source_location": "L127",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_lib_services_copier_updatecopierrule",
+      "community": 9,
+      "community_name": "copier/page.tsx",
+      "norm_label": "updatecopierrule()"
+    },
+    {
+      "label": "deleteCopierRule()",
+      "file_type": "code",
+      "source_file": "src/lib/services/copier.ts",
+      "source_location": "L165",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_lib_services_copier_deletecopierrule",
+      "community": 9,
+      "community_name": "copier/page.tsx",
+      "norm_label": "deletecopierrule()"
+    },
+    {
+      "label": "getCopierLogs()",
+      "file_type": "code",
+      "source_file": "src/lib/services/copier.ts",
+      "source_location": "L185",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_lib_services_copier_getcopierlogs",
+      "community": 9,
+      "community_name": "copier/page.tsx",
+      "norm_label": "getcopierlogs()"
+    },
+    {
+      "label": "executeKillSwitch()",
+      "file_type": "code",
+      "source_file": "src/lib/services/copier.ts",
+      "source_location": "L210",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_lib_services_copier_executekillswitch",
+      "community": 9,
+      "community_name": "copier/page.tsx",
+      "norm_label": "executekillswitch()"
+    },
+    {
       "label": "client.ts",
       "file_type": "code",
       "source_file": "src/lib/supabase/client.ts",
@@ -4094,7 +4306,7 @@
       "_origin": "ast",
       "id": "src_lib_supabase_client",
       "community": 9,
-      "community_name": "login/page.tsx",
+      "community_name": "copier/page.tsx",
       "norm_label": "client.ts"
     },
     {
@@ -4106,7 +4318,7 @@
       "_origin": "ast",
       "id": "src_lib_supabase_client_createclient",
       "community": 9,
-      "community_name": "login/page.tsx",
+      "community_name": "copier/page.tsx",
       "norm_label": "createclient()"
     },
     {
@@ -4139,8 +4351,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_supabase_server",
-      "community": 19,
-      "community_name": "app/page.tsx",
+      "community": 9,
+      "community_name": "copier/page.tsx",
       "norm_label": "server.ts"
     },
     {
@@ -4185,8 +4397,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_utils",
-      "community": 21,
-      "community_name": "financials.ts",
+      "community": 25,
+      "community_name": "utils.ts",
       "norm_label": "utils.ts"
     },
     {
@@ -4202,14 +4414,25 @@
       "norm_label": "cn()"
     },
     {
+      "label": "copier-schemas.test.ts",
+      "file_type": "code",
+      "source_file": "src/lib/validations/copier-schemas.test.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_lib_validations_copier_schemas_test",
+      "community": 22,
+      "community_name": "schemas.ts",
+      "norm_label": "copier-schemas.test.ts"
+    },
+    {
       "label": "schemas.test.ts",
       "file_type": "code",
       "source_file": "src/lib/validations/schemas.test.ts",
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_validations_schemas_test",
-      "community": 9,
-      "community_name": "login/page.tsx",
+      "community": 22,
+      "community_name": "schemas.ts",
       "norm_label": "schemas.test.ts"
     },
     {
@@ -4219,8 +4442,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_validations_schemas",
-      "community": 9,
-      "community_name": "login/page.tsx",
+      "community": 22,
+      "community_name": "schemas.ts",
       "norm_label": "schemas.ts"
     },
     {
@@ -4230,8 +4453,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "src_lib_validations_schemas_loginschema",
-      "community": 9,
-      "community_name": "login/page.tsx",
+      "community": 22,
+      "community_name": "schemas.ts",
       "norm_label": "loginschema"
     },
     {
@@ -4241,8 +4464,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_lib_validations_schemas_firmschema",
-      "community": 9,
-      "community_name": "login/page.tsx",
+      "community": 22,
+      "community_name": "schemas.ts",
       "norm_label": "firmschema"
     },
     {
@@ -4252,8 +4475,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "src_lib_validations_schemas_accountschema",
-      "community": 9,
-      "community_name": "login/page.tsx",
+      "community": 22,
+      "community_name": "schemas.ts",
       "norm_label": "accountschema"
     },
     {
@@ -4263,8 +4486,8 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "src_lib_validations_schemas_expenseschema",
-      "community": 9,
-      "community_name": "login/page.tsx",
+      "community": 22,
+      "community_name": "schemas.ts",
       "norm_label": "expenseschema"
     },
     {
@@ -4274,73 +4497,121 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "src_lib_validations_schemas_withdrawalschema",
-      "community": 9,
-      "community_name": "login/page.tsx",
+      "community": 22,
+      "community_name": "schemas.ts",
       "norm_label": "withdrawalschema"
+    },
+    {
+      "label": "saveTradovateCredentialSchema",
+      "file_type": "code",
+      "source_file": "src/lib/validations/schemas.ts",
+      "source_location": "L72",
+      "_origin": "ast",
+      "id": "src_lib_validations_schemas_savetradovatecredentialschema",
+      "community": 22,
+      "community_name": "schemas.ts",
+      "norm_label": "savetradovatecredentialschema"
+    },
+    {
+      "label": "copierRuleSchema",
+      "file_type": "code",
+      "source_file": "src/lib/validations/schemas.ts",
+      "source_location": "L80",
+      "_origin": "ast",
+      "id": "src_lib_validations_schemas_copierruleschema",
+      "community": 22,
+      "community_name": "schemas.ts",
+      "norm_label": "copierruleschema"
+    },
+    {
+      "label": "SaveTradovateCredentialInput",
+      "file_type": "code",
+      "source_file": "src/lib/validations/schemas.ts",
+      "source_location": "L91",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "src_lib_validations_schemas_savetradovatecredentialinput",
+      "community": 22,
+      "community_name": "schemas.ts",
+      "norm_label": "savetradovatecredentialinput"
+    },
+    {
+      "label": "CopierRuleInput",
+      "file_type": "code",
+      "source_file": "src/lib/validations/schemas.ts",
+      "source_location": "L92",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "src_lib_validations_schemas_copierruleinput",
+      "community": 22,
+      "community_name": "schemas.ts",
+      "norm_label": "copierruleinput"
     },
     {
       "label": "LoginInput",
       "file_type": "code",
       "source_file": "src/lib/validations/schemas.ts",
-      "source_location": "L72",
+      "source_location": "L94",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_validations_schemas_logininput",
-      "community": 9,
-      "community_name": "login/page.tsx",
+      "community": 22,
+      "community_name": "schemas.ts",
       "norm_label": "logininput"
     },
     {
       "label": "FirmInput",
       "file_type": "code",
       "source_file": "src/lib/validations/schemas.ts",
-      "source_location": "L73",
+      "source_location": "L95",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_validations_schemas_firminput",
-      "community": 9,
-      "community_name": "login/page.tsx",
+      "community": 22,
+      "community_name": "schemas.ts",
       "norm_label": "firminput"
     },
     {
       "label": "AccountInput",
       "file_type": "code",
       "source_file": "src/lib/validations/schemas.ts",
-      "source_location": "L74",
+      "source_location": "L96",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_validations_schemas_accountinput",
-      "community": 9,
-      "community_name": "login/page.tsx",
+      "community": 22,
+      "community_name": "schemas.ts",
       "norm_label": "accountinput"
     },
     {
       "label": "ExpenseInput",
       "file_type": "code",
       "source_file": "src/lib/validations/schemas.ts",
-      "source_location": "L75",
+      "source_location": "L97",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_validations_schemas_expenseinput",
-      "community": 9,
-      "community_name": "login/page.tsx",
+      "community": 22,
+      "community_name": "schemas.ts",
       "norm_label": "expenseinput"
     },
     {
       "label": "WithdrawalInput",
       "file_type": "code",
       "source_file": "src/lib/validations/schemas.ts",
-      "source_location": "L76",
+      "source_location": "L98",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_validations_schemas_withdrawalinput",
-      "community": 9,
-      "community_name": "login/page.tsx",
+      "community": 22,
+      "community_name": "schemas.ts",
       "norm_label": "withdrawalinput"
     },
     {
@@ -4465,6 +4736,45 @@
       "community": 21,
       "community_name": "financials.ts",
       "norm_label": "firmfinancialsummary"
+    },
+    {
+      "label": "TradovateCredential",
+      "file_type": "code",
+      "source_file": "src/types/database.ts",
+      "source_location": "L62",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "src_types_database_tradovatecredential",
+      "community": 9,
+      "community_name": "copier/page.tsx",
+      "norm_label": "tradovatecredential"
+    },
+    {
+      "label": "CopierRule",
+      "file_type": "code",
+      "source_file": "src/types/database.ts",
+      "source_location": "L73",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "src_types_database_copierrule",
+      "community": 23,
+      "community_name": "copier-rule-modal.tsx",
+      "norm_label": "copierrule"
+    },
+    {
+      "label": "CopierLog",
+      "file_type": "code",
+      "source_file": "src/types/database.ts",
+      "source_location": "L87",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "src_types_database_copierlog",
+      "community": 9,
+      "community_name": "copier/page.tsx",
+      "norm_label": "copierlog"
     },
     {
       "label": "tsconfig.json",
@@ -5960,6 +6270,665 @@
       "source": "postcss_config",
       "target": "postcss_config_config",
       "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L55",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_app_copier_page_copierpage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_app_dashboard_layout",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_app_dashboard_layout_dashboardlayout",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L29",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_components_modals_copier_rule_modal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L29",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_components_modals_copier_rule_modal_copierrulemodal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_components_ui_alert_dialog",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_components_ui_alert_dialog_alertdialog",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_components_ui_alert_dialog_alertdialogaction",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_components_ui_alert_dialog_alertdialogcancel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_components_ui_alert_dialog_alertdialogcontent",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_components_ui_alert_dialog_alertdialogdescription",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_components_ui_alert_dialog_alertdialogfooter",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_components_ui_alert_dialog_alertdialogheader",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_components_ui_alert_dialog_alertdialogtitle",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L25",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_components_ui_badge",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L25",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_components_ui_badge_badge",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L24",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_components_ui_button",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L24",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_components_ui_button_button",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_components_ui_card",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_components_ui_card_card",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_components_ui_card_cardcontent",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_components_ui_card_carddescription",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_components_ui_card_cardheader",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_components_ui_card_cardtitle",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L26",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_components_ui_input",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L26",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_components_ui_input_input",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L27",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_components_ui_label",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L27",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_components_ui_label_label",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L28",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_components_ui_switch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L28",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_components_ui_switch_switch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L21",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_lib_actions_actions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L21",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_lib_actions_actions_getaccounts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_lib_services_copier",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_lib_services_copier_deletecopierrule",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_lib_services_copier_executekillswitch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_lib_services_copier_getcopierlogs",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_lib_services_copier_getcopierrules",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_lib_services_copier_gettradovatecredentials",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_lib_services_copier_savecopierrule",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_lib_services_copier_savetradovatecredentials",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_lib_services_copier_updatecopierrule",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_types_database",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_types_database_account",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_types_database_copierlog",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_types_database_copierrule",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page",
+      "target": "src_types_database_tradovatecredential",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L85",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page_copierpage",
+      "target": "src_lib_actions_actions_getaccounts"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L165",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page_copierpage",
+      "target": "src_lib_services_copier_deletecopierrule"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L176",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page_copierpage",
+      "target": "src_lib_services_copier_executekillswitch"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L84",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page_copierpage",
+      "target": "src_lib_services_copier_getcopierlogs"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L83",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page_copierpage",
+      "target": "src_lib_services_copier_getcopierrules"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L82",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page_copierpage",
+      "target": "src_lib_services_copier_gettradovatecredentials"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L144",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page_copierpage",
+      "target": "src_lib_services_copier_savecopierrule"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L115",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page_copierpage",
+      "target": "src_lib_services_copier_savetradovatecredentials"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/app/copier/page.tsx",
+      "source_location": "L141",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_copier_page_copierpage",
+      "target": "src_lib_services_copier_updatecopierrule"
     },
     {
       "relation": "contains",
@@ -12149,7 +13118,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/layout/header.tsx",
-      "source_location": "L106",
+      "source_location": "L107",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_layout_header_header",
@@ -12230,7 +13199,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/layout/sidebar.tsx",
-      "source_location": "L18",
+      "source_location": "L19",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_layout_sidebar",
@@ -12241,7 +13210,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/layout/sidebar.tsx",
-      "source_location": "L32",
+      "source_location": "L34",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_layout_sidebar",
@@ -12252,7 +13221,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/layout/sidebar.tsx",
-      "source_location": "L34",
+      "source_location": "L36",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_layout_sidebar",
@@ -12263,7 +13232,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/layout/sidebar.tsx",
-      "source_location": "L26",
+      "source_location": "L28",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_layout_sidebar",
@@ -12275,7 +13244,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/components/layout/sidebar.tsx",
-      "source_location": "L16",
+      "source_location": "L17",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_layout_sidebar",
@@ -12287,7 +13256,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/components/layout/sidebar.tsx",
-      "source_location": "L16",
+      "source_location": "L17",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_layout_sidebar",
@@ -12300,7 +13269,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/layout/sidebar.tsx",
-      "source_location": "L69",
+      "source_location": "L71",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_layout_sidebar_sidebar",
@@ -13173,6 +14142,256 @@
       "_origin": "ast",
       "source": "src_components_modals_add_withdrawal_modal_addwithdrawalmodal",
       "target": "src_lib_match_account_matchaccountfromscan"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/copier-rule-modal.tsx",
+      "source_location": "L34",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_copier_rule_modal",
+      "target": "src_components_modals_copier_rule_modal_copierrulemodal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/copier-rule-modal.tsx",
+      "source_location": "L17",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_copier_rule_modal",
+      "target": "src_components_modals_copier_rule_modal_copierrulemodalprops",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/copier-rule-modal.tsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_copier_rule_modal",
+      "target": "src_components_ui_button",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/copier-rule-modal.tsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_copier_rule_modal",
+      "target": "src_components_ui_button_button",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/copier-rule-modal.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_copier_rule_modal",
+      "target": "src_components_ui_dialog",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/copier-rule-modal.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_copier_rule_modal",
+      "target": "src_components_ui_dialog_dialog",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/copier-rule-modal.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_copier_rule_modal",
+      "target": "src_components_ui_dialog_dialogcontent",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/copier-rule-modal.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_copier_rule_modal",
+      "target": "src_components_ui_dialog_dialogfooter",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/copier-rule-modal.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_copier_rule_modal",
+      "target": "src_components_ui_dialog_dialogheader",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/copier-rule-modal.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_copier_rule_modal",
+      "target": "src_components_ui_dialog_dialogtitle",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/copier-rule-modal.tsx",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_copier_rule_modal",
+      "target": "src_components_ui_input",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/copier-rule-modal.tsx",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_copier_rule_modal",
+      "target": "src_components_ui_input_input",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/copier-rule-modal.tsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_copier_rule_modal",
+      "target": "src_components_ui_label",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/copier-rule-modal.tsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_copier_rule_modal",
+      "target": "src_components_ui_label_label",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/copier-rule-modal.tsx",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_copier_rule_modal",
+      "target": "src_components_ui_switch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/copier-rule-modal.tsx",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_copier_rule_modal",
+      "target": "src_components_ui_switch_switch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/copier-rule-modal.tsx",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_copier_rule_modal",
+      "target": "src_types_database",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/copier-rule-modal.tsx",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_copier_rule_modal",
+      "target": "src_types_database_account",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/copier-rule-modal.tsx",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_copier_rule_modal",
+      "target": "src_types_database_copierrule",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "field",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/copier-rule-modal.tsx",
+      "source_location": "L21",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_copier_rule_modal_copierrulemodalprops",
+      "target": "src_types_database_account",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "field",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/modals/copier-rule-modal.tsx",
+      "source_location": "L20",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_modals_copier_rule_modal_copierrulemodalprops",
+      "target": "src_types_database_copierrule",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -16543,6 +17762,52 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "src/components/ui/switch.tsx",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_ui_switch",
+      "target": "src_components_ui_switch_switch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ui/switch.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_ui_switch",
+      "target": "src_components_ui_switch_switchprops",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ui/switch.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_ui_switch",
+      "target": "src_lib_utils",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ui/switch.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_ui_switch",
+      "target": "src_lib_utils_cn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "src/components/ui/table.tsx",
       "source_location": "L7",
       "weight": 1.0,
@@ -18370,6 +19635,394 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/services/copier.test.ts",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_services_copier_test",
+      "target": "src_lib_services_copier",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/services/copier.test.ts",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_services_copier_test",
+      "target": "src_lib_services_copier_deletecopierrule",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/services/copier.test.ts",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_services_copier_test",
+      "target": "src_lib_services_copier_executekillswitch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/services/copier.test.ts",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_services_copier_test",
+      "target": "src_lib_services_copier_getcopierlogs",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/services/copier.test.ts",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_services_copier_test",
+      "target": "src_lib_services_copier_getcopierrules",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/services/copier.test.ts",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_services_copier_test",
+      "target": "src_lib_services_copier_gettradovatecredentials",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/services/copier.test.ts",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_services_copier_test",
+      "target": "src_lib_services_copier_savecopierrule",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/services/copier.test.ts",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_services_copier_test",
+      "target": "src_lib_services_copier_savetradovatecredentials",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/services/copier.test.ts",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_services_copier_test",
+      "target": "src_lib_services_copier_updatecopierrule",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/services/copier.test.ts",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_services_copier_test",
+      "target": "src_lib_supabase_server",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/services/copier.test.ts",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_services_copier_test",
+      "target": "src_lib_supabase_server_createclient",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/services/copier.ts",
+      "source_location": "L165",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_services_copier",
+      "target": "src_lib_services_copier_deletecopierrule",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/services/copier.ts",
+      "source_location": "L210",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_services_copier",
+      "target": "src_lib_services_copier_executekillswitch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/services/copier.ts",
+      "source_location": "L185",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_services_copier",
+      "target": "src_lib_services_copier_getcopierlogs",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/services/copier.ts",
+      "source_location": "L61",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_services_copier",
+      "target": "src_lib_services_copier_getcopierrules",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/services/copier.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_services_copier",
+      "target": "src_lib_services_copier_gettradovatecredentials",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/services/copier.ts",
+      "source_location": "L84",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_services_copier",
+      "target": "src_lib_services_copier_savecopierrule",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/services/copier.ts",
+      "source_location": "L26",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_services_copier",
+      "target": "src_lib_services_copier_savetradovatecredentials",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/services/copier.ts",
+      "source_location": "L127",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_services_copier",
+      "target": "src_lib_services_copier_updatecopierrule",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/services/copier.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_services_copier",
+      "target": "src_lib_supabase_server",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/services/copier.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_services_copier",
+      "target": "src_lib_supabase_server_createclient",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/services/copier.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_services_copier",
+      "target": "src_types_database",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/services/copier.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_services_copier",
+      "target": "src_types_database_copierlog",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/services/copier.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_services_copier",
+      "target": "src_types_database_copierrule",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/services/copier.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_services_copier",
+      "target": "src_types_database_tradovatecredential",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/lib/services/copier.ts",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_services_copier_gettradovatecredentials",
+      "target": "src_lib_supabase_server_createclient"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/lib/services/copier.ts",
+      "source_location": "L33",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_services_copier_savetradovatecredentials",
+      "target": "src_lib_supabase_server_createclient"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/lib/services/copier.ts",
+      "source_location": "L62",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_services_copier_getcopierrules",
+      "target": "src_lib_supabase_server_createclient"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/lib/services/copier.ts",
+      "source_location": "L94",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_services_copier_savecopierrule",
+      "target": "src_lib_supabase_server_createclient"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/lib/services/copier.ts",
+      "source_location": "L140",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_services_copier_updatecopierrule",
+      "target": "src_lib_supabase_server_createclient"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/lib/services/copier.ts",
+      "source_location": "L166",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_services_copier_deletecopierrule",
+      "target": "src_lib_supabase_server_createclient"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/lib/services/copier.ts",
+      "source_location": "L186",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_services_copier_getcopierlogs",
+      "target": "src_lib_supabase_server_createclient"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/lib/services/copier.ts",
+      "source_location": "L211",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_services_copier_executekillswitch",
+      "target": "src_lib_supabase_server_createclient"
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/supabase/client.ts",
@@ -18464,6 +20117,42 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "src/lib/validations/copier-schemas.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_validations_copier_schemas_test",
+      "target": "src_lib_validations_schemas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/validations/copier-schemas.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_validations_copier_schemas_test",
+      "target": "src_lib_validations_schemas_copierruleschema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/validations/copier-schemas.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_validations_copier_schemas_test",
+      "target": "src_lib_validations_schemas_savetradovatecredentialschema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "src/lib/validations/schemas.test.ts",
       "source_location": "L2",
       "weight": 1.0,
@@ -18536,7 +20225,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/validations/schemas.ts",
-      "source_location": "L74",
+      "source_location": "L96",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_validations_schemas",
@@ -18558,7 +20247,29 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/validations/schemas.ts",
-      "source_location": "L75",
+      "source_location": "L92",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_validations_schemas",
+      "target": "src_lib_validations_schemas_copierruleinput",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/validations/schemas.ts",
+      "source_location": "L80",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_validations_schemas",
+      "target": "src_lib_validations_schemas_copierruleschema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/validations/schemas.ts",
+      "source_location": "L97",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_validations_schemas",
@@ -18580,7 +20291,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/validations/schemas.ts",
-      "source_location": "L73",
+      "source_location": "L95",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_validations_schemas",
@@ -18602,7 +20313,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/validations/schemas.ts",
-      "source_location": "L72",
+      "source_location": "L94",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_validations_schemas",
@@ -18624,7 +20335,29 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/validations/schemas.ts",
-      "source_location": "L76",
+      "source_location": "L91",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_validations_schemas",
+      "target": "src_lib_validations_schemas_savetradovatecredentialinput",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/validations/schemas.ts",
+      "source_location": "L72",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_validations_schemas",
+      "target": "src_lib_validations_schemas_savetradovatecredentialschema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/validations/schemas.ts",
+      "source_location": "L98",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_validations_schemas",
@@ -18679,6 +20412,28 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/types/database.ts",
+      "source_location": "L87",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_types_database",
+      "target": "src_types_database_copierlog",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/types/database.ts",
+      "source_location": "L73",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_types_database",
+      "target": "src_types_database_copierrule",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/types/database.ts",
       "source_location": "L21",
       "weight": 1.0,
       "_origin": "ast",
@@ -18717,6 +20472,17 @@
       "_origin": "ast",
       "source": "src_types_database",
       "target": "src_types_database_propfirm",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/types/database.ts",
+      "source_location": "L62",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_types_database",
+      "target": "src_types_database_tradovatecredential",
       "confidence_score": 1.0
     },
     {
@@ -19116,5 +20882,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "2e9d862816b634e3bb75d1217d090eeaf6d5ecf4"
+  "built_at_commit": "55b2bd03c27593bb2d516cc1661bb3f482c3f36b"
 }

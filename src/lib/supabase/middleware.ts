@@ -40,8 +40,10 @@ export async function updateSession(request: NextRequest) {
 
   const reqUrl = request.nextUrl.clone()
 
-  // Protect route '/': redirect to '/login' if not logged in
-  if (!user && reqUrl.pathname === '/') {
+  const isPublicRoute = reqUrl.pathname === '/login'
+
+  // Protect private routes: redirect to '/login' if not logged in
+  if (!user && !isPublicRoute) {
     reqUrl.pathname = '/login'
     return NextResponse.redirect(reqUrl)
   }
