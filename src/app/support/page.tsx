@@ -1,15 +1,13 @@
 "use client";
 
-import DashboardLayout from "../dashboard-layout";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { HelpCircle, Mail, MessageSquare, ExternalLink, ShieldCheck } from "lucide-react";
 
 export default function SupportPage() {
   return (
-    <DashboardLayout>
-      <div className="space-y-6 max-w-4xl">
-        {/* Header */}
+    <div className="space-y-6 max-w-4xl">
+      {/* Header */}
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
             <HelpCircle className="h-6 w-6 text-blue-600 dark:text-blue-400" />
@@ -78,6 +76,5 @@ export default function SupportPage() {
           </CardContent>
         </Card>
       </div>
-    </DashboardLayout>
   );
 }

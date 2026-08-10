@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback } from "react";
-import DashboardLayout from "../dashboard-layout";
 import { PropFirm, Account, Expense } from "@/types/database";
 import { formatCurrency } from "@/lib/formatters";
 import { calculateTotalExpenses } from "@/lib/financials";

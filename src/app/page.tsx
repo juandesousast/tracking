@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback, Suspense } from "react";
-import DashboardLayout from "./dashboard-layout";
 import { KpiCards } from "@/components/dashboard/kpi-cards";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
 import { EmptyState } from "@/components/dashboard/empty-state";

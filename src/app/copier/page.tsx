@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import DashboardLayout from "../dashboard-layout";
 import {
   TradovateCredential,
   CopierRule,
