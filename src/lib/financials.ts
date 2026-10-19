@@ -1,4 +1,12 @@
-import { Expense, Withdrawal, FinancialSummary, FirmFinancialSummary, PropFirm, Account } from '../types/database';
+import {
+  Expense,
+  Withdrawal,
+  FinancialSummary,
+  FirmFinancialSummary,
+  PropFirm,
+  Account,
+  DashboardTradingState,
+} from '../types/database';
 
 /**
  * Sum total expenses.
@@ -533,6 +541,121 @@ export function getMonthPnLSummary(
     redDaysCount,
     breakevenDaysCount,
     winRateDaysPercent,
+  };
+}
+
+/**
+ * Computes executive trading dashboard metrics (today, consistency, equity curve)
+ * from expenses, withdrawals, and active accounts.
+ */
+export function calculateTradingDashboardMetrics(
+  expenses: Expense[],
+  withdrawals: Withdrawal[],
+  accounts: Account[],
+  selectedAccountId?: string | 'all',
+  targetDate?: string
+): DashboardTradingState {
+  const dailyMap = getDailyPnLMap(expenses, withdrawals, selectedAccountId);
+  const todayStr = targetDate || new Date().toISOString().split('T')[0];
+
+  const todayDaily = dailyMap.get(todayStr);
+  const todayPnL = todayDaily ? todayDaily.netProfit : 0;
+
+  let todayWins = 0;
+  let todayLosses = 0;
+  let todayBest: number | null = null;
+  let todayWorst: number | null = null;
+
+  if (todayDaily) {
+    todayDaily.withdrawals.forEach((w) => {
+      const net = (w.gross_amount || 0) - (w.fee_amount || 0);
+      if (net > 0) {
+        todayWins++;
+        if (todayBest === null || net > todayBest) todayBest = net;
+      } else if (net < 0) {
+        todayLosses++;
+        if (todayWorst === null || net < todayWorst) todayWorst = net;
+      }
+    });
+    todayDaily.expenses.forEach((e) => {
+      const cost = e.amount || 0;
+      if (cost > 0) {
+        todayLosses++;
+        const netLoss = -cost;
+        if (todayWorst === null || netLoss < todayWorst) todayWorst = netLoss;
+      }
+    });
+  }
+
+  const sortedDates = Array.from(dailyMap.keys()).sort();
+  let totalPnL = 0;
+  let totalWins = 0;
+  let totalLosses = 0;
+  let grossWins = 0;
+  let grossLosses = 0;
+  let bestDayPnL = 0;
+  let worstDayPnL = 0;
+
+  sortedDates.forEach((date) => {
+    const d = dailyMap.get(date)!;
+    totalPnL += d.netProfit;
+    if (d.netProfit > 0) {
+      totalWins++;
+      grossWins += d.netProfit;
+      if (d.netProfit > bestDayPnL) bestDayPnL = d.netProfit;
+    } else if (d.netProfit < 0) {
+      totalLosses++;
+      grossLosses += Math.abs(d.netProfit);
+      if (d.netProfit < worstDayPnL) worstDayPnL = d.netProfit;
+    }
+  });
+
+  const activeDays = totalWins + totalLosses;
+  const avgDailyPnL = activeDays > 0 ? totalPnL / activeDays : 0;
+  const winRate = activeDays > 0 ? (totalWins / activeDays) * 100 : 0;
+  const profitFactor = grossLosses > 0 ? Number((grossWins / grossLosses).toFixed(2)) : grossWins > 0 ? 99.9 : 0;
+
+  const relevantAccounts =
+    !selectedAccountId || selectedAccountId === 'all'
+      ? accounts.filter((a) => a.status === 'active')
+      : accounts.filter((a) => a.id === selectedAccountId);
+
+  const startingBalance = relevantAccounts.reduce(
+    (sum, a) => sum + (Number(a.account_size) || 0),
+    0
+  );
+
+  let runningBalance = startingBalance;
+  const equityCurve: { date: string; balance: number; dailyPnL: number }[] = [];
+
+  sortedDates.forEach((date) => {
+    const d = dailyMap.get(date)!;
+    runningBalance += d.netProfit;
+    equityCurve.push({
+      date,
+      balance: runningBalance,
+      dailyPnL: d.netProfit,
+    });
+  });
+
+  return {
+    today: {
+      todayPnL,
+      winsCount: todayWins,
+      lossesCount: todayLosses,
+      bestTrade: todayBest,
+      worstTrade: todayWorst,
+    },
+    consistency: {
+      avgDailyPnL: Number(avgDailyPnL.toFixed(2)),
+      bestDayPnL,
+      worstDayPnL,
+      profitFactor,
+      winRate: Number(winRate.toFixed(1)),
+      totalTrades: activeDays,
+      totalPnL,
+    },
+    equityCurve,
   };
 }
 

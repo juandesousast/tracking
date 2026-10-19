@@ -108,3 +108,28 @@ export interface CopierLog {
   created_at: string;
 }
 
+export interface TodayTradingMetrics {
+  todayPnL: number;
+  winsCount: number;
+  lossesCount: number;
+  bestTrade: number | null;
+  worstTrade: number | null;
+}
+
+export interface ConsistencyMetrics {
+  avgDailyPnL: number;
+  bestDayPnL: number;
+  worstDayPnL: number;
+  profitFactor: number;
+  winRate: number;
+  totalTrades: number;
+  totalPnL: number;
+}
+
+export interface DashboardTradingState {
+  today: TodayTradingMetrics;
+  consistency: ConsistencyMetrics;
+  equityCurve: { date: string; balance: number; dailyPnL: number }[];
+}
+
+

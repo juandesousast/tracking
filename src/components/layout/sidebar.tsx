@@ -14,26 +14,49 @@ import {
   ShieldCheck,
   Building2,
   Repeat,
+  BarChart3,
+  ListOrdered,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export const menuItems = [
-  { name: "Dashboard", href: "/", icon: LayoutDashboard },
-  { name: "Calendario PnL", href: "/calendario", icon: Calendar },
-  { name: "Empresas", href: "/empresas", icon: Building2 },
-  { name: "Cuentas", href: "/cuentas", icon: Wallet },
-  { name: "Gastos", href: "/gastos", icon: Receipt },
-  { name: "Retiros", href: "/retiros", icon: ArrowDownToLine },
-  { name: "Copiador", href: "/copier", icon: Repeat },
+export const navSections = [
+  {
+    title: "TRADING & RENDIMIENTO",
+    items: [
+      { name: "Dashboard", href: "/", icon: LayoutDashboard },
+      { name: "Calendario PnL", href: "/calendario", icon: Calendar },
+      { name: "Historial de Trades", href: "/trades", icon: ListOrdered },
+      { name: "Analítica & Equity", href: "/analytics", icon: BarChart3 },
+    ],
+  },
+  {
+    title: "PROP FIRMS & CAPITAL",
+    items: [
+      { name: "Cuentas de Fondeo", href: "/cuentas", icon: Wallet },
+      { name: "Exámenes & Gastos", href: "/gastos", icon: Receipt },
+      { name: "Retiros & Cobros", href: "/retiros", icon: ArrowDownToLine },
+      { name: "Empresas & Logos", href: "/empresas", icon: Building2 },
+    ],
+  },
+  {
+    title: "AUTOMATIZACIÓN",
+    items: [
+      { name: "Copiador de Futuros", href: "/copier", icon: Repeat },
+    ],
+  },
+  {
+    title: "SISTEMA",
+    items: [
+      { name: "Ajustes", href: "/settings", icon: Settings },
+      { name: "Soporte", href: "/support", icon: HelpCircle },
+    ],
+  },
 ];
 
-export const supportItems = [
-  { name: "Soporte", href: "/support", icon: HelpCircle },
-  { name: "Ajustes", href: "/settings", icon: Settings },
-];
-
-// Fallback legacy export for compatibility with header/mobile-nav
-export const navigationItems = [...menuItems, { name: "Ajustes", href: "/settings", icon: Settings }];
+// Flat export for compatibility with header and mobile-nav
+export const navigationItems = navSections.flatMap((s) => s.items);
+export const menuItems = navSections[0].items.concat(navSections[1].items, navSections[2].items);
+export const supportItems = navSections[3].items;
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -49,93 +72,59 @@ export function Sidebar() {
           <span className="font-bold tracking-tight text-sm text-slate-900 dark:text-white">
             PropFirm Tracker
           </span>
-          <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-            Fintech EdgeFlow Suite
+          <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium tracking-wide">
+            Suite Institucional Pro
           </span>
         </div>
       </div>
 
       {/* Navigation Sections */}
       <div className="flex-1 px-3 py-5 space-y-6 overflow-y-auto">
-        {/* MENU SECTION */}
-        <div>
-          <h3 className="px-3 text-[10px] font-bold text-slate-400 dark:text-slate-500 tracking-wider uppercase mb-2">
-            MENU
-          </h3>
-          <nav className="space-y-1">
-            {menuItems.map((item) => {
-              const isActive = pathname === item.href;
-              const Icon = item.icon;
-              return (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={cn(
-                    "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150",
-                    isActive
-                      ? "bg-blue-50 text-blue-600 font-semibold dark:bg-blue-950/40 dark:text-blue-400"
-                      : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/70 dark:hover:bg-slate-800/60"
-                  )}
-                >
-                  <Icon
+        {navSections.map((section) => (
+          <div key={section.title}>
+            <h3 className="px-3 text-[10px] font-bold text-slate-400 dark:text-slate-500 tracking-wider uppercase mb-2">
+              {section.title}
+            </h3>
+            <nav className="space-y-1">
+              {section.items.map((item) => {
+                const isActive = pathname === item.href;
+                const Icon = item.icon;
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.href}
                     className={cn(
-                      "h-4 w-4 shrink-0",
+                      "flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition-all duration-150",
                       isActive
-                        ? "text-blue-600 dark:text-blue-400"
-                        : "text-slate-400 dark:text-slate-500"
+                        ? "bg-blue-50 text-blue-600 font-semibold dark:bg-blue-950/40 dark:text-blue-400"
+                        : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/70 dark:hover:bg-slate-800/60"
                     )}
-                  />
-                  {item.name}
-                </Link>
-              );
-            })}
-          </nav>
-        </div>
-
-        {/* SUPPORT SECTION */}
-        <div>
-          <h3 className="px-3 text-[10px] font-bold text-slate-400 dark:text-slate-500 tracking-wider uppercase mb-2">
-            SUPPORT
-          </h3>
-          <nav className="space-y-1">
-            {supportItems.map((item) => {
-              const isActive = pathname === item.href;
-              const Icon = item.icon;
-              return (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={cn(
-                    "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150",
-                    isActive
-                      ? "bg-blue-50 text-blue-600 font-semibold dark:bg-blue-950/40 dark:text-blue-400"
-                      : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/70 dark:hover:bg-slate-800/60"
-                  )}
-                >
-                  <Icon
-                    className={cn(
-                      "h-4 w-4 shrink-0",
-                      isActive
-                        ? "text-blue-600 dark:text-blue-400"
-                        : "text-slate-400 dark:text-slate-500"
-                    )}
-                  />
-                  {item.name}
-                </Link>
-              );
-            })}
-          </nav>
-        </div>
+                  >
+                    <Icon
+                      className={cn(
+                        "h-4 w-4 shrink-0",
+                        isActive
+                          ? "text-blue-600 dark:text-blue-400"
+                          : "text-slate-400 dark:text-slate-500"
+                      )}
+                    />
+                    <span>{item.name}</span>
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
+        ))}
       </div>
 
-      {/* EdgeFlow Footer Badge */}
-      <div className="p-4 m-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400">
-        <div className="flex items-center gap-2 font-semibold text-slate-900 dark:text-white mb-1">
-          <ShieldCheck className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-          <span>Gestión de Cuentas</span>
+      {/* Footer Status Badge */}
+      <div className="p-3.5 m-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400">
+        <div className="flex items-center gap-2 font-semibold text-slate-900 dark:text-white mb-0.5">
+          <ShieldCheck className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+          <span className="text-[11px]">Sistema Sincronizado</span>
         </div>
-        <p className="text-[11px] leading-relaxed">
-          Controla tus evaluaciones y retiros en tiempo real.
+        <p className="text-[10px] leading-tight text-slate-400 dark:text-slate-500">
+          Cuentas y flujo protegidos con RLS.
         </p>
       </div>
     </aside>

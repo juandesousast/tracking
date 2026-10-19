@@ -16,6 +16,7 @@ import {
   getFilteredDailyPnLMap,
   getMonthPnLSummary,
   getAccountPnLMetrics,
+  calculateTradingDashboardMetrics,
 } from './financials';
 import { formatCurrency, formatPercent, formatNumber } from './formatters';
 import { getPropFirmLogo, KNOWN_PROP_FIRMS } from './constants/prop-firms';
@@ -999,6 +1000,84 @@ describe('Financial Calculations', () => {
           expect(firm.logoUrl).toMatch(/^https:\/\//);
           expect(Array.isArray(firm.aliases)).toBe(true);
         }
+      });
+    });
+
+    describe('calculateTradingDashboardMetrics', () => {
+      it('should calculate today metrics and consistency correctly', () => {
+        const testExpenses = [
+          {
+            id: 'e1',
+            user_id: 'u1',
+            firm_id: 'f1',
+            account_id: 'a1',
+            amount: 100,
+            category: 'evaluation',
+            date: '2026-03-01',
+            description: 'Reset',
+            created_at: '2026-03-01',
+          },
+          {
+            id: 'e2',
+            user_id: 'u1',
+            firm_id: 'f1',
+            account_id: 'a1',
+            amount: 50,
+            category: 'reset',
+            date: '2026-03-02',
+            description: 'Reset',
+            created_at: '2026-03-02',
+          },
+        ];
+        const testWithdrawals = [
+          {
+            id: 'w1',
+            user_id: 'u1',
+            firm_id: 'f1',
+            account_id: 'a1',
+            gross_amount: 500,
+            fee_amount: 0,
+            net_amount: 500,
+            status: 'completed',
+            date: '2026-03-01',
+            created_at: '2026-03-01',
+          },
+        ];
+        const testAccounts = [
+          {
+            id: 'a1',
+            user_id: 'u1',
+            firm_id: 'f1',
+            account_size: 50000,
+            account_type: 'futures',
+            status: 'active',
+            created_at: '2026-03-01',
+          },
+        ];
+
+        // For date '2026-03-01', net is 500 - 100 = 400
+        const result = calculateTradingDashboardMetrics(
+          testExpenses,
+          testWithdrawals,
+          testAccounts,
+          'all',
+          '2026-03-01'
+        );
+
+        expect(result.today.todayPnL).toBe(400);
+        expect(result.today.winsCount).toBe(1);
+        expect(result.today.lossesCount).toBe(1);
+        expect(result.today.bestTrade).toBe(500);
+        expect(result.today.worstTrade).toBe(-100);
+
+        // Overall: 2 active days (2026-03-01: +400, 2026-03-02: -50)
+        expect(result.consistency.totalPnL).toBe(350);
+        expect(result.consistency.bestDayPnL).toBe(400);
+        expect(result.consistency.worstDayPnL).toBe(-50);
+        expect(result.consistency.winRate).toBe(50);
+        expect(result.equityCurve).toHaveLength(2);
+        expect(result.equityCurve[0].balance).toBe(50400);
+        expect(result.equityCurve[1].balance).toBe(50350);
       });
     });
   });

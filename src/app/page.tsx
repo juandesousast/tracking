@@ -1,33 +1,16 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback, Suspense } from "react";
-import { KpiCards } from "@/components/dashboard/kpi-cards";
-import { PageSkeleton } from "@/components/ui/page-skeleton";
-import { EmptyState } from "@/components/dashboard/empty-state";
-import { TransactionTable } from "@/components/dashboard/transaction-table";
-import { AccountsDueWidget } from "@/components/dashboard/accounts-due-widget";
-import { NetProfitSparkline } from "@/components/dashboard/charts/net-profit-sparkline";
-import { AddFirmModal } from "@/components/modals/add-firm-modal";
-import { AddAccountModal } from "@/components/modals/add-account-modal";
-import { AddExpenseModal } from "@/components/modals/add-expense-modal";
-import { AddWithdrawalModal } from "@/components/modals/add-withdrawal-modal";
-import { EditFirmModal } from "@/components/modals/edit-firm-modal";
-import { EditAccountModal } from "@/components/modals/edit-account-modal";
-import { EditExpenseModal } from "@/components/modals/edit-expense-modal";
-import { EditWithdrawalModal } from "@/components/modals/edit-withdrawal-modal";
-import { PerformanceLineChart } from "@/components/dashboard/charts/performance-line-chart";
-import { FirmPerformanceChart } from "@/components/dashboard/charts/firm-performance-chart";
-
+import Link from "next/link";
 import { PropFirm, Account, Expense, Withdrawal } from "@/types/database";
 import {
+  calculateTradingDashboardMetrics,
   calculateFinancialSummary,
-  calculateFirmFinancialSummaries,
-  filterTransactions,
-  calculatePeriodComparison,
+  getDailyPnLMap,
 } from "@/lib/financials";
-import { formatCurrency } from "@/lib/formatters";
-import { DashboardFilters } from "@/components/dashboard/dashboard-filters";
-import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { formatCurrency, formatPercent } from "@/lib/formatters";
+import { getPropFirmLogo } from "@/lib/constants/prop-firms";
+import { PageSkeleton } from "@/components/ui/page-skeleton";
 
 import {
   getFirms,
@@ -50,74 +33,89 @@ import {
 
 import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+
 import {
   Plus,
   ArrowUpRight,
+  ArrowDownRight,
+  TrendingUp,
+  TrendingDown,
   Wallet,
   Receipt,
+  ArrowDownToLine,
   Building2,
-  ChevronDown,
+  Calendar,
+  Sparkles,
+  Layers,
+  ChevronRight,
+  Repeat,
+  ShieldCheck,
+  Award,
   RefreshCw,
-  Pencil,
-  Trash2,
-  TrendingUp,
+  ExternalLink,
 } from "lucide-react";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+
+import { AddFirmModal } from "@/components/modals/add-firm-modal";
+import { AddAccountModal } from "@/components/modals/add-account-modal";
+import { AddExpenseModal } from "@/components/modals/add-expense-modal";
+import { AddWithdrawalModal } from "@/components/modals/add-withdrawal-modal";
+import { EditFirmModal } from "@/components/modals/edit-firm-modal";
+import { EditAccountModal } from "@/components/modals/edit-account-modal";
+import { EditExpenseModal } from "@/components/modals/edit-expense-modal";
+import { EditWithdrawalModal } from "@/components/modals/edit-withdrawal-modal";
 
 function HomePageContent() {
   const [isLoading, setIsLoading] = useState(true);
 
-  // App real data state
+  // Core Data
   const [firms, setFirms] = useState<PropFirm[]>([]);
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([]);
 
-  // Modal open states
+  // Selected Account Filter ("all" or specific account ID)
+  const [selectedAccountId, setSelectedAccountId] = useState<string>("all");
+
+  // Modal States
   const [isAddFirmOpen, setIsAddFirmOpen] = useState(false);
   const [isAddAccountOpen, setIsAddAccountOpen] = useState(false);
   const [isAddExpenseOpen, setIsAddExpenseOpen] = useState(false);
   const [isAddWithdrawalOpen, setIsAddWithdrawalOpen] = useState(false);
 
-  // Edit target states
+  // Edit Targets
   const [editingFirm, setEditingFirm] = useState<PropFirm | null>(null);
   const [editingAccount, setEditingAccount] = useState<Account | null>(null);
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
   const [editingWithdrawal, setEditingWithdrawal] = useState<Withdrawal | null>(null);
 
-  // Delete target states for firms & accounts
-  const [deletingFirmId, setDeletingFirmId] = useState<string | null>(null);
-
-  // Fetch initial data
   const loadData = useCallback(async () => {
-    setIsLoading(true);
     try {
-      const [fetchedFirms, fetchedAccounts, fetchedExpenses, fetchedWithdrawals] = await Promise.all([
+      setIsLoading(true);
+      const [f, a, e, w] = await Promise.all([
         getFirms(),
         getAccounts(),
         getExpenses(),
         getWithdrawals(),
       ]);
-      setFirms(fetchedFirms);
-      setAccounts(fetchedAccounts);
-      setExpenses(fetchedExpenses);
-      setWithdrawals(fetchedWithdrawals);
+      setFirms(f);
+      setAccounts(a);
+      setExpenses(e);
+      setWithdrawals(w);
     } catch (err) {
       console.error("Error loading dashboard data:", err);
     } finally {
@@ -129,73 +127,117 @@ function HomePageContent() {
     loadData();
   }, [loadData]);
 
-  // URL Filters reading
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const pathname = usePathname();
+  const firmMap = useMemo(() => {
+    const map = new Map<string, PropFirm>();
+    firms.forEach((f) => map.set(f.id, f));
+    return map;
+  }, [firms]);
 
+  // Executive Tradelio Metrics
+  const dashboardMetrics = useMemo(() => {
+    return calculateTradingDashboardMetrics(expenses, withdrawals, accounts, selectedAccountId);
+  }, [expenses, withdrawals, accounts, selectedAccountId]);
 
-  const preset = searchParams.get("preset") || "this_month";
-  const startDateParam = searchParams.get("startDate");
-  const endDateParam = searchParams.get("endDate");
-  const firmIdParam = searchParams.get("firmId") || "all";
+  // Funding Health Metrics
+  const fundingSummary = useMemo(() => {
+    const relevantExpenses =
+      selectedAccountId === "all"
+        ? expenses
+        : expenses.filter((e) => e.account_id === selectedAccountId);
 
-  // Calculate default dates for "this_month" if no explicit dates in URL
-  const { startDate, endDate } = useMemo(() => {
-    if (preset === "all") return { startDate: null, endDate: null };
-    if (startDateParam || endDateParam) {
-      return { startDate: startDateParam, endDate: endDateParam };
-    }
-    // default to this month
-    const today = new Date();
-    const start = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().slice(0, 10);
-    const end = new Date(today.getFullYear(), today.getMonth() + 1, 0).toISOString().slice(0, 10);
-    return { startDate: start, endDate: end };
-  }, [preset, startDateParam, endDateParam]);
+    const relevantWithdrawals =
+      selectedAccountId === "all"
+        ? withdrawals
+        : withdrawals.filter((w) => w.account_id === selectedAccountId);
 
-  // Filtered transactions based on active filters
-  const filteredData = useMemo(() => {
-    return filterTransactions(expenses, withdrawals, {
-      startDate,
-      endDate,
-      firmId: firmIdParam,
+    return calculateFinancialSummary(relevantExpenses, relevantWithdrawals);
+  }, [expenses, withdrawals, selectedAccountId]);
+
+  // Active accounts with resolved logos
+  const activeAccountsList = useMemo(() => {
+    const active = accounts.filter((a) => a.status === "active");
+    return active.map((a) => {
+      const firm = firmMap.get(a.firm_id);
+      const firmName = firm?.name || "Empresa Desconocida";
+      const logoUrl = getPropFirmLogo(firmName, firm?.logo_url);
+      return {
+        ...a,
+        firmName,
+        logoUrl,
+      };
     });
-  }, [expenses, withdrawals, startDate, endDate, firmIdParam]);
+  }, [accounts, firmMap]);
 
-  // Dynamic financial calculations & comparison
-  const comparisonResult = useMemo(() => {
-    return calculatePeriodComparison(
-      expenses,
-      withdrawals,
-      startDate,
-      endDate,
-      firmIdParam
-    );
-  }, [expenses, withdrawals, startDate, endDate, firmIdParam]);
+  // Recent transactions list
+  const recentTransactions = useMemo(() => {
+    const list: Array<{
+      id: string;
+      date: string;
+      type: "withdrawal" | "expense";
+      firmName: string;
+      logoUrl: string | null;
+      accountLabel: string;
+      description: string;
+      amount: number;
+      rawExpense?: Expense;
+      rawWithdrawal?: Withdrawal;
+    }> = [];
 
-  const summary = comparisonResult.currentSummary;
+    const relevantWithdrawals =
+      selectedAccountId === "all"
+        ? withdrawals
+        : withdrawals.filter((w) => w.account_id === selectedAccountId);
 
-  const firmSummaries = useMemo(() => {
-    return calculateFirmFinancialSummaries(
-      firms,
-      accounts,
-      filteredData.expenses,
-      filteredData.withdrawals
-    );
-  }, [firms, accounts, filteredData.expenses, filteredData.withdrawals]);
+    const relevantExpenses =
+      selectedAccountId === "all"
+        ? expenses
+        : expenses.filter((e) => e.account_id === selectedAccountId);
 
-  const resetFilters = useCallback(() => {
-    router.push(pathname);
-  }, [router, pathname]);
+    relevantWithdrawals.forEach((w) => {
+      const firm = w.firm_id ? firmMap.get(w.firm_id) : undefined;
+      const firmName = firm?.name || "Empresa Desconocida";
+      const logoUrl = getPropFirmLogo(firmName, firm?.logo_url);
+      const net = typeof w.net_amount === "number" ? w.net_amount : (w.gross_amount || 0) - (w.fee_amount || 0);
 
-  const hasData = firms.length > 0 || accounts.length > 0 || expenses.length > 0 || withdrawals.length > 0;
+      list.push({
+        id: w.id,
+        date: w.date,
+        type: "withdrawal",
+        firmName,
+        logoUrl,
+        accountLabel: w.account_id ? "Cuenta Fondeada" : "General",
+        description: "Cobro de beneficios aprobado",
+        amount: net,
+        rawWithdrawal: w,
+      });
+    });
 
+    relevantExpenses.forEach((e) => {
+      const firm = e.firm_id ? firmMap.get(e.firm_id) : undefined;
+      const firmName = firm?.name || "Empresa Desconocida";
+      const logoUrl = getPropFirmLogo(firmName, firm?.logo_url);
 
-  // Handlers for adding items using Server Actions
-  const handleAddFirm = async (firmData: { name: string; website: string | null }) => {
+      list.push({
+        id: e.id,
+        date: e.date,
+        type: "expense",
+        firmName,
+        logoUrl,
+        accountLabel: e.account_id ? "Cuenta Asignada" : "Evaluación",
+        description: e.description || e.category,
+        amount: -Math.abs(e.amount),
+        rawExpense: e,
+      });
+    });
+
+    return list.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 5);
+  }, [withdrawals, expenses, selectedAccountId, firmMap]);
+
+  // Handlers
+  const handleAddFirm = async (firmData: { name: string; website: string | null; logo_url?: string | null }) => {
     try {
       const created = await addFirm(firmData);
-      setFirms((prev) => [created, ...prev]);
+      setFirms((prev) => [...prev, created]);
     } catch (err) {
       console.error("Error adding firm:", err);
     }
@@ -265,217 +307,587 @@ function HomePageContent() {
     }
   };
 
-  // Update handlers
-  const handleUpdateFirm = async (id: string, firmData: { name: string; website: string | null }) => {
-    try {
-      const updated = await updateFirm(id, firmData);
-      setFirms((prev) => prev.map((f) => (f.id === id ? updated : f)));
-    } catch (err) {
-      console.error("Error updating firm:", err);
-    }
-  };
+  if (isLoading) {
+    return <PageSkeleton />;
+  }
 
-  const handleDeleteFirm = async (id: string) => {
-    try {
-      await deleteFirm(id);
-      setFirms((prev) => prev.filter((f) => f.id !== id));
-      setAccounts((prev) => prev.filter((a) => a.firm_id !== id));
-      setExpenses((prev) => prev.filter((e) => e.firm_id !== id));
-      setWithdrawals((prev) => prev.filter((w) => w.firm_id !== id));
-    } catch (err) {
-      console.error("Error deleting firm:", err);
-    }
-  };
-
-  const handleUpdateAccount = async (
-    id: string,
-    accData: {
-      firm_id: string;
-      account_size: number;
-      account_type: string;
-      status: string;
-      account_number?: string | null;
-      alias?: string | null;
-    }
-  ) => {
-    try {
-      const updated = await updateAccount(id, accData);
-      setAccounts((prev) => prev.map((a) => (a.id === id ? updated : a)));
-    } catch (err) {
-      console.error("Error updating account:", err);
-    }
-  };
-
-  const handleDeleteAccount = async (id: string) => {
-    try {
-      await deleteAccount(id);
-      setAccounts((prev) => prev.filter((a) => a.id !== id));
-    } catch (err) {
-      console.error("Error deleting account:", err);
-    }
-  };
-
-  const handleUpdateExpense = async (
-    id: string,
-    expenseData: {
-      firm_id: string;
-      account_id: string | null;
-      amount: number;
-      category: string;
-      description: string | null;
-      date: string;
-    }
-  ) => {
-    try {
-      const updated = await updateExpense(id, expenseData);
-      setExpenses((prev) => prev.map((e) => (e.id === id ? updated : e)));
-    } catch (err) {
-      console.error("Error updating expense:", err);
-    }
-  };
-
-  const handleDeleteExpense = async (id: string) => {
-    try {
-      await deleteExpense(id);
-      setExpenses((prev) => prev.filter((e) => e.id !== id));
-    } catch (err) {
-      console.error("Error deleting expense:", err);
-    }
-  };
-
-  const handleUpdateWithdrawal = async (
-    id: string,
-    wData: {
-      firm_id: string;
-      account_id: string | null;
-      gross_amount: number;
-      fee_amount: number;
-      status: string;
-      date: string;
-    }
-  ) => {
-    try {
-      const updated = await updateWithdrawal(id, wData);
-      setWithdrawals((prev) => prev.map((w) => (w.id === id ? updated : w)));
-    } catch (err) {
-      console.error("Error updating withdrawal:", err);
-    }
-  };
-
-  const handleDeleteWithdrawal = async (id: string) => {
-    try {
-      await deleteWithdrawal(id);
-      setWithdrawals((prev) => prev.filter((w) => w.id !== id));
-    } catch (err) {
-      console.error("Error deleting withdrawal:", err);
-    }
-  };
+  const { today, consistency, equityCurve } = dashboardMetrics;
 
   return (
-    <>
-      {/* Header section with page title & actions */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
+    <div className="space-y-8 p-6 lg:p-8 max-w-7xl mx-auto">
+      {/* 1. Executive Top Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200/80 dark:border-slate-800">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-            <TrendingUp className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-            Dashboard EdgeFlow
+          <div className="flex items-center gap-2">
+            <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+              Mesa Ejecutiva de Trading & Fondeo
+            </span>
+          </div>
+          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white mt-1">
+            Dashboard General de Rendimiento
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Resumen global de capital, proyecciones de flujo de caja y gestión de empresas.
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            Métricas de consistencia institucional, pulso de trading en vivo y evolución de capital.
           </p>
         </div>
 
-        {/* Action Controls */}
-        <div className="flex items-center gap-2">
+        {/* Account Selector & Quick Action Buttons */}
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Account Filter Dropdown */}
+          <div className="w-56">
+            <Select
+              value={selectedAccountId}
+              onValueChange={(val) => {
+                if (val) setSelectedAccountId(val);
+              }}
+            >
+              <SelectTrigger className="rounded-xl border-slate-200 dark:border-slate-800 text-xs font-medium bg-white dark:bg-slate-900 shadow-xs">
+                <SelectValue placeholder="Todas las Cuentas" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">
+                  <div className="flex items-center gap-2">
+                    <Wallet className="h-3.5 w-3.5 text-blue-500" />
+                    <span>Todas las Cuentas</span>
+                  </div>
+                </SelectItem>
+                {accounts.map((a) => {
+                  const firm = firmMap.get(a.firm_id);
+                  const logo = getPropFirmLogo(firm?.name || "", firm?.logo_url);
+                  return (
+                    <SelectItem key={a.id} value={a.id}>
+                      <div className="flex items-center gap-2">
+                        {logo ? (
+                          <img src={logo} alt="" className="h-4 w-4 rounded-xs object-contain" />
+                        ) : (
+                          <Building2 className="h-3.5 w-3.5 text-slate-400" />
+                        )}
+                        <span>
+                          {firm?.name} - ${a.account_size.toLocaleString()}{" "}
+                          {a.alias ? `(${a.alias})` : ""}
+                        </span>
+                      </div>
+                    </SelectItem>
+                  );
+                })}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Action Buttons */}
           <Button
-            variant="outline"
             size="sm"
-            onClick={() => loadData()}
-            className="text-xs font-semibold gap-1.5 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50"
+            onClick={() => setIsAddWithdrawalOpen(true)}
+            className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-xs"
           >
-            <RefreshCw className="h-3.5 w-3.5" />
-            Actualizar
+            <ArrowDownToLine className="h-3.5 w-3.5 mr-1.5" />
+            + Registrar Retiro
           </Button>
 
-          {/* Quick Add Dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger render={
-              <Button size="sm" className="gap-1.5 font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-xs" />
-            }>
-              <Plus className="h-4 w-4" />
-              Nuevo Registro
-              <ChevronDown className="h-3.5 w-3.5 opacity-70" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" side="bottom" sideOffset={6} className="w-52 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
-              <DropdownMenuLabel className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                Selecciona tipo
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator className="bg-slate-100 dark:bg-slate-800" />
-              <DropdownMenuItem onClick={() => setIsAddWithdrawalOpen(true)} className="gap-2 text-emerald-600 dark:text-emerald-400 font-semibold cursor-pointer text-xs">
-                <ArrowUpRight className="h-4 w-4" />
-                <span>Retiro de Ganancias</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setIsAddExpenseOpen(true)} className="gap-2 text-rose-600 dark:text-rose-400 font-semibold cursor-pointer text-xs">
-                <Receipt className="h-4 w-4" />
-                <span>Gasto / Evaluación</span>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator className="bg-slate-100 dark:bg-slate-800" />
-              <DropdownMenuItem onClick={() => setIsAddAccountOpen(true)} className="gap-2 cursor-pointer text-xs">
-                <Wallet className="h-4 w-4 text-blue-600" />
-                <span>Cuenta de Trading</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setIsAddFirmOpen(true)} className="gap-2 cursor-pointer text-xs">
-                <Building2 className="h-4 w-4 text-blue-600" />
-                <span>Empresa de Fondeo</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => setIsAddExpenseOpen(true)}
+            className="rounded-xl border-slate-200 dark:border-slate-800 text-xs font-semibold shadow-xs"
+          >
+            <Receipt className="h-3.5 w-3.5 mr-1.5 text-slate-500" />
+            + Registrar Gasto
+          </Button>
         </div>
       </div>
 
-      {isLoading ? (
-        <PageSkeleton />
-      ) : !hasData ? (
-        <EmptyState
-          title="No se encontraron cuentas o transacciones"
-          description="Aún no tienes movimientos registrados. Registra tu primera firma de fondeo para comenzar."
-          actionLabel="Agregar Empresa de Fondeo"
-          onAction={() => setIsAddFirmOpen(true)}
-        />
-      ) : (
-        <div className="space-y-6">
-          {/* Dashboard Filters Bar */}
-          <DashboardFilters firms={firms} />
+      {/* 2. SECTION: Pulso de Hoy (Today's Trading Performance) */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              Pulso del Día de Trading
+            </span>
+            <span className="text-[10px] text-slate-400 font-medium">
+              ({new Date().toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "short" })})
+            </span>
+          </div>
+          <Link
+            href="/calendario"
+            className="text-xs font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 flex items-center gap-1 transition-colors"
+          >
+            Ver Calendario Mensual
+            <ChevronRight className="h-3.5 w-3.5" />
+          </Link>
+        </div>
 
-          {/* FILA 1 - KPI CARDS WITH COMPARISON */}
-          <KpiCards summary={summary} comparison={comparisonResult} />
-
-          {/* FILA 2 - CASH FLOW PROJECTION (2/3) + RESUMEN DE CUENTAS (1/3) */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Left 2/3: Cash Flow Projection Line/Area Chart */}
-            <div className="lg:col-span-2">
-              <PerformanceLineChart
-                expenses={filteredData.expenses}
-                withdrawals={filteredData.withdrawals}
-                startDate={startDate}
-                endDate={endDate}
-                onResetFilters={resetFilters}
-              />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Today's Net PnL (Hero Card) */}
+          <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs relative overflow-hidden">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                PnL Neto de Hoy
+              </span>
+              <span
+                className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                  today.todayPnL > 0
+                    ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400"
+                    : today.todayPnL < 0
+                    ? "bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400"
+                    : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
+                }`}
+              >
+                {today.todayPnL > 0 ? "Positivo" : today.todayPnL < 0 ? "En Negativo" : "Sin Cambios"}
+              </span>
             </div>
+            <div className="flex items-baseline gap-2 mt-2">
+              <span
+                className={`text-3xl font-black tabular-nums tracking-tight ${
+                  today.todayPnL > 0
+                    ? "text-emerald-600 dark:text-emerald-400"
+                    : today.todayPnL < 0
+                    ? "text-rose-600 dark:text-rose-400"
+                    : "text-slate-900 dark:text-white"
+                }`}
+              >
+                {today.todayPnL > 0 ? "+" : ""}
+                {formatCurrency(today.todayPnL)}
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+              Resultado neto en la sesión de hoy
+            </p>
+          </div>
 
-            {/* Right 1/3: Cuentas / Próximos Vencimientos Widget */}
-            <div className="lg:col-span-1">
-              <AccountsDueWidget
-                accounts={accounts}
-                firms={firms}
-                onAddAccount={() => setIsAddAccountOpen(true)}
-              />
+          {/* Today Trades Count */}
+          <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              Operaciones de Hoy
+            </span>
+            <div className="flex items-baseline gap-2 mt-2">
+              <span className="text-3xl font-black tabular-nums text-slate-900 dark:text-white">
+                {today.winsCount + today.lossesCount}
+              </span>
+              <span className="text-xs text-slate-500 font-medium">movimientos</span>
+            </div>
+            <div className="flex items-center gap-3 text-[11px] mt-1">
+              <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
+                {today.winsCount} Ganadores
+              </span>
+              <span className="text-slate-300 dark:text-slate-700">•</span>
+              <span className="text-rose-600 dark:text-rose-400 font-semibold">
+                {today.lossesCount} Perdedores
+              </span>
             </div>
           </div>
-        </div>
-      )}
 
-      {/* Add Modals */}
+          {/* Best Trade of Today */}
+          <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              Mejor Operación de Hoy
+            </span>
+            <div className="flex items-baseline gap-2 mt-2">
+              <span className="text-2xl font-bold tabular-nums text-emerald-600 dark:text-emerald-400">
+                {today.bestTrade !== null ? `+${formatCurrency(today.bestTrade)}` : "—"}
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+              Pico máximo de beneficio de hoy
+            </p>
+          </div>
+
+          {/* Worst Trade of Today */}
+          <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              Peor Operación de Hoy
+            </span>
+            <div className="flex items-baseline gap-2 mt-2">
+              <span className="text-2xl font-bold tabular-nums text-rose-600 dark:text-rose-400">
+                {today.worstTrade !== null ? formatCurrency(today.worstTrade) : "—"}
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+              Mayor pérdida controlada de hoy
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* 3. SECTION: Rendimiento Global & Consistencia Institucional */}
+      <div className="space-y-3">
+        <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+          Métricas de Consistencia Institucional
+        </span>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Total Net Profit */}
+          <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              PnL Neto Acumulado
+            </span>
+            <div className="flex items-baseline gap-2 mt-2">
+              <span
+                className={`text-2xl font-bold tabular-nums tracking-tight ${
+                  consistency.totalPnL >= 0
+                    ? "text-emerald-600 dark:text-emerald-400"
+                    : "text-rose-600 dark:text-rose-400"
+                }`}
+              >
+                {consistency.totalPnL >= 0 ? "+" : ""}
+                {formatCurrency(consistency.totalPnL)}
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+              Beneficio limpio descontando gastos
+            </p>
+          </div>
+
+          {/* Win Rate */}
+          <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              Win Rate de Días
+            </span>
+            <div className="flex items-baseline gap-2 mt-2">
+              <span className="text-2xl font-bold tabular-nums tracking-tight text-blue-600 dark:text-blue-400">
+                {consistency.winRate.toFixed(1)}%
+              </span>
+              <span className="text-xs text-slate-500 font-medium">días verdes</span>
+            </div>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+              Sobre {consistency.totalTrades} jornadas activas
+            </p>
+          </div>
+
+          {/* Profit Factor */}
+          <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                Profit Factor
+              </span>
+              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-sm bg-blue-50 text-blue-600 dark:bg-blue-950/40 dark:text-blue-400">
+                Ratio
+              </span>
+            </div>
+            <div className="flex items-baseline gap-2 mt-2">
+              <span className="text-2xl font-bold tabular-nums tracking-tight text-slate-900 dark:text-white">
+                {consistency.profitFactor.toFixed(2)}
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+              Ganancias brutas vs pérdidas
+            </p>
+          </div>
+
+          {/* Avg Daily PnL */}
+          <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              Promedio Diario de PnL
+            </span>
+            <div className="flex items-baseline gap-2 mt-2">
+              <span
+                className={`text-2xl font-bold tabular-nums tracking-tight ${
+                  consistency.avgDailyPnL >= 0
+                    ? "text-emerald-600 dark:text-emerald-400"
+                    : "text-rose-600 dark:text-rose-400"
+                }`}
+              >
+                {consistency.avgDailyPnL >= 0 ? "+" : ""}
+                {formatCurrency(consistency.avgDailyPnL)}
+              </span>
+              <span className="text-xs text-slate-500 font-medium">/ jornada</span>
+            </div>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+              Rendimiento diario esperado
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* 4. SECTION: Curva de Capital (2/3) & Cuentas Activas con Logos (1/3) */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left: Equity Growth Curve Chart (2 Cols) */}
+        <div className="lg:col-span-2 p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs flex flex-col justify-between">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">
+                Curva de Crecimiento de Capital (Equity Curve)
+              </h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                Evolución acumulada de los fondos asignados y resultados netos.
+              </p>
+            </div>
+            <Link
+              href="/analytics"
+              className="text-xs font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400 flex items-center gap-1"
+            >
+              Analítica Detallada
+              <ChevronRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+
+          {equityCurve.length === 0 ? (
+            <div className="h-72 flex items-center justify-center text-slate-400 text-xs">
+              Registra transacciones o cuentas para visualizar la curva de equity.
+            </div>
+          ) : (
+            <div className="h-72 w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={equityCurve} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="dashboardEquityGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#10b981" stopOpacity={0.0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.15} />
+                  <XAxis dataKey="date" tick={{ fontSize: 11, fill: "#94a3b8" }} />
+                  <YAxis
+                    tick={{ fontSize: 11, fill: "#94a3b8" }}
+                    tickFormatter={(val) => `$${(val / 1000).toFixed(0)}k`}
+                  />
+                  <Tooltip
+                    formatter={(val: any) => [formatCurrency(Number(val)), "Balance Total"]}
+                    labelFormatter={(lbl) => `Fecha: ${lbl}`}
+                    contentStyle={{
+                      backgroundColor: "rgba(15, 23, 42, 0.9)",
+                      borderRadius: "12px",
+                      border: "none",
+                      color: "#fff",
+                      fontSize: "12px",
+                    }}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="balance"
+                    stroke="#10b981"
+                    strokeWidth={2.5}
+                    fillOpacity={1}
+                    fill="url(#dashboardEquityGradient)"
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+        </div>
+
+        {/* Right: Active Accounts with Official Logos (1 Col) */}
+        <div className="lg:col-span-1 p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">
+                Cuentas Activas & Firmas
+              </h2>
+              <Link
+                href="/cuentas"
+                className="text-xs font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400"
+              >
+                Ver todas ({accounts.length})
+              </Link>
+            </div>
+
+            {activeAccountsList.length === 0 ? (
+              <div className="py-12 text-center">
+                <Wallet className="h-8 w-8 text-slate-300 dark:text-slate-600 mx-auto mb-2" />
+                <p className="text-xs text-slate-500">No hay cuentas de fondeo activas registradas.</p>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setIsAddAccountOpen(true)}
+                  className="mt-3 text-xs rounded-xl"
+                >
+                  + Añadir Cuenta
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {activeAccountsList.slice(0, 4).map((acc) => (
+                  <div
+                    key={acc.id}
+                    className="p-3.5 rounded-xl border border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-800/30 flex items-center justify-between hover:bg-slate-100/50 transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      {acc.logoUrl ? (
+                        <img
+                          src={acc.logoUrl}
+                          alt={acc.firmName}
+                          className="h-8 w-8 rounded-lg object-contain bg-white dark:bg-slate-800 p-1 border border-slate-200 dark:border-slate-700 shrink-0"
+                        />
+                      ) : (
+                        <div className="h-8 w-8 rounded-lg bg-blue-100 dark:bg-blue-950 flex items-center justify-center text-blue-600 shrink-0">
+                          <Building2 className="h-4 w-4" />
+                        </div>
+                      )}
+                      <div>
+                        <div className="text-xs font-bold text-slate-900 dark:text-white">
+                          {acc.firmName}
+                        </div>
+                        <div className="text-[11px] text-slate-500">
+                          {acc.account_number ? `#${acc.account_number}` : ""} {acc.alias ? `• ${acc.alias}` : ""}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-xs font-bold tabular-nums text-slate-900 dark:text-white">
+                        ${acc.account_size.toLocaleString()}
+                      </div>
+                      <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400">
+                        Activa
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="pt-4 mt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
+            <span className="text-slate-500">Capital Total Asignado:</span>
+            <span className="font-bold text-slate-900 dark:text-white tabular-nums">
+              $
+              {activeAccountsList
+                .reduce((sum, a) => sum + (Number(a.account_size) || 0), 0)
+                .toLocaleString()}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* 5. SECTION: Salud de Fondeo & Capital (Prop Firm Funding Health) */}
+      <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">
+              Salud Financiera & Retorno de Fondeo (Funding ROI)
+            </h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              Balance entre los costes de evaluación / reinicios y los cobros reales transferidos.
+            </p>
+          </div>
+          <Link
+            href="/gastos"
+            className="text-xs font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400"
+          >
+            Ver Detalle de Gastos
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              Total Invertido en Pruebas
+            </span>
+            <div className="text-xl font-bold tabular-nums text-slate-900 dark:text-white mt-1">
+              {formatCurrency(fundingSummary.totalExpenses)}
+            </div>
+            <p className="text-[11px] text-slate-500 mt-0.5">Exámenes, activaciones y resets</p>
+          </div>
+
+          <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              Total Cobros Netos (Payouts)
+            </span>
+            <div className="text-xl font-bold tabular-nums text-emerald-600 dark:text-emerald-400 mt-1">
+              {formatCurrency(fundingSummary.netWithdrawals)}
+            </div>
+            <p className="text-[11px] text-slate-500 mt-0.5">Beneficios limpios en cuenta bancaria</p>
+          </div>
+
+          <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              ROI Global de Fondeo
+            </span>
+            <div
+              className={`text-xl font-bold tabular-nums mt-1 ${
+                fundingSummary.roiPercentage >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600"
+              }`}
+            >
+              {fundingSummary.roiPercentage >= 0 ? "+" : ""}
+              {fundingSummary.roiPercentage.toFixed(1)}%
+            </div>
+            <p className="text-[11px] text-slate-500 mt-0.5">Rendimiento sobre capital invertido</p>
+          </div>
+        </div>
+      </div>
+
+      {/* 6. SECTION: Últimos Movimientos & Acciones Rápidas */}
+      <div className="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 overflow-hidden shadow-xs">
+        <div className="px-6 py-4 border-b border-slate-200/80 dark:border-slate-800 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <h2 className="font-bold text-sm text-slate-900 dark:text-white">
+              Últimos Movimientos Registrados
+            </h2>
+          </div>
+          <Link
+            href="/trades"
+            className="text-xs font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400 flex items-center gap-1"
+          >
+            Ver Libro Mayor Completo
+            <ChevronRight className="h-3.5 w-3.5" />
+          </Link>
+        </div>
+
+        {recentTransactions.length === 0 ? (
+          <div className="p-8 text-center text-slate-400 text-xs">
+            No hay movimientos recientes registrados.
+          </div>
+        ) : (
+          <div className="divide-y divide-slate-100 dark:divide-slate-800">
+            {recentTransactions.map((tx) => {
+              const isWin = tx.amount > 0;
+              return (
+                <div
+                  key={tx.id}
+                  className="px-6 py-3.5 flex items-center justify-between hover:bg-slate-50/50 dark:hover:bg-slate-800/40 transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    {tx.logoUrl ? (
+                      <img
+                        src={tx.logoUrl}
+                        alt={tx.firmName}
+                        className="h-7 w-7 rounded-md object-contain bg-white dark:bg-slate-800 p-0.5 border border-slate-200 dark:border-slate-700"
+                      />
+                    ) : (
+                      <div className="h-7 w-7 rounded-md bg-blue-50 dark:bg-blue-950 flex items-center justify-center text-blue-600">
+                        <Building2 className="h-3.5 w-3.5" />
+                      </div>
+                    )}
+                    <div>
+                      <div className="text-xs font-bold text-slate-900 dark:text-white">
+                        {tx.firmName}
+                      </div>
+                      <div className="text-[11px] text-slate-500">
+                        {tx.date} • {tx.description}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-4">
+                    <span
+                      className={`text-xs font-bold tabular-nums ${
+                        isWin ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"
+                      }`}
+                    >
+                      {isWin ? "+" : ""}
+                      {formatCurrency(tx.amount)}
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        if (tx.type === "expense" && tx.rawExpense) {
+                          setEditingExpense(tx.rawExpense);
+                        } else if (tx.type === "withdrawal" && tx.rawWithdrawal) {
+                          setEditingWithdrawal(tx.rawWithdrawal);
+                        }
+                      }}
+                      className="h-7 px-2 text-xs font-medium text-slate-500 hover:text-slate-900"
+                    >
+                      Editar
+                    </Button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* Modals */}
       <AddFirmModal
         open={isAddFirmOpen}
         onOpenChange={setIsAddFirmOpen}
@@ -493,6 +905,7 @@ function HomePageContent() {
         firms={firms}
         accounts={accounts}
         onSubmit={handleAddExpense}
+        onFirmAdded={(f: PropFirm) => setFirms((prev) => [...prev, f])}
       />
       <AddWithdrawalModal
         open={isAddWithdrawalOpen}
@@ -500,65 +913,66 @@ function HomePageContent() {
         firms={firms}
         accounts={accounts}
         onSubmit={handleAddWithdrawal}
+        onFirmAdded={(f: PropFirm) => setFirms((prev) => [...prev, f])}
       />
 
-      {/* Edit Modals */}
-      <EditFirmModal
-        open={!!editingFirm}
-        onOpenChange={(open) => !open && setEditingFirm(null)}
-        firm={editingFirm}
-        onSubmit={handleUpdateFirm}
-      />
-      <EditAccountModal
-        open={!!editingAccount}
-        onOpenChange={(open) => !open && setEditingAccount(null)}
-        account={editingAccount}
-        firms={firms}
-        onSubmit={handleUpdateAccount}
-      />
-      <EditExpenseModal
-        open={!!editingExpense}
-        onOpenChange={(open) => !open && setEditingExpense(null)}
-        expense={editingExpense}
-        firms={firms}
-        accounts={accounts}
-        onSubmit={handleUpdateExpense}
-      />
-      <EditWithdrawalModal
-        open={!!editingWithdrawal}
-        onOpenChange={(open) => !open && setEditingWithdrawal(null)}
-        withdrawal={editingWithdrawal}
-        firms={firms}
-        accounts={accounts}
-        onSubmit={handleUpdateWithdrawal}
-      />
+      {editingFirm && (
+        <EditFirmModal
+          open={!!editingFirm}
+          onOpenChange={(open) => !open && setEditingFirm(null)}
+          firm={editingFirm}
+          onSubmit={async (id, data) => {
+            await updateFirm(id, data);
+            setEditingFirm(null);
+            loadData();
+          }}
+        />
+      )}
 
-      {/* Delete Firm Confirmation Dialog */}
-      <AlertDialog open={!!deletingFirmId} onOpenChange={(open) => !open && setDeletingFirmId(null)}>
-        <AlertDialogContent className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
-          <AlertDialogHeader>
-            <AlertDialogTitle>¿Eliminar Firma de Fondeo?</AlertDialogTitle>
-            <AlertDialogDescription className="text-xs text-slate-500">
-              Esta acción eliminará permanentemente esta firma de fondeo y todas sus cuentas, gastos y retiros asociados.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel className="text-xs">Cancelar</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => {
-                if (deletingFirmId) {
-                  handleDeleteFirm(deletingFirmId);
-                  setDeletingFirmId(null);
-                }
-              }}
-              className="text-xs bg-rose-600 hover:bg-rose-700 text-white"
-            >
-              Eliminar Firma
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </>
+      {editingAccount && (
+        <EditAccountModal
+          open={!!editingAccount}
+          onOpenChange={(open) => !open && setEditingAccount(null)}
+          account={editingAccount}
+          firms={firms}
+          onSubmit={async (id, data) => {
+            await updateAccount(id, data);
+            setEditingAccount(null);
+            loadData();
+          }}
+        />
+      )}
+
+      {editingExpense && (
+        <EditExpenseModal
+          open={!!editingExpense}
+          onOpenChange={(open) => !open && setEditingExpense(null)}
+          expense={editingExpense}
+          firms={firms}
+          accounts={accounts}
+          onSubmit={async (id, data) => {
+            await updateExpense(id, data);
+            setEditingExpense(null);
+            loadData();
+          }}
+        />
+      )}
+
+      {editingWithdrawal && (
+        <EditWithdrawalModal
+          open={!!editingWithdrawal}
+          onOpenChange={(open) => !open && setEditingWithdrawal(null)}
+          withdrawal={editingWithdrawal}
+          firms={firms}
+          accounts={accounts}
+          onSubmit={async (id, data) => {
+            await updateWithdrawal(id, data);
+            setEditingWithdrawal(null);
+            loadData();
+          }}
+        />
+      )}
+    </div>
   );
 }
 
@@ -569,4 +983,3 @@ export default function HomePage() {
     </Suspense>
   );
 }
-

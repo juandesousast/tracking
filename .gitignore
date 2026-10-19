@@ -38,4 +38,7 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+
+# archives & network captures
+*.har
 next-env.d.ts
