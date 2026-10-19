@@ -53,12 +53,13 @@ function EconomicCalendarContent() {
   const [searchTerm, setSearchTerm] = useState("");
   const [importanceFilter, setImportanceFilter] = useState<string>("all");
   const [currencyFilter, setCurrencyFilter] = useState<string>("all");
+  const [dateFilter, setDateFilter] = useState<string>("today"); // 'today' | 'week' | 'all'
   const [selectedEvent, setSelectedEvent] = useState<EconomicEvent | null>(null);
 
   const fetchEvents = async () => {
     try {
       setIsLoading(true);
-      const data = await getEconomicEvents(1);
+      const data = await getEconomicEvents();
       setEvents(data);
     } catch (err) {
       console.error("Error fetching economic events:", err);
@@ -71,12 +72,19 @@ function EconomicCalendarContent() {
     fetchEvents();
   }, []);
 
+  const now = new Date();
+  const todayStr = now.toISOString().slice(0, 10);
+
   // Filtered Events
   const filteredEvents = useMemo(() => {
     return events.filter((ev) => {
+      // Date Filter
+      if (dateFilter === "today" && !ev.date.startsWith(todayStr)) return false;
+
       // Importance
       if (importanceFilter === "high" && ev.importance !== 3) return false;
       if (importanceFilter === "medium_high" && ev.importance < 2) return false;
+      if (importanceFilter === "low" && ev.importance !== 1) return false;
 
       // Currency
       if (currencyFilter !== "all" && ev.currency !== currencyFilter) return false;
@@ -93,14 +101,15 @@ function EconomicCalendarContent() {
 
       return true;
     });
-  }, [events, importanceFilter, currencyFilter, searchTerm]);
+  }, [events, dateFilter, importanceFilter, currencyFilter, searchTerm, todayStr]);
 
   // Statistics
-  const now = new Date();
-  const todayStr = now.toISOString().slice(0, 10);
-
   const highImpactToday = useMemo(() => {
     return events.filter((e) => e.importance === 3 && e.date.startsWith(todayStr)).length;
+  }, [events, todayStr]);
+
+  const totalEventsToday = useMemo(() => {
+    return events.filter((e) => e.date.startsWith(todayStr)).length;
   }, [events, todayStr]);
 
   const upcomingHighImpact = useMemo(() => {
@@ -221,30 +230,26 @@ function EconomicCalendarContent() {
           )}
         </div>
 
-        {/* Active Currencies */}
+        {/* Total Events Today */}
         <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs">
           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-            Divisas en Monitoreo
+            Eventos Programados Hoy
           </span>
-          <div className="flex items-center gap-1.5 mt-2 flex-wrap">
-            {["USD", "EUR", "GBP", "JPY", "CAD"].map((c) => (
-              <span
-                key={c}
-                className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300"
-              >
-                {c}
-              </span>
-            ))}
+          <div className="flex items-baseline gap-2 mt-2">
+            <span className="text-3xl font-black tabular-nums text-slate-900 dark:text-white">
+              {totalEventsToday}
+            </span>
+            <span className="text-xs text-slate-500 font-medium">noticias</span>
           </div>
-          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-2">
-            Afectan a índices NQ, ES, YM y Forex
+          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+            Global (EE.UU., Europa, Asia, etc.)
           </p>
         </div>
 
         {/* Total Events in Feed */}
         <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs">
           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-            Eventos en el Radar
+            Eventos Filtrados
           </span>
           <div className="flex items-baseline gap-2 mt-2">
             <span className="text-3xl font-black tabular-nums text-slate-900 dark:text-white">
@@ -264,11 +269,30 @@ function EconomicCalendarContent() {
         <div className="relative flex-1 w-full">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
           <Input
-            placeholder="Buscar por noticia (ej. FOMC, IPC, Empleo, PMI)..."
+            placeholder="Buscar por noticia (ej. PIB, IPC, NAHB, Subastas, Empleo)..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-9 rounded-xl border-slate-200 dark:border-slate-800 text-xs w-full"
           />
+        </div>
+
+        {/* Date Filter */}
+        <div className="w-full md:w-44">
+          <Select
+            value={dateFilter}
+            onValueChange={(val) => {
+              if (val) setDateFilter(val);
+            }}
+          >
+            <SelectTrigger className="rounded-xl border-slate-200 dark:border-slate-800 text-xs font-medium">
+              <SelectValue placeholder="Período" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="today">📅 Solo Hoy</SelectItem>
+              <SelectItem value="week">🗓️ Esta Semana (7d)</SelectItem>
+              <SelectItem value="all">🌐 Todo el Historial</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         {/* Importance Filter */}
@@ -284,14 +308,15 @@ function EconomicCalendarContent() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todos los Impactos</SelectItem>
-              <SelectItem value="high">🔴 Solo Alto Impacto</SelectItem>
+              <SelectItem value="high">🔴 Solo Alto Impacto (Nivel 3)</SelectItem>
               <SelectItem value="medium_high">🟠 Impacto Medio y Alto</SelectItem>
+              <SelectItem value="low">🟡 Solo Bajo Impacto</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         {/* Currency Filter */}
-        <div className="w-full md:w-52">
+        <div className="w-full md:w-56">
           <Select
             value={currencyFilter}
             onValueChange={(val) => {
@@ -305,10 +330,13 @@ function EconomicCalendarContent() {
               <SelectItem value="all">Todas las Divisas</SelectItem>
               <SelectItem value="USD">🇺🇸 USD (Dólar EE.UU.)</SelectItem>
               <SelectItem value="EUR">🇪🇺 EUR (Zona Euro)</SelectItem>
-              <SelectItem value="GBP">🇬🇧 GBP (Libra)</SelectItem>
-              <SelectItem value="JPY">🇯🇵 JPY (Yen)</SelectItem>
+              <SelectItem value="GBP">🇬🇧 GBP (Libra Esterlina)</SelectItem>
               <SelectItem value="CAD">🇨🇦 CAD (Dólar Canadiense)</SelectItem>
+              <SelectItem value="CNY">🇨🇳 CNY (Yuan Chino)</SelectItem>
+              <SelectItem value="JPY">🇯🇵 JPY (Yen Japonés)</SelectItem>
               <SelectItem value="AUD">🇦🇺 AUD (Dólar Australiano)</SelectItem>
+              <SelectItem value="CHF">🇨🇭 CHF (Franco Suizo)</SelectItem>
+              <SelectItem value="NZD">🇳🇿 NZD (Dólar Neozelandés)</SelectItem>
             </SelectContent>
           </Select>
         </div>

@@ -22,6 +22,17 @@ export interface EconomicEventsFilter {
 }
 
 /**
+ * Maps Reuters/TradingView importance scale (-1=low, 0=medium, 1,2=high)
+ * to standard institutional 1, 2, 3 (🟡 Low, 🟠 Medium, 🔴 High) scale.
+ */
+export function normalizeReutersImportance(rawImportance: any): number {
+  const imp = typeof rawImportance === 'number' ? rawImportance : 0;
+  if (imp >= 1) return 3; // High impact (🔴) (PIB/GDP, IPC/CPI, Ventas Minoristas, Tipos, NFP)
+  if (imp === 0) return 2; // Medium impact (🟠) (Vivienda, Subastas de deuda, Desempleo, Balanzas)
+  return 1; // Low impact (🟡) (Subastas secundarias, índices menores, sentimiento)
+}
+
+/**
  * Normalizes an raw event from TradingView / Reuters API into our typed structure.
  */
 export function normalizeEconomicEvent(raw: any): EconomicEvent {
@@ -31,10 +42,10 @@ export function normalizeEconomicEvent(raw: any): EconomicEvent {
     country: String(raw.country || ''),
     currency: String(raw.currency || 'USD').toUpperCase(),
     date: raw.date ? new Date(raw.date).toISOString() : new Date().toISOString(),
-    importance: typeof raw.importance === 'number' ? raw.importance : 1,
-    actual: raw.actual !== undefined ? raw.actual : null,
-    forecast: raw.forecast !== undefined ? raw.forecast : null,
-    previous: raw.previous !== undefined ? raw.previous : null,
+    importance: normalizeReutersImportance(raw.importance),
+    actual: raw.actual !== undefined && raw.actual !== null ? raw.actual : null,
+    forecast: raw.forecast !== undefined && raw.forecast !== null ? raw.forecast : null,
+    previous: raw.previous !== undefined && raw.previous !== null ? raw.previous : null,
     unit: String(raw.unit || ''),
     period: String(raw.period || ''),
     source: String(raw.source || ''),
@@ -71,17 +82,22 @@ export function filterEconomicEvents(
  * Uses fallback data if network request fails or runs offline.
  */
 export async function getEconomicEvents(
-  minImportance: number = 1,
-  from?: string
+  from?: string,
+  to?: string
 ): Promise<EconomicEvent[]> {
+  // Broad 8-day window (24h in the past to capture today completely + 7 days forward)
   const fromDate = from || new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-  const url = `https://chartevents-reuters.tradingview.com/events?minImportance=${minImportance}&from=${encodeURIComponent(
+  const toDate = to || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+
+  // NOTE: We do NOT filter by minImportance in the API query string because Reuters uses -1/0/1,
+  // and passing minImportance=1 cuts out 85% of market events including housing, unemployment & T-Bills.
+  const url = `https://chartevents-reuters.tradingview.com/events?from=${encodeURIComponent(
     fromDate
-  )}`;
+  )}&to=${encodeURIComponent(toDate)}`;
 
   try {
     const res = await fetch(url, {
-      next: { revalidate: 300 }, // Cache 5 min
+      next: { revalidate: 180 }, // Cache 3 min
     });
 
     if (!res.ok) {
