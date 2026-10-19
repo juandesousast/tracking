@@ -921,8 +921,15 @@ function CalendarioContent() {
 
                         <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
                           {firm && (
-                            <div className="flex items-center gap-1">
-                              <Building2 className="h-3 w-3 text-slate-400" />
+                            <div className="flex items-center gap-1.5">
+                              {(() => {
+                                const logo = getPropFirmLogo(firm.name, firm.logo_url);
+                                return logo ? (
+                                  <img src={logo} alt="" className="h-4 w-4 rounded-xs object-contain" />
+                                ) : (
+                                  <Building2 className="h-3 w-3 text-slate-400" />
+                                );
+                              })()}
                               <span>{firm.name}</span>
                             </div>
                           )}
@@ -988,8 +995,15 @@ function CalendarioContent() {
 
                         <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
                           {firm && (
-                            <div className="flex items-center gap-1">
-                              <Building2 className="h-3 w-3 text-slate-400" />
+                            <div className="flex items-center gap-1.5">
+                              {(() => {
+                                const logo = getPropFirmLogo(firm.name, firm.logo_url);
+                                return logo ? (
+                                  <img src={logo} alt="" className="h-4 w-4 rounded-xs object-contain" />
+                                ) : (
+                                  <Building2 className="h-3 w-3 text-slate-400" />
+                                );
+                              })()}
                               <span>{firm.name}</span>
                             </div>
                           )}

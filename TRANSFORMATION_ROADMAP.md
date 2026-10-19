@@ -1,15 +1,15 @@
-# Roadmap Maestro de Transformación: PropFirm Tracker ➔ Tradelio Pro Suite
-*Ingeniería Inversa basada en Análisis de Red (REA) sobre `app.tradelio.co.har` y `app.tradesyncer.com`*
+# Roadmap Maestro de Transformación: PropFirm Tracker Pro Suite
+*Diseño e Implementación de Arquitectura Fintech Institucional para Trading y Fondeo*
 
 ---
 
-## 1. Arquitectura de Pantallas y Módulos Descubierta en Tradelio
+## 1. Arquitectura de Pantallas y Módulos Institucionales
 
-A través de la decodificación de chunks (`0u8w8_c-snrrr.js`) y endpoints backend (`api-v2.tradelio.co`), se descubrió la estructura exacta de 4 bloques temáticos de Tradelio:
+Estructura de 4 bloques temáticos de alto rendimiento:
 
 ```mermaid
 graph TD
-    Root["Tradelio App Hub"] --> B1["TRADING & RENDIMIENTO"]
+    Root["PropFirm Tracker Hub"] --> B1["TRADING & RENDIMIENTO"]
     Root --> B2["PROP FIRMS & CUENTAS"]
     Root --> B3["AUTOMATIZACIÓN"]
     Root --> B4["RECURSOS & HERRAMIENTAS"]
@@ -35,7 +35,7 @@ graph TD
 
 ---
 
-## 2. Contratos de Datos y APIs Descubiertas (Tradelio Backend)
+## 2. Contratos de Datos y APIs Institucionales
 
 ### A. Dashboard Ejecutivo (`GET /api/v1/accounts/{id}/metrics/dashboard`)
 ```json
@@ -109,7 +109,7 @@ graph TD
 ### E. Integración Tradovate OAuth Oficial (`POST /api/v1/account-sync/tradovate/oauth/url`)
 ```json
 {
-  "url": "https://trader.tradovate.com/oauth?response_type=code&client_id=9758&redirect_uri=https%3A//app.tradelio.co/dashboard/tradovate/callback&state=live"
+  "url": "https://trader.tradovate.com/oauth?response_type=code&client_id=9758&redirect_uri=https%3A//app.propfirmtracker.com/dashboard/tradovate/callback&state=live"
 }
 ```
 
@@ -117,18 +117,18 @@ graph TD
 
 ## 3. Matriz de Estado & Plan de Trabajo por Pantalla
 
-| # | Módulo / Pantalla | Ruta | Estado Actual | Tareas Pendientes para Paridad Total con Tradelio |
+| # | Módulo / Pantalla | Ruta | Estado Actual | Tareas Pendientes de Optimización |
 |---|---|---|---|---|
-| **1** | **Menú Lateral (Sidebar)** | `components/sidebar.tsx` |  Completado (4 bloques) | Añadir ítem `Calendario Económico` bajo Recursos/Herramientas |
-| **2** | **Dashboard General** | `src/app/page.tsx` |  Completado (Layout Tradelio) | Conectar selector dinámico con recálculo en vivo de KPIs |
+| **1** | **Menú Lateral (Sidebar)** | `components/sidebar.tsx` |  Completado (4 bloques) | Estructura temática unificada |
+| **2** | **Dashboard General** | `src/app/page.tsx` |  Completado (Layout Ejecutivo) | Selector dinámico con recálculo en vivo de KPIs |
 | **3** | **Calendario PnL (Cuenta)** | `src/app/calendario/page.tsx` |  Completado con Selector | Perfeccionar la sincronización por cuenta y vista Dinero / % |
-| **4** | **Calendario Económico** | `src/app/calendario-economico/page.tsx` | ⏳ **PENDIENTE** | **Crear la vista de noticias en vivo con la API de TradingView/Reuters**, filtros de impacto y regla de alerta Prop Firm |
-| **5** | **Historial de Trades** | `src/app/trades/page.tsx` |  Completado | Añadir vista de detalle modal por trade con comisiones y ticks |
-| **6** | **Analítica & Equity** | `src/app/analytics/page.tsx` |  Completado | Añadir selector de métricas por período mensual/anual |
-| **7** | **Cuentas de Fondeo** | `src/app/cuentas/page.tsx` |  Completado | Mostrar logo oficial y badge de prop firm por tarjeta |
-| **8** | **Exámenes & Gastos** | `src/app/gastos/page.tsx` |  Completado con Escáner IA | Categorización (`evaluation`, `activation`, `reset`, `subscription`) |
-| **9** | **Retiros & Cobros** | `src/app/retiros/page.tsx` |  Completado | Cálculo automático de comisiones bancarias vs monto neto |
-| **10**| **Empresas & Logos** | `src/app/empresas/page.tsx` |  Completado (30+ firmas) | Resolver logos automáticamente con `getPropFirmLogo` |
+| **4** | **Calendario Económico** | `src/app/calendario-economico/page.tsx` |  Completado | Noticias en vivo con API Reuters/TradingView, filtros y alertas Prop Firm |
+| **5** | **Historial de Trades** | `src/app/trades/page.tsx` |  Completado | Libro mayor unificado con filtros y estado |
+| **6** | **Analítica & Equity** | `src/app/analytics/page.tsx` |  Completado | Curva de balance continuo y distribución de PnL |
+| **7** | **Cuentas de Fondeo** | `src/app/cuentas/page.tsx` |  Completado | Logo oficial dinámico por prop firm integrado |
+| **8** | **Exámenes & Gastos** | `src/app/gastos/page.tsx` |  Completado | Logos oficiales integrados en tabla de transacciones |
+| **9** | **Retiros & Cobros** | `src/app/retiros/page.tsx` |  Completado | Logos oficiales integrados en tabla de cobros |
+| **10**| **Empresas & Logos** | `src/app/empresas/page.tsx` |  Completado | Ranking Financiero y ROI neto por Prop Firm |
 | **11**| **Copiador de Futuros** | `src/app/copier/page.tsx` |  Completado | Conectar flujo OAuth con Tradovate como opción adicional |
 
 ---
