@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   Calendar,
+  CalendarDays,
   Wallet,
   Receipt,
   ArrowDownToLine,
@@ -25,6 +26,7 @@ export const navSections = [
     items: [
       { name: "Dashboard", href: "/", icon: LayoutDashboard },
       { name: "Calendario PnL", href: "/calendario", icon: Calendar },
+      { name: "Calendario Económico", href: "/calendario-economico", icon: CalendarDays },
       { name: "Historial de Trades", href: "/trades", icon: ListOrdered },
       { name: "Analítica & Equity", href: "/analytics", icon: BarChart3 },
     ],
