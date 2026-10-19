@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { PropFirm, Account, Expense, Withdrawal } from "@/types/database";
 import { getFirms, getAccounts, getExpenses, getWithdrawals } from "@/lib/actions/actions";
 import { getDailyPnLMap, getMonthPnLSummary, DailyPnL } from "@/lib/financials";
@@ -111,9 +112,18 @@ function CalendarioContent() {
     loadData();
   }, [loadData]);
 
+  const searchParams = useSearchParams();
+  const accountParam = searchParams.get("account");
+
   // Controls state: selected account & view mode
-  const [selectedAccountId, setSelectedAccountId] = useState<string>("all");
+  const [selectedAccountId, setSelectedAccountId] = useState<string>(accountParam || "all");
   const [viewMode, setViewMode] = useState<"currency" | "percentage">("currency");
+
+  useEffect(() => {
+    if (accountParam) {
+      setSelectedAccountId(accountParam);
+    }
+  }, [accountParam]);
 
   // Lookup maps
   const firmMap = useMemo(() => {

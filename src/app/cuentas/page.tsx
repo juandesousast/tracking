@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback } from "react";
+import Link from "next/link";
 import { PropFirm, Account } from "@/types/database";
 import { formatCurrency } from "@/lib/formatters";
 import {
@@ -48,6 +49,7 @@ import {
   XCircle,
   Clock,
   PauseCircle,
+  Calendar,
 } from "lucide-react";
 import { getPropFirmLogo } from "@/lib/constants/prop-firms";
 
@@ -176,6 +178,31 @@ export default function CuentasPage() {
     }
   };
 
+  const metrics = useMemo(() => {
+    const activeAccounts = accounts.filter(
+      (a) => a.status.toLowerCase() === "active"
+    );
+    const passedAccounts = accounts.filter(
+      (a) => a.status.toLowerCase() === "passed"
+    );
+    const totalCapital = activeAccounts.reduce(
+      (acc, a) => acc + (Number(a.account_size) || 0),
+      0
+    );
+    const avgSize =
+      activeAccounts.length > 0 ? totalCapital / activeAccounts.length : 0;
+    const uniqueFirms = new Set(accounts.map((a) => a.firm_id)).size;
+
+    return {
+      activeAccountsCount: activeAccounts.length,
+      passedAccountsCount: passedAccounts.length,
+      totalCapital,
+      avgSize,
+      uniqueFirms,
+      totalCount: accounts.length,
+    };
+  }, [accounts]);
+
   return (
     <>
       {isLoading ? (
@@ -190,7 +217,7 @@ export default function CuentasPage() {
               Cuentas de Trading
             </h1>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-              Gestión independiente de challenges, eval y cuentas fondeadas.
+              Gestión y auditoría de challenges, evaluaciones y cuentas fondeadas en vivo.
             </p>
           </div>
 
@@ -213,6 +240,96 @@ export default function CuentasPage() {
               Nueva Cuenta
             </Button>
           </div>
+        </div>
+
+        {/* Institutional KPI Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <Card className="bg-white dark:bg-slate-900 border-slate-200/60 dark:border-slate-800 shadow-xs rounded-2xl">
+            <CardContent className="p-5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                  Capital Activo Gestionado
+                </span>
+                <div className="h-8 w-8 rounded-xl bg-blue-50 dark:bg-blue-950/60 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                  <Wallet className="h-4 w-4" />
+                </div>
+              </div>
+              <div className="mt-3">
+                <span className="text-2xl font-extrabold text-slate-900 dark:text-white tabular-nums tracking-tight">
+                  {formatCurrency(metrics.totalCapital, "USD")}
+                </span>
+                <p className="text-[11px] text-slate-400 mt-0.5">
+                  En {metrics.activeAccountsCount} cuentas operativas
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white dark:bg-slate-900 border-slate-200/60 dark:border-slate-800 shadow-xs rounded-2xl">
+            <CardContent className="p-5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                  Cuentas Activas
+                </span>
+                <div className="h-8 w-8 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                  <CheckCircle2 className="h-4 w-4" />
+                </div>
+              </div>
+              <div className="mt-3">
+                <span className="text-2xl font-extrabold text-slate-900 dark:text-white tabular-nums tracking-tight">
+                  {metrics.activeAccountsCount}{" "}
+                  <span className="text-sm font-medium text-slate-400">/ {metrics.totalCount}</span>
+                </span>
+                <p className="text-[11px] text-slate-400 mt-0.5">
+                  {metrics.totalCount > 0
+                    ? `${Math.round((metrics.activeAccountsCount / metrics.totalCount) * 100)}% del portafolio`
+                    : "Sin cuentas registradas"}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white dark:bg-slate-900 border-slate-200/60 dark:border-slate-800 shadow-xs rounded-2xl">
+            <CardContent className="p-5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                  Cuentas Aprobadas (Passed)
+                </span>
+                <div className="h-8 w-8 rounded-xl bg-purple-50 dark:bg-purple-950/60 flex items-center justify-center text-purple-600 dark:text-purple-400">
+                  <Clock className="h-4 w-4" />
+                </div>
+              </div>
+              <div className="mt-3">
+                <span className="text-2xl font-extrabold text-purple-600 dark:text-purple-400 tabular-nums tracking-tight">
+                  {metrics.passedAccountsCount}
+                </span>
+                <p className="text-[11px] text-slate-400 mt-0.5">
+                  Evaluaciones superadas con éxito
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white dark:bg-slate-900 border-slate-200/60 dark:border-slate-800 shadow-xs rounded-2xl">
+            <CardContent className="p-5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                  Firmas Diferentes
+                </span>
+                <div className="h-8 w-8 rounded-xl bg-amber-50 dark:bg-amber-950/60 flex items-center justify-center text-amber-600 dark:text-amber-400">
+                  <Building2 className="h-4 w-4" />
+                </div>
+              </div>
+              <div className="mt-3">
+                <span className="text-2xl font-extrabold text-slate-900 dark:text-white tabular-nums tracking-tight">
+                  {metrics.uniqueFirms}
+                </span>
+                <p className="text-[11px] text-slate-400 mt-0.5">
+                  Promedio de {metrics.activeAccountsCount > 0 ? formatCurrency(metrics.avgSize, "USD") : "$0"} / cuenta
+                </p>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Dashboard Filters Bar */}
@@ -348,6 +465,19 @@ export default function CuentasPage() {
                         "{acc.alias}"
                       </p>
                     )}
+
+                    <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                      <Link
+                        href={`/calendario?account=${acc.id}`}
+                        className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1.5"
+                      >
+                        <Calendar className="h-3.5 w-3.5" />
+                        Ver PnL de Cuenta
+                      </Link>
+                      <span className="text-[10px] text-slate-400 font-medium">
+                        Auditoría
+                      </span>
+                    </div>
                   </CardContent>
                 </Card>
               );
