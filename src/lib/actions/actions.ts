@@ -9,6 +9,7 @@ import {
   expenseSchema,
   withdrawalSchema,
 } from '@/lib/validations/schemas'
+import { getPropFirmLogo } from '@/lib/constants/prop-firms'
 
 export async function getFirms(): Promise<PropFirm[]> {
   const supabase = await createClient()
@@ -26,7 +27,10 @@ export async function getFirms(): Promise<PropFirm[]> {
     return []
   }
 
-  return data as PropFirm[]
+  return (data || []).map((f) => ({
+    ...f,
+    logo_url: getPropFirmLogo(f.name, (f as any).logo_url, f.website),
+  })) as PropFirm[]
 }
 
 export async function getAccounts(): Promise<Account[]> {
@@ -113,7 +117,6 @@ export async function addFirm(firmData: {
       user_id: user.id,
       name: validated.name,
       website: validated.website || null,
-      logo_url: validated.logo_url || null,
     })
     .select()
     .single()
@@ -121,7 +124,12 @@ export async function addFirm(firmData: {
   if (error) throw new Error(error.message)
 
   revalidatePath('/')
-  return data as PropFirm
+  revalidatePath('/empresas')
+  revalidatePath('/cuentas')
+  return {
+    ...data,
+    logo_url: getPropFirmLogo(data.name, validated.logo_url, data.website),
+  } as PropFirm
 }
 
 export async function addAccount(accData: {
@@ -174,7 +182,6 @@ export async function updateFirm(
     .update({
       name: validated.name,
       website: validated.website || null,
-      logo_url: validated.logo_url || null,
     })
     .eq('id', id)
     .eq('user_id', user.id)
@@ -184,7 +191,12 @@ export async function updateFirm(
   if (error) throw new Error(error.message)
 
   revalidatePath('/')
-  return data as PropFirm
+  revalidatePath('/empresas')
+  revalidatePath('/cuentas')
+  return {
+    ...data,
+    logo_url: getPropFirmLogo(data.name, validated.logo_url, data.website),
+  } as PropFirm
 }
 
 export async function deleteFirm(id: string) {
@@ -201,6 +213,8 @@ export async function deleteFirm(id: string) {
   if (error) throw new Error(error.message)
 
   revalidatePath('/')
+  revalidatePath('/empresas')
+  revalidatePath('/cuentas')
   return true
 }
 
