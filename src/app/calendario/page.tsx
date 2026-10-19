@@ -30,8 +30,17 @@ import {
   Wallet,
   ArrowUpDown,
   RotateCcw,
+  CircleDollarSign,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getPropFirmLogo } from "@/lib/constants/prop-firms";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const MONTH_NAMES = [
   "Enero",
@@ -102,6 +111,10 @@ function CalendarioContent() {
     loadData();
   }, [loadData]);
 
+  // Controls state: selected account & view mode
+  const [selectedAccountId, setSelectedAccountId] = useState<string>("all");
+  const [viewMode, setViewMode] = useState<"currency" | "percentage">("currency");
+
   // Lookup maps
   const firmMap = useMemo(() => {
     const map = new Map<string, PropFirm>();
@@ -115,27 +128,46 @@ function CalendarioContent() {
     return map;
   }, [accounts]);
 
-  // Daily map and monthly summary
+  const selectedAccount = useMemo(() => {
+    if (!selectedAccountId || selectedAccountId === "all") return null;
+    return accounts.find((a) => a.id === selectedAccountId) || null;
+  }, [accounts, selectedAccountId]);
+
+  const baseCapital = useMemo(() => {
+    if (selectedAccount && selectedAccount.account_size > 0) {
+      return selectedAccount.account_size;
+    }
+    return accounts.reduce((sum, a) => sum + (a.account_size || 0), 0);
+  }, [selectedAccount, accounts]);
+
+  // Daily map synchronized with selectedAccountId
   const dailyPnLMap = useMemo(() => {
-    return getDailyPnLMap(expenses, withdrawals);
-  }, [expenses, withdrawals]);
+    return getDailyPnLMap(expenses, withdrawals, selectedAccountId);
+  }, [expenses, withdrawals, selectedAccountId]);
 
   const monthSummary = useMemo(() => {
     return getMonthPnLSummary(dailyPnLMap, currentYear, currentMonth);
   }, [dailyPnLMap, currentYear, currentMonth]);
 
+  const monthNetPercent = useMemo(() => {
+    if (baseCapital <= 0) return 0;
+    return (monthSummary.totalNet / baseCapital) * 100;
+  }, [monthSummary.totalNet, baseCapital]);
+
   // Monthly totals for withdrawals and expenses
-  const { monthWithdrawals, monthExpenses } = useMemo(() => {
+  const { monthWithdrawals, monthExpenses, monthTxCount } = useMemo(() => {
     const monthPrefix = `${currentYear}-${String(currentMonth).padStart(2, "0")}`;
     let wTotal = 0;
     let eTotal = 0;
+    let txTotal = 0;
     for (const [date, daily] of dailyPnLMap.entries()) {
       if (date.startsWith(monthPrefix)) {
         wTotal += daily.totalWithdrawals;
         eTotal += daily.totalExpenses;
+        txTotal += daily.txCount;
       }
     }
-    return { monthWithdrawals: wTotal, monthExpenses: eTotal };
+    return { monthWithdrawals: wTotal, monthExpenses: eTotal, monthTxCount: txTotal };
   }, [dailyPnLMap, currentYear, currentMonth]);
 
   // Month navigation handlers
@@ -254,7 +286,7 @@ function CalendarioContent() {
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto pb-12">
-      {/* HEADER SECTION: Title, Navigation & Quick Select */}
+      {/* HEADER SECTION: Title & Month Navigation */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-3">
@@ -264,7 +296,7 @@ function CalendarioContent() {
             Calendario Financiero PnL
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Visualización mensual estilo TradeSyncer del rendimiento, días ganadores y balance neto.
+            Visualización mensual estilo Tradelio / TradeSyncer del rendimiento, días ganadores y balance neto.
           </p>
         </div>
 
@@ -340,6 +372,150 @@ function CalendarioContent() {
         </div>
       </div>
 
+      {/* FILTER & VIEW MODE BAR: Account Selector & Monetary/Percentage Toggle */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
+        {/* Left: Account Selector */}
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider hidden sm:inline-block">
+              Cuenta:
+            </span>
+            <Select
+              value={selectedAccountId}
+              onValueChange={(val) => setSelectedAccountId(val || "all")}
+            >
+              <SelectTrigger className="h-10 w-full sm:w-[320px] rounded-xl bg-slate-50/70 dark:bg-slate-800/60 border-slate-200/80 dark:border-slate-700 shadow-2xs text-xs font-semibold px-3">
+                <SelectValue placeholder="Todas las Cuentas">
+                  {(val) => {
+                    if (!val || val === "all") {
+                      return (
+                        <span className="flex items-center gap-2 font-medium truncate text-slate-900 dark:text-white">
+                          <Wallet className="h-4 w-4 text-blue-600 dark:text-blue-400 shrink-0" />
+                          <span>Todas las Cuentas</span>
+                        </span>
+                      );
+                    }
+                    const acc = accounts.find((a) => a.id === val);
+                    if (!acc) return "Todas las Cuentas";
+                    const firm = acc.firm_id ? firmMap.get(acc.firm_id) : null;
+                    const logo = firm ? getPropFirmLogo(firm.name, firm.logo_url) : null;
+                    const sizeStr = acc.account_size > 0 ? `$${acc.account_size.toLocaleString()}` : "";
+                    const details = [
+                      acc.account_number ? `#${acc.account_number}` : null,
+                      acc.alias ? acc.alias : null,
+                    ].filter(Boolean).join(" - ");
+                    const detailsStr = details ? ` (${details})` : "";
+
+                    return (
+                      <span className="flex items-center gap-2 font-medium truncate text-slate-900 dark:text-white">
+                        {logo ? (
+                          <img
+                            src={logo}
+                            alt=""
+                            className="h-4 w-4 rounded object-contain bg-white border border-slate-200 dark:border-slate-700 shrink-0"
+                          />
+                        ) : (
+                          <Building2 className="h-4 w-4 text-slate-400 shrink-0" />
+                        )}
+                        <span className="truncate">
+                          {firm?.name || "Sin Firma"}{sizeStr ? ` - ${sizeStr}` : ""}{detailsStr}
+                        </span>
+                      </span>
+                    );
+                  }}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent className="w-[340px] max-h-80 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-xl rounded-xl p-1.5 z-50">
+                <SelectItem value="all" className="cursor-pointer py-2">
+                  <div className="flex items-center gap-2.5">
+                    <div className="h-5 w-5 rounded bg-blue-50 dark:bg-blue-950/50 flex items-center justify-center shrink-0">
+                      <Wallet className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <span className="font-semibold text-slate-900 dark:text-white">Todas las Cuentas</span>
+                  </div>
+                </SelectItem>
+                {accounts.map((acc) => {
+                  const firm = acc.firm_id ? firmMap.get(acc.firm_id) : null;
+                  const logo = firm ? getPropFirmLogo(firm.name, firm.logo_url) : null;
+                  const sizeFormatted = acc.account_size > 0 ? `$${acc.account_size.toLocaleString()}` : "";
+                  const details = [
+                    acc.account_number ? `#${acc.account_number}` : null,
+                    acc.alias ? acc.alias : null,
+                  ].filter(Boolean).join(" - ");
+                  const detailsStr = details ? ` (${details})` : "";
+
+                  return (
+                    <SelectItem key={acc.id} value={acc.id} className="cursor-pointer py-2">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        {logo ? (
+                          <img
+                            src={logo}
+                            alt=""
+                            className="h-4 w-4 rounded object-contain bg-white border border-slate-200 dark:border-slate-700 p-0.5 shrink-0"
+                          />
+                        ) : (
+                          <div className="h-4 w-4 rounded bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0">
+                            <Building2 className="h-3 w-3 text-slate-400" />
+                          </div>
+                        )}
+                        <span className="font-semibold text-slate-900 dark:text-white truncate">
+                          {firm?.name || "Sin Firma"}
+                        </span>
+                        {sizeFormatted && (
+                          <span className="text-xs text-slate-500 dark:text-slate-400 shrink-0 font-medium">
+                            - {sizeFormatted}
+                          </span>
+                        )}
+                        {detailsStr && (
+                          <span className="text-[11px] text-slate-400 dark:text-slate-500 truncate">
+                            {detailsStr}
+                          </span>
+                        )}
+                      </div>
+                    </SelectItem>
+                  );
+                })}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        {/* Right: View Mode Toggle */}
+        <div className="flex items-center justify-between sm:justify-end gap-2.5">
+          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider hidden sm:inline-block">
+            Vista:
+          </span>
+          <div className="flex items-center rounded-xl bg-slate-100 dark:bg-slate-800/80 p-1 border border-slate-200/80 dark:border-slate-700/80 shadow-2xs">
+            <button
+              type="button"
+              onClick={() => setViewMode("currency")}
+              className={cn(
+                "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer",
+                viewMode === "currency"
+                  ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
+                  : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+              )}
+            >
+              <CircleDollarSign className="h-3.5 w-3.5 text-slate-600 dark:text-slate-300" />
+              <span>Monetario (€)</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewMode("percentage")}
+              className={cn(
+                "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer",
+                viewMode === "percentage"
+                  ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
+                  : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+              )}
+            >
+              <Percent className="h-3.5 w-3.5 text-slate-600 dark:text-slate-300" />
+              <span>Porcentaje (%)</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
       {/* 4 MONTHLY KPI CARDS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* KPI 1: Net PnL of Month */}
@@ -378,11 +554,22 @@ function CalendarioContent() {
                   : "text-slate-900 dark:text-white"
               )}
             >
-              {isNetPositive ? "+" : ""}
-              {formatCurrency(monthSummary.totalNet)}
+              {viewMode === "percentage" ? (
+                <>
+                  {isNetPositive ? "+" : ""}
+                  {formatPercent(monthNetPercent)}
+                </>
+              ) : (
+                <>
+                  {isNetPositive ? "+" : ""}
+                  {formatCurrency(monthSummary.totalNet)}
+                </>
+              )}
             </div>
             <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 font-medium">
-              Balance neto de {MONTH_NAMES[currentMonth - 1]} {currentYear}
+              {viewMode === "percentage"
+                ? `${isNetPositive ? "+" : ""}${formatCurrency(monthSummary.totalNet)} (${baseCapital > 0 ? formatCurrency(baseCapital) : "s/ capital"})`
+                : `Balance neto de ${MONTH_NAMES[currentMonth - 1]} ${currentYear}`}
             </p>
           </div>
         </Card>
@@ -473,132 +660,168 @@ function CalendarioContent() {
         </Card>
       </div>
 
-      {/* MONTHLY CALENDAR GRID */}
+      {/* MONTHLY CALENDAR GRID OR EMPTY STATE */}
       <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 p-4 sm:p-6 shadow-xs">
-        {/* Weekday headers */}
-        <div className="grid grid-cols-7 gap-2 sm:gap-3 mb-3">
-          {WEEKDAY_NAMES.map((wName, idx) => {
-            const isWeekend = idx >= 5;
-            return (
-              <div
-                key={wName}
-                className={cn(
-                  "text-center py-2 text-xs font-bold uppercase tracking-wider",
-                  isWeekend
-                    ? "text-slate-400 dark:text-slate-500"
-                    : "text-slate-600 dark:text-slate-300"
-                )}
-              >
-                {wName}
-              </div>
-            );
-          })}
-        </div>
-
-        {/* 7-column calendar cells */}
-        <div className="grid grid-cols-7 gap-2 sm:gap-3">
-          {calendarCells.map((cell) => {
-            const hasActivity = cell.daily !== null && cell.daily.txCount > 0;
-            const net = cell.daily ? cell.daily.netProfit : 0;
-            const isGreen = hasActivity && net > 0;
-            const isRed = hasActivity && net < 0;
-            const isBreakeven = hasActivity && net === 0;
-
-            if (!cell.isCurrentMonth) {
-              return (
-                <div
-                  key={cell.dateKey}
-                  className="min-h-[90px] sm:min-h-[115px] rounded-2xl border border-slate-200/40 dark:border-slate-800/40 bg-slate-50/40 dark:bg-slate-950/20 p-2 sm:p-3 opacity-30 select-none cursor-default"
-                >
-                  <span className="text-xs font-medium text-slate-400">
-                    {cell.dayNumber}
-                  </span>
-                </div>
-              );
-            }
-
-            return (
-              <div
-                key={cell.dateKey}
-                onClick={() => handleCellClick(cell.daily, cell.dateKey)}
-                role={hasActivity ? "button" : undefined}
-                tabIndex={hasActivity ? 0 : undefined}
-                onKeyDown={(e) => {
-                  if (hasActivity && (e.key === "Enter" || e.key === " ")) {
-                    e.preventDefault();
-                    handleCellClick(cell.daily, cell.dateKey);
-                  }
-                }}
-                className={cn(
-                  "min-h-[95px] sm:min-h-[120px] rounded-2xl p-2.5 sm:p-3 flex flex-col justify-between transition-all duration-200",
-                  !hasActivity &&
-                    "bg-slate-50/50 dark:bg-slate-900/50 border border-slate-200/60 dark:border-slate-800/60 text-slate-400",
-                  isGreen &&
-                    "bg-emerald-50/60 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800/40 text-emerald-600 font-bold hover:scale-[1.02] hover:shadow-md hover:border-emerald-300 dark:hover:border-emerald-700/60 cursor-pointer",
-                  isRed &&
-                    "bg-rose-50/60 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-800/40 text-rose-600 font-bold hover:scale-[1.02] hover:shadow-md hover:border-rose-300 dark:hover:border-rose-700/60 cursor-pointer",
-                  isBreakeven &&
-                    "bg-slate-100/70 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold hover:scale-[1.02] hover:shadow-md cursor-pointer",
-                  cell.isToday && "ring-2 ring-blue-500/50"
-                )}
-              >
-                {/* Cell Top: Day number + Transactions pill */}
-                <div className="flex items-start justify-between gap-1">
-                  <div className="flex items-center gap-1.5">
-                    <span
-                      className={cn(
-                        "text-xs sm:text-sm font-bold tracking-tight",
-                        cell.isToday
-                          ? "h-6 w-6 rounded-full bg-blue-600 text-white flex items-center justify-center -ml-0.5"
-                          : hasActivity
-                          ? "text-slate-800 dark:text-slate-100"
-                          : "text-slate-400 dark:text-slate-500"
-                      )}
-                    >
-                      {cell.dayNumber}
-                    </span>
+        {selectedAccountId !== "all" && monthTxCount === 0 ? (
+          <div className="py-16 px-6 text-center flex flex-col items-center justify-center space-y-4">
+            <div className="h-16 w-16 rounded-2xl bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 flex items-center justify-center shadow-xs">
+              <Wallet className="h-8 w-8" />
+            </div>
+            <div className="space-y-1.5 max-w-md">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                Sin actividad en {MONTH_NAMES[currentMonth - 1]} {currentYear}
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                No se encontraron retiros ni gastos registrados para la cuenta seleccionada en este mes.
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setSelectedAccountId("all")}
+              className="h-9 px-4 text-xs font-semibold gap-2 bg-white dark:bg-slate-900 border-slate-200/80 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 shadow-xs cursor-pointer"
+            >
+              <RotateCcw className="h-3.5 w-3.5 text-slate-500" />
+              Restablecer a todas las cuentas
+            </Button>
+          </div>
+        ) : (
+          <>
+            {/* Weekday headers */}
+            <div className="grid grid-cols-7 gap-2 sm:gap-3 mb-3">
+              {WEEKDAY_NAMES.map((wName, idx) => {
+                const isWeekend = idx >= 5;
+                return (
+                  <div
+                    key={wName}
+                    className={cn(
+                      "text-center py-2 text-xs font-bold uppercase tracking-wider",
+                      isWeekend
+                        ? "text-slate-400 dark:text-slate-500"
+                        : "text-slate-600 dark:text-slate-300"
+                    )}
+                  >
+                    {wName}
                   </div>
+                );
+              })}
+            </div>
 
-                  {hasActivity && cell.daily && (
-                    <Badge
-                      variant="outline"
-                      className={cn(
-                        "text-[10px] px-1.5 py-0 h-4 border shrink-0 font-medium",
-                        isGreen &&
-                          "bg-emerald-100/70 dark:bg-emerald-950/50 border-emerald-300 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300",
-                        isRed &&
-                          "bg-rose-100/70 dark:bg-rose-950/50 border-rose-300 dark:border-rose-800 text-rose-700 dark:text-rose-300",
-                        isBreakeven &&
-                          "bg-slate-200/70 dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300"
-                      )}
-                    >
-                      {cell.daily.txCount} {cell.daily.txCount === 1 ? "mov" : "movs"}
-                    </Badge>
-                  )}
-                </div>
+            {/* 7-column calendar cells */}
+            <div className="grid grid-cols-7 gap-2 sm:gap-3">
+              {calendarCells.map((cell) => {
+                const hasActivity = cell.daily !== null && cell.daily.txCount > 0;
+                const net = cell.daily ? cell.daily.netProfit : 0;
+                const isGreen = hasActivity && net > 0;
+                const isRed = hasActivity && net < 0;
+                const isBreakeven = hasActivity && net === 0;
 
-                {/* Cell Bottom: Daily Net Profit */}
-                {hasActivity && cell.daily ? (
-                  <div className="mt-2 text-right">
+                if (!cell.isCurrentMonth) {
+                  return (
                     <div
-                      className={cn(
-                        "text-xs sm:text-base font-extrabold tracking-tight tabular-nums",
-                        isGreen && "text-emerald-600 dark:text-emerald-400",
-                        isRed && "text-rose-600 dark:text-rose-400",
-                        isBreakeven && "text-slate-600 dark:text-slate-300"
-                      )}
+                      key={cell.dateKey}
+                      className="min-h-[90px] sm:min-h-[115px] rounded-2xl border border-slate-200/40 dark:border-slate-800/40 bg-slate-50/40 dark:bg-slate-950/20 p-2 sm:p-3 opacity-30 select-none cursor-default"
                     >
-                      {net > 0 ? "+" : ""}
-                      {formatCurrency(net)}
+                      <span className="text-xs font-medium text-slate-400">
+                        {cell.dayNumber}
+                      </span>
                     </div>
+                  );
+                }
+
+                return (
+                  <div
+                    key={cell.dateKey}
+                    onClick={() => handleCellClick(cell.daily, cell.dateKey)}
+                    role={hasActivity ? "button" : undefined}
+                    tabIndex={hasActivity ? 0 : undefined}
+                    onKeyDown={(e) => {
+                      if (hasActivity && (e.key === "Enter" || e.key === " ")) {
+                        e.preventDefault();
+                        handleCellClick(cell.daily, cell.dateKey);
+                      }
+                    }}
+                    className={cn(
+                      "min-h-[95px] sm:min-h-[120px] rounded-2xl p-2.5 sm:p-3 flex flex-col justify-between transition-all duration-200",
+                      !hasActivity &&
+                        "bg-slate-50/50 dark:bg-slate-900/50 border border-slate-200/60 dark:border-slate-800/60 text-slate-400",
+                      isGreen &&
+                        "bg-emerald-50/60 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800/40 text-emerald-600 font-bold hover:scale-[1.02] hover:shadow-md hover:border-emerald-300 dark:hover:border-emerald-700/60 cursor-pointer",
+                      isRed &&
+                        "bg-rose-50/60 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-800/40 text-rose-600 font-bold hover:scale-[1.02] hover:shadow-md hover:border-rose-300 dark:hover:border-rose-700/60 cursor-pointer",
+                      isBreakeven &&
+                        "bg-slate-100/70 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold hover:scale-[1.02] hover:shadow-md cursor-pointer",
+                      cell.isToday && "ring-2 ring-blue-500/50"
+                    )}
+                  >
+                    {/* Cell Top: Day number + Transactions pill */}
+                    <div className="flex items-start justify-between gap-1">
+                      <div className="flex items-center gap-1.5">
+                        <span
+                          className={cn(
+                            "text-xs sm:text-sm font-bold tracking-tight",
+                            cell.isToday
+                              ? "h-6 w-6 rounded-full bg-blue-600 text-white flex items-center justify-center -ml-0.5"
+                              : hasActivity
+                              ? "text-slate-800 dark:text-slate-100"
+                              : "text-slate-400 dark:text-slate-500"
+                          )}
+                        >
+                          {cell.dayNumber}
+                        </span>
+                      </div>
+
+                      {hasActivity && cell.daily && (
+                        <Badge
+                          variant="outline"
+                          className={cn(
+                            "text-[10px] px-1.5 py-0 h-4 border shrink-0 font-medium",
+                            isGreen &&
+                              "bg-emerald-100/70 dark:bg-emerald-950/50 border-emerald-300 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300",
+                            isRed &&
+                              "bg-rose-100/70 dark:bg-rose-950/50 border-rose-300 dark:border-rose-800 text-rose-700 dark:text-rose-300",
+                            isBreakeven &&
+                              "bg-slate-200/70 dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300"
+                          )}
+                        >
+                          {cell.daily.txCount} {cell.daily.txCount === 1 ? "mov" : "movs"}
+                        </Badge>
+                      )}
+                    </div>
+
+                    {/* Cell Bottom: Daily Net Profit */}
+                    {hasActivity && cell.daily ? (
+                      <div className="mt-2 text-right">
+                        <div
+                          className={cn(
+                            "text-xs sm:text-base font-extrabold tracking-tight tabular-nums",
+                            isGreen && "text-emerald-600 dark:text-emerald-400",
+                            isRed && "text-rose-600 dark:text-rose-400",
+                            isBreakeven && "text-slate-600 dark:text-slate-300"
+                          )}
+                        >
+                          {viewMode === "percentage" ? (
+                            <>
+                              {net > 0 ? "+" : ""}
+                              {formatPercent(baseCapital > 0 ? (net / baseCapital) * 100 : 0)}
+                            </>
+                          ) : (
+                            <>
+                              {net > 0 ? "+" : ""}
+                              {formatCurrency(net)}
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="h-4" />
+                    )}
                   </div>
-                ) : (
-                  <div className="h-4" />
-                )}
-              </div>
-            );
-          })}
-        </div>
+                );
+              })}
+            </div>
+          </>
+        )}
       </div>
 
       {/* DETAIL SHEET FOR SELECTED DAY */}

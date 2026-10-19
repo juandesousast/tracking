@@ -1,18 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { ResponsiveModal } from "./responsive-modal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import { PropFirm } from "@/types/database";
-import { Building2, Loader2 } from "lucide-react";
+import { Building2, Loader2, Sparkles } from "lucide-react";
+import { KNOWN_PROP_FIRMS, findKnownPropFirm } from "@/lib/constants/prop-firms";
 
 interface EditFirmModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   firm: PropFirm | null;
-  onSubmit: (id: string, firm: { name: string; website: string | null }) => Promise<void> | void;
+  onSubmit: (id: string, firm: { name: string; website: string | null; logo_url?: string | null }) => Promise<void> | void;
 }
 
 export function EditFirmModal({
@@ -33,6 +35,27 @@ export function EditFirmModal({
     }
   }, [firm]);
 
+  // Real-time detection of known prop firm
+  const matchedFirm = useMemo(() => findKnownPropFirm(name), [name]);
+
+  // Suggestions for autocomplete when typing
+  const suggestions = useMemo(() => {
+    const q = name.trim().toLowerCase();
+    if (q.length < 2) return [];
+    return KNOWN_PROP_FIRMS.filter(
+      (kf) =>
+        kf.name.toLowerCase().includes(q) ||
+        kf.aliases.some((a) => a.toLowerCase().includes(q))
+    ).slice(0, 4);
+  }, [name]);
+
+  const handleSelectSuggestion = (suggested: (typeof KNOWN_PROP_FIRMS)[number]) => {
+    setName(suggested.name);
+    if (!website) {
+      setWebsite(suggested.website);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!firm) return;
@@ -46,7 +69,8 @@ export function EditFirmModal({
     try {
       await onSubmit(firm.id, {
         name: name.trim(),
-        website: website.trim() ? website.trim() : null,
+        website: website.trim() ? website.trim() : (matchedFirm ? matchedFirm.website : null),
+        logo_url: matchedFirm ? matchedFirm.logoUrl : (firm.logo_url || null),
       });
       onOpenChange(false);
     } catch (err) {
@@ -76,11 +100,76 @@ export function EditFirmModal({
           </Label>
           <Input
             id="edit-firm-name"
-            placeholder="ej. FTMO, FundedNext, 5%ers"
+            placeholder="ej. Apex Trader Funding, Topstep, FTMO..."
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="h-9 text-xs"
+            autoComplete="off"
           />
+
+          {/* Known Firm Autocomplete Suggestions */}
+          {suggestions.length > 0 && (!matchedFirm || matchedFirm.name.toLowerCase() !== name.trim().toLowerCase()) && (
+            <div className="flex flex-wrap items-center gap-1.5 pt-1">
+              <span className="text-[11px] text-slate-400 dark:text-slate-500 font-medium mr-1">
+                Sugerencias:
+              </span>
+              {suggestions.map((kf) => (
+                <button
+                  type="button"
+                  key={kf.id}
+                  onClick={() => handleSelectSuggestion(kf)}
+                  className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-medium bg-slate-100 hover:bg-blue-50 dark:bg-slate-800 dark:hover:bg-blue-950/40 text-slate-700 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-400 border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer"
+                >
+                  <img
+                    src={kf.logoUrl}
+                    alt=""
+                    className="h-3.5 w-3.5 rounded object-contain shrink-0 bg-white"
+                  />
+                  <span>{kf.name}</span>
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Real-Time Detected Firm Preview */}
+          {matchedFirm && (
+            <div className="mt-2 p-2.5 rounded-xl border border-blue-100 dark:border-blue-900/40 bg-blue-50/50 dark:bg-blue-950/20 flex items-center justify-between gap-3 animate-in fade-in-50 duration-200">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <img
+                  src={matchedFirm.logoUrl}
+                  alt={matchedFirm.name}
+                  className="h-7 w-7 rounded-lg object-contain bg-white border border-blue-200 dark:border-blue-800 p-0.5 shrink-0 shadow-2xs"
+                />
+                <div className="truncate">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs font-semibold text-slate-900 dark:text-white truncate">
+                      {matchedFirm.name}
+                    </span>
+                    <Badge
+                      variant="secondary"
+                      className="text-[10px] h-4 px-1.5 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 border-none font-medium gap-1"
+                    >
+                      <Sparkles className="h-2.5 w-2.5 text-blue-500" />
+                      Logo Oficial
+                    </Badge>
+                  </div>
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate">
+                    {matchedFirm.website}
+                  </p>
+                </div>
+              </div>
+
+              {!website && (
+                <button
+                  type="button"
+                  onClick={() => setWebsite(matchedFirm.website)}
+                  className="text-[11px] font-semibold text-blue-600 dark:text-blue-400 hover:underline shrink-0"
+                >
+                  Usar web
+                </button>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="space-y-1.5">
@@ -90,7 +179,7 @@ export function EditFirmModal({
           <Input
             id="edit-firm-website"
             type="url"
-            placeholder="https://ftmo.com"
+            placeholder="https://apextraderfunding.com"
             value={website}
             onChange={(e) => setWebsite(e.target.value)}
             className="h-9 text-xs"

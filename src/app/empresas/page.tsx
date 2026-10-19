@@ -44,6 +44,7 @@ import {
   Wallet,
   ExternalLink,
 } from "lucide-react";
+import { getPropFirmLogo } from "@/lib/constants/prop-firms";
 
 export default function EmpresasPage() {
   const [isLoading, setIsLoading] = useState(true);
@@ -80,7 +81,11 @@ export default function EmpresasPage() {
   }, [loadData]);
 
   // Firm handlers
-  const handleAddFirm = async (firmData: { name: string; website: string | null }) => {
+  const handleAddFirm = async (firmData: {
+    name: string;
+    website: string | null;
+    logo_url?: string | null;
+  }) => {
     try {
       const created = await addFirm(firmData);
       setFirms((prev) => [created, ...prev]);
@@ -91,7 +96,7 @@ export default function EmpresasPage() {
 
   const handleUpdateFirm = async (
     id: string,
-    firmData: { name: string; website: string | null }
+    firmData: { name: string; website: string | null; logo_url?: string | null }
   ) => {
     try {
       const updated = await updateFirm(id, firmData);
@@ -154,153 +159,192 @@ export default function EmpresasPage() {
       {isLoading ? (
         <PageSkeleton />
       ) : (
-        <div className="space-y-6">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-              <Building2 className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-              Empresas de Fondeo
-            </h1>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-              Catálogo de firmas de prop trading registradas para tus cuentas y evaluaciones.
-            </p>
+        <div className="space-y-8 max-w-7xl mx-auto pb-12">
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-3">
+                <div className="h-9 w-9 rounded-xl bg-blue-50 dark:bg-blue-950/50 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                  <Building2 className="h-5 w-5" />
+                </div>
+                Empresas de Fondeo
+              </h1>
+              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+                Catálogo de firmas registradas con detección automática de logos y vinculación de cuentas.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={loadData}
+                className="h-10 text-xs font-semibold gap-1.5 bg-white dark:bg-slate-900 border-slate-200/80 dark:border-slate-800 shadow-xs"
+              >
+                <RefreshCw className="h-3.5 w-3.5 text-slate-500" />
+                Actualizar
+              </Button>
+              <Button
+                size="sm"
+                onClick={() => setIsAddFirmOpen(true)}
+                className="h-10 gap-1.5 font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-xs"
+              >
+                <Plus className="h-4 w-4" />
+                Nueva Empresa
+              </Button>
+            </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={loadData}
-              className="text-xs font-semibold gap-1.5 bg-white dark:bg-slate-900"
-            >
-              <RefreshCw className="h-3.5 w-3.5" />
-              Actualizar
-            </Button>
-            <Button
-              size="sm"
-              onClick={() => setIsAddFirmOpen(true)}
-              className="gap-1.5 font-semibold bg-blue-600 hover:bg-blue-700 text-white"
-            >
-              <Plus className="h-4 w-4" />
-              Nueva Empresa
-            </Button>
+          {/* Search Bar & Quick Metrics */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
+            <div className="relative flex-1">
+              <input
+                type="text"
+                placeholder="Buscar por nombre o sitio web de la firma..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 px-3.5 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+              />
+            </div>
+            <div className="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400 px-1">
+              <span>{firms.length} {firms.length === 1 ? "firma" : "firmas"}</span>
+              <span>•</span>
+              <span>{accounts.length} {accounts.length === 1 ? "cuenta" : "cuentas"}</span>
+            </div>
           </div>
-        </div>
 
-        {/* Search Bar */}
-        <div className="flex items-center gap-3 bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200/60 dark:border-slate-800 shadow-xs">
-          <input
-            type="text"
-            placeholder="Buscar por nombre o sitio web..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="flex-1 h-9 rounded-lg border border-slate-200 dark:border-slate-800 bg-background px-3 text-xs focus:outline-none"
-          />
-        </div>
-
-        {/* Content */}
-        {filteredFirms.length === 0 ? (
-          <div className="text-center py-12 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/60 dark:border-slate-800">
-            <Building2 className="h-10 w-10 text-slate-400 mx-auto mb-3" />
-            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
-              No hay empresas de fondeo registradas
-            </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">
-              Crea tu primera empresa de fondeo para asociar cuentas de trading.
-            </p>
-            <Button size="sm" onClick={() => setIsAddFirmOpen(true)} className="text-xs">
-              <Plus className="h-3.5 w-3.5 mr-1" />
-              Agregar Empresa
-            </Button>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredFirms.map((firm) => {
-              const accCount = accountCountByFirm.get(firm.id) || 0;
-              return (
-                <Card
-                  key={firm.id}
-                  className="bg-white dark:bg-slate-900 border-slate-200/60 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-all shadow-xs rounded-2xl overflow-hidden flex flex-col justify-between"
+          {/* Content */}
+          {filteredFirms.length === 0 ? (
+            <div className="text-center py-16 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-4">
+              <div className="h-14 w-14 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center mx-auto text-slate-400">
+                <Building2 className="h-7 w-7" />
+              </div>
+              <div className="space-y-1">
+                <h3 className="text-base font-semibold text-slate-900 dark:text-white">
+                  {searchQuery ? "No se encontraron firmas coincidentes" : "No hay empresas de fondeo registradas"}
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
+                  {searchQuery
+                    ? `No se encontraron resultados para "${searchQuery}". Intenta con otro término de búsqueda.`
+                    : "Crea tu primera empresa de fondeo para asociar tus cuentas de trading y llevar el control de tus finanzas."}
+                </p>
+              </div>
+              {searchQuery ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setSearchQuery("")}
+                  className="text-xs font-semibold"
                 >
-                  <CardHeader className="p-6 pb-3 flex flex-row items-center justify-between space-y-0">
-                    <div className="flex items-center gap-3.5 truncate">
-                      {firm.logo_url ? (
-                        <img
-                          src={firm.logo_url}
-                          alt={firm.name}
-                          className="h-10 w-10 rounded-xl bg-white border border-slate-200 dark:border-slate-800 p-1 object-contain shrink-0"
-                        />
-                      ) : (
-                        <div className="h-10 w-10 rounded-xl bg-blue-50 dark:bg-blue-950/50 flex items-center justify-center shrink-0">
-                          <Building2 className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                  Limpiar búsqueda
+                </Button>
+              ) : (
+                <Button
+                  size="sm"
+                  onClick={() => setIsAddFirmOpen(true)}
+                  className="text-xs bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  <Plus className="h-3.5 w-3.5 mr-1.5" />
+                  Agregar Empresa
+                </Button>
+              )}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredFirms.map((firm) => {
+                const accCount = accountCountByFirm.get(firm.id) || 0;
+                // Automatically resolve official logo for any known prop firm (Apex, Topstep, FTMO, etc.)
+                const resolvedLogo = getPropFirmLogo(firm.name, firm.logo_url);
+
+                return (
+                  <Card
+                    key={firm.id}
+                    className="bg-white dark:bg-slate-900 border-slate-200/80 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-200 shadow-xs hover:shadow-md rounded-2xl overflow-hidden flex flex-col justify-between"
+                  >
+                    <CardHeader className="p-6 pb-4 flex flex-row items-center justify-between space-y-0">
+                      <div className="flex items-center gap-3.5 truncate">
+                        {resolvedLogo ? (
+                          <div className="h-11 w-11 rounded-xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 p-1.5 flex items-center justify-center shrink-0 shadow-2xs">
+                            <img
+                              src={resolvedLogo}
+                              alt={firm.name}
+                              className="h-full w-full object-contain rounded"
+                              onError={(e) => {
+                                // Fallback on image load error
+                                (e.currentTarget as HTMLElement).style.display = 'none';
+                              }}
+                            />
+                          </div>
+                        ) : (
+                          <div className="h-11 w-11 rounded-xl bg-blue-50 dark:bg-blue-950/50 border border-blue-100 dark:border-blue-900/40 flex items-center justify-center shrink-0 shadow-2xs">
+                            <Building2 className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                          </div>
+                        )}
+                        <div className="truncate">
+                          <CardTitle className="text-base font-bold text-slate-900 dark:text-white truncate">
+                            {firm.name}
+                          </CardTitle>
+                          {firm.website ? (
+                            <a
+                              href={firm.website.startsWith("http") ? firm.website : `https://${firm.website}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 text-[11px] text-blue-600 dark:text-blue-400 hover:underline truncate max-w-full font-medium"
+                            >
+                              <span className="truncate">{firm.website.replace(/^https?:\/\/(www\.)?/, "")}</span>
+                              <ExternalLink className="h-2.5 w-2.5 shrink-0 opacity-70" />
+                            </a>
+                          ) : (
+                            <span className="text-[11px] text-slate-400 dark:text-slate-500 italic block">
+                              Sin sitio web
+                            </span>
+                          )}
                         </div>
-                      )}
-                      <CardTitle className="text-base font-bold text-slate-900 dark:text-white truncate">
-                        {firm.name}
-                      </CardTitle>
-                    </div>
-
-                    <DropdownMenu>
-                      <DropdownMenuTrigger render={<Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 shrink-0" />}>
-                        <MoreVertical className="h-4 w-4" />
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-36 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
-                        <DropdownMenuItem onClick={() => setEditingFirm(firm)} className="gap-2 text-xs cursor-pointer">
-                          <Pencil className="h-3.5 w-3.5" />
-                          <span>Editar</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => setDeletingId(firm.id)} className="gap-2 text-xs text-rose-600 cursor-pointer">
-                          <Trash2 className="h-3.5 w-3.5" />
-                          <span>Eliminar</span>
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </CardHeader>
-
-                  <CardContent className="px-6 pb-6 pt-2 flex-1 flex flex-col justify-between space-y-5">
-                    <div className="space-y-2">
-                      {firm.website ? (
-                        <a
-                          href={firm.website.startsWith("http") ? firm.website : `https://${firm.website}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 text-xs text-blue-600 dark:text-blue-400 hover:underline truncate max-w-full"
-                        >
-                          <Globe className="h-3.5 w-3.5 shrink-0" />
-                          <span className="truncate">{firm.website}</span>
-                          <ExternalLink className="h-3 w-3 shrink-0 opacity-70" />
-                        </a>
-                      ) : (
-                        <p className="text-xs text-slate-400 italic">Sin sitio web registrado</p>
-                      )}
-                    </div>
-
-                    <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                      <div className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-300 font-medium">
-                        <Wallet className="h-3.5 w-3.5 text-slate-400" />
-                        <span>
-                          {accCount} {accCount === 1 ? "cuenta asociada" : "cuentas asociadas"}
-                        </span>
                       </div>
 
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setQuickCreateAccountFirm(firm)}
-                        className="h-7 text-[11px] px-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/40 gap-1 font-semibold"
-                      >
-                        <Plus className="h-3 w-3" />
-                        Crear Cuenta
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        )}
-      </div>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger render={<Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 shrink-0" />}>
+                          <MoreVertical className="h-4 w-4" />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-36 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-lg rounded-xl">
+                          <DropdownMenuItem onClick={() => setEditingFirm(firm)} className="gap-2 text-xs cursor-pointer font-medium">
+                            <Pencil className="h-3.5 w-3.5" />
+                            <span>Editar</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => setDeletingId(firm.id)} className="gap-2 text-xs text-rose-600 dark:text-rose-400 cursor-pointer font-medium">
+                            <Trash2 className="h-3.5 w-3.5" />
+                            <span>Eliminar</span>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </CardHeader>
+
+                    <CardContent className="px-6 pb-6 pt-2 flex-1 flex flex-col justify-end space-y-4">
+                      <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
+                        <div className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-300 font-medium">
+                          <Wallet className="h-3.5 w-3.5 text-slate-400" />
+                          <span>
+                            {accCount} {accCount === 1 ? "cuenta" : "cuentas"}
+                          </span>
+                        </div>
+
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setQuickCreateAccountFirm(firm)}
+                          className="h-8 text-xs px-2.5 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/40 gap-1 font-semibold rounded-lg"
+                        >
+                          <Plus className="h-3.5 w-3.5" />
+                          Crear Cuenta
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          )}
+        </div>
       )}
 
       {/* Modals */}

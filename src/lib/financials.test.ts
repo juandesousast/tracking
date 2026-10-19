@@ -13,9 +13,12 @@ import {
   filterTransactions,
   calculatePeriodComparison,
   getDailyPnLMap,
+  getFilteredDailyPnLMap,
   getMonthPnLSummary,
+  getAccountPnLMetrics,
 } from './financials';
 import { formatCurrency, formatPercent, formatNumber } from './formatters';
+import { getPropFirmLogo, KNOWN_PROP_FIRMS } from './constants/prop-firms';
 import { Expense, Withdrawal, PropFirm, Account } from '../types/database';
 
 describe('Formatters es-ES', () => {
@@ -792,7 +795,214 @@ describe('Financial Calculations', () => {
         expect(summary.winRateDaysPercent).toBe(0);
       });
     });
+
+    describe('getDailyPnLMap and getFilteredDailyPnLMap with account filtering', () => {
+      const expenses: Expense[] = [
+        { id: 'e1', user_id: 'u1', firm_id: 'f1', account_id: 'acc-1', amount: 150, category: 'evaluation', description: 'Eval 1', date: '2026-05-10', created_at: '2026-05-10' },
+        { id: 'e2', user_id: 'u1', firm_id: 'f1', account_id: 'acc-2', amount: 200, category: 'activation', description: 'Activation 2', date: '2026-05-10', created_at: '2026-05-10' },
+        { id: 'e3', user_id: 'u1', firm_id: 'f2', account_id: 'acc-1', amount: 50, category: 'reset', description: 'Reset 1', date: '2026-05-11', created_at: '2026-05-11' },
+      ];
+
+      const withdrawals: Withdrawal[] = [
+        { id: 'w1', user_id: 'u1', firm_id: 'f1', account_id: 'acc-1', gross_amount: 1000, fee_amount: 50, net_amount: 950, status: 'completed', date: '2026-05-10', created_at: '2026-05-10' },
+        { id: 'w2', user_id: 'u1', firm_id: 'f1', account_id: 'acc-2', gross_amount: 2000, fee_amount: 100, net_amount: 1900, status: 'completed', date: '2026-05-10', created_at: '2026-05-10' },
+      ];
+
+      it('should filter daily PnL map by specific account_id', () => {
+        const mapAcc1 = getDailyPnLMap(expenses, withdrawals, 'acc-1');
+
+        const day10 = mapAcc1.get('2026-05-10');
+        expect(day10).toBeDefined();
+        expect(day10?.totalExpenses).toBe(150);
+        expect(day10?.totalWithdrawals).toBe(950);
+        expect(day10?.netProfit).toBe(800);
+        expect(day10?.txCount).toBe(2);
+
+        const day11 = mapAcc1.get('2026-05-11');
+        expect(day11).toBeDefined();
+        expect(day11?.totalExpenses).toBe(50);
+        expect(day11?.totalWithdrawals).toBe(0);
+        expect(day11?.netProfit).toBe(-50);
+      });
+
+      it('should return identical results via getFilteredDailyPnLMap helper', () => {
+        const mapViaFiltered = getFilteredDailyPnLMap(expenses, withdrawals, 'acc-2');
+        const day10 = mapViaFiltered.get('2026-05-10');
+
+        expect(day10).toBeDefined();
+        expect(day10?.totalExpenses).toBe(200);
+        expect(day10?.totalWithdrawals).toBe(1900);
+        expect(day10?.netProfit).toBe(1700);
+        expect(day10?.txCount).toBe(2);
+
+        // May 11 should not exist for acc-2
+        expect(mapViaFiltered.has('2026-05-11')).toBe(false);
+      });
+
+      it('should include all accounts when accountId is "all" or undefined', () => {
+        const mapAll = getDailyPnLMap(expenses, withdrawals, 'all');
+        const mapUndefined = getDailyPnLMap(expenses, withdrawals);
+
+        const day10 = mapAll.get('2026-05-10');
+        expect(day10?.totalExpenses).toBe(350); // 150 + 200
+        expect(day10?.totalWithdrawals).toBe(2850); // 950 + 1900
+        expect(day10?.netProfit).toBe(2500);
+
+        expect(mapUndefined.get('2026-05-10')?.netProfit).toBe(day10?.netProfit);
+      });
+
+      it('should return an empty map when accountId does not match any transactions', () => {
+        const mapNonExistent = getFilteredDailyPnLMap(expenses, withdrawals, 'non-existent-acc');
+        expect(mapNonExistent.size).toBe(0);
+      });
+    });
+
+    describe('getAccountPnLMetrics', () => {
+      const expenses: Expense[] = [
+        { id: 'e1', user_id: 'u1', firm_id: 'f1', account_id: 'acc-A', amount: 300, category: 'evaluation', description: null, date: '2026-06-01', created_at: '2026-06-01' },
+        { id: 'e2', user_id: 'u1', firm_id: 'f1', account_id: 'acc-A', amount: 100, category: 'activation', description: null, date: '2026-06-05', created_at: '2026-06-05' },
+        { id: 'e3', user_id: 'u1', firm_id: 'f2', account_id: 'acc-B', amount: 500, category: 'evaluation', description: null, date: '2026-06-02', created_at: '2026-06-02' },
+      ];
+
+      const withdrawals: Withdrawal[] = [
+        { id: 'w1', user_id: 'u1', firm_id: 'f1', account_id: 'acc-A', gross_amount: 1500, fee_amount: 100, net_amount: 1400, status: 'completed', date: '2026-06-15', created_at: '2026-06-15' },
+        { id: 'w2', user_id: 'u1', firm_id: 'f2', account_id: 'acc-B', gross_amount: 800, fee_amount: 50, net_amount: 750, status: 'completed', date: '2026-06-20', created_at: '2026-06-20' },
+      ];
+
+      it('should calculate accurate metrics for a specific account', () => {
+        const metricsA = getAccountPnLMetrics(expenses, withdrawals, 'acc-A');
+
+        expect(metricsA.accountId).toBe('acc-A');
+        expect(metricsA.totalExpenses).toBe(400); // 300 + 100
+        expect(metricsA.grossWithdrawals).toBe(1500);
+        expect(metricsA.totalFees).toBe(100);
+        expect(metricsA.netWithdrawals).toBe(1400);
+        expect(metricsA.netProfit).toBe(1000); // 1400 - 400
+        expect(metricsA.roiPercentage).toBe(250); // (1000 / 400) * 100
+        expect(metricsA.expenseCount).toBe(2);
+        expect(metricsA.withdrawalCount).toBe(1);
+        expect(metricsA.totalTransactions).toBe(3);
+      });
+
+      it('should aggregate all accounts when accountId is "all" or undefined', () => {
+        const metricsAll = getAccountPnLMetrics(expenses, withdrawals, 'all');
+
+        expect(metricsAll.accountId).toBe('all');
+        expect(metricsAll.totalExpenses).toBe(900); // 400 + 500
+        expect(metricsAll.grossWithdrawals).toBe(2300); // 1500 + 800
+        expect(metricsAll.totalFees).toBe(150); // 100 + 50
+        expect(metricsAll.netWithdrawals).toBe(2150); // 1400 + 750
+        expect(metricsAll.netProfit).toBe(1250); // 2150 - 900
+        expect(metricsAll.expenseCount).toBe(3);
+        expect(metricsAll.withdrawalCount).toBe(2);
+        expect(metricsAll.totalTransactions).toBe(5);
+
+        const metricsUndefined = getAccountPnLMetrics(expenses, withdrawals);
+        expect(metricsUndefined.netProfit).toBe(1250);
+        expect(metricsUndefined.totalTransactions).toBe(5);
+      });
+
+      it('should handle account with zero transactions defensively without NaN', () => {
+        const emptyMetrics = getAccountPnLMetrics(expenses, withdrawals, 'empty-account');
+
+        expect(emptyMetrics.totalExpenses).toBe(0);
+        expect(emptyMetrics.grossWithdrawals).toBe(0);
+        expect(emptyMetrics.netWithdrawals).toBe(0);
+        expect(emptyMetrics.netProfit).toBe(0);
+        expect(emptyMetrics.roiPercentage).toBe(0);
+        expect(emptyMetrics.expenseCount).toBe(0);
+        expect(emptyMetrics.withdrawalCount).toBe(0);
+        expect(emptyMetrics.totalTransactions).toBe(0);
+      });
+
+      it('should calculate -100% ROI when an account has expenses but zero withdrawals', () => {
+        const lossExpenses: Expense[] = [
+          { id: 'e1', user_id: 'u1', firm_id: 'f1', account_id: 'acc-loss', amount: 200, category: 'evaluation', description: null, date: '2026-06-01', created_at: '2026-06-01' },
+        ];
+        const metrics = getAccountPnLMetrics(lossExpenses, [], 'acc-loss');
+
+        expect(metrics.totalExpenses).toBe(200);
+        expect(metrics.netWithdrawals).toBe(0);
+        expect(metrics.netProfit).toBe(-200);
+        expect(metrics.roiPercentage).toBe(-100);
+      });
+    });
+
+    describe('getPropFirmLogo and Prop Firms Catalog', () => {
+      it('should prioritize customLogoUrl if provided', () => {
+        const customUrl = 'https://custom-storage.supabase.co/logos/my-apex.png';
+        const logo = getPropFirmLogo('Apex Trader Funding', customUrl);
+        expect(logo).toBe(customUrl);
+      });
+
+      it('should trim customLogoUrl and ignore empty string', () => {
+        const logo = getPropFirmLogo('Topstep', '   ');
+        expect(logo).toContain('topstep.com');
+      });
+
+      it('should lookup known firms case-insensitively', () => {
+        expect(getPropFirmLogo('apex trader funding')).toContain('apextraderfunding.com');
+        expect(getPropFirmLogo('TOPSTEP')).toContain('topstep.com');
+        expect(getPropFirmLogo('FtMo')).toContain('ftmo.com');
+        expect(getPropFirmLogo('fundednext')).toContain('fundednext.com');
+      });
+
+      it('should resolve key prop firms required by Tradelio spec', () => {
+        const firmsToVerify = [
+          { name: 'Apex Trader Funding', domain: 'apextraderfunding.com' },
+          { name: 'Topstep', domain: 'topstep.com' },
+          { name: 'FTMO', domain: 'ftmo.com' },
+          { name: 'FundedNext', domain: 'fundednext.com' },
+          { name: 'Alpha Futures', domain: 'alphafutures.com' },
+          { name: 'Aqua Futures', domain: 'aquafutures.com' },
+          { name: 'Bulenox', domain: 'bulenox.com' },
+          { name: 'E8 Futures', domain: 'e8markets.com' },
+          { name: 'Earn2Trade', domain: 'earn2trade.com' },
+          { name: 'BluSky', domain: 'blusky.pro' },
+        ];
+
+        for (const firm of firmsToVerify) {
+          const logo = getPropFirmLogo(firm.name);
+          expect(logo).toBeTruthy();
+          expect(logo).toContain(firm.domain);
+        }
+      });
+
+      it('should match known aliases and abbreviations', () => {
+        expect(getPropFirmLogo('Apex')).toContain('apextraderfunding.com');
+        expect(getPropFirmLogo('TopstepX')).toContain('topstep.com');
+        expect(getPropFirmLogo('E8')).toContain('e8markets.com');
+        expect(getPropFirmLogo('TPT')).toContain('takeprofittrader.com');
+        expect(getPropFirmLogo('MFF')).toContain('myfundedfutures.com');
+      });
+
+      it('should match tolerantly when firm name has extra suffix', () => {
+        expect(getPropFirmLogo('Topstep LLC')).toContain('topstep.com');
+        expect(getPropFirmLogo('Apex Trader Funding Evaluation')).toContain('apextraderfunding.com');
+      });
+
+      it('should return null for unknown prop firms', () => {
+        expect(getPropFirmLogo('NonExistentPropFirmXYZ_12345')).toBeNull();
+      });
+
+      it('should return null for empty or invalid inputs', () => {
+        expect(getPropFirmLogo('')).toBeNull();
+        expect(getPropFirmLogo('   ')).toBeNull();
+      });
+
+      it('catalog should contain high-resolution metadata for all entries', () => {
+        expect(KNOWN_PROP_FIRMS.length).toBeGreaterThanOrEqual(15);
+        for (const firm of KNOWN_PROP_FIRMS) {
+          expect(firm.id).toBeTruthy();
+          expect(firm.name).toBeTruthy();
+          expect(firm.website).toMatch(/^https:\/\//);
+          expect(firm.logoUrl).toMatch(/^https:\/\//);
+          expect(Array.isArray(firm.aliases)).toBe(true);
+        }
+      });
+    });
   });
 });
+
 
 

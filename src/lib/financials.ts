@@ -375,15 +375,63 @@ export interface MonthPnLSummary {
   breakevenDaysCount: number;
   winRateDaysPercent: number;
 }
+export interface AccountPnLMetrics extends FinancialSummary {
+  accountId?: string | 'all';
+  expenseCount: number;
+  withdrawalCount: number;
+  totalTransactions: number;
+}
+
+/**
+ * Computes accumulated financial metrics for a specific account or across all accounts.
+ * If accountId is provided and not 'all', filters expenses and withdrawals by account_id === accountId.
+ */
+export function getAccountPnLMetrics(
+  expenses: Expense[],
+  withdrawals: Withdrawal[],
+  accountId?: string | 'all'
+): AccountPnLMetrics {
+  const filteredExpenses =
+    accountId && accountId !== 'all'
+      ? expenses.filter((e) => e.account_id === accountId)
+      : expenses;
+
+  const filteredWithdrawals =
+    accountId && accountId !== 'all'
+      ? withdrawals.filter((w) => w.account_id === accountId)
+      : withdrawals;
+
+  const summary = calculateFinancialSummary(filteredExpenses, filteredWithdrawals);
+
+  return {
+    ...summary,
+    accountId,
+    expenseCount: filteredExpenses.length,
+    withdrawalCount: filteredWithdrawals.length,
+    totalTransactions: filteredExpenses.length + filteredWithdrawals.length,
+  };
+}
 
 /**
  * Groups expenses and withdrawals by calendar date (YYYY-MM-DD).
  * Computes daily totalExpenses, totalWithdrawals, netProfit, and txCount.
+ * If accountId is provided and not 'all', filters transactions by account_id === accountId.
  */
 export function getDailyPnLMap(
   expenses: Expense[],
-  withdrawals: Withdrawal[]
+  withdrawals: Withdrawal[],
+  accountId?: string | 'all'
 ): Map<string, DailyPnL> {
+  const filteredExpenses =
+    accountId && accountId !== 'all'
+      ? expenses.filter((e) => e.account_id === accountId)
+      : expenses;
+
+  const filteredWithdrawals =
+    accountId && accountId !== 'all'
+      ? withdrawals.filter((w) => w.account_id === accountId)
+      : withdrawals;
+
   const map = new Map<string, DailyPnL>();
 
   const getOrCreate = (dateKey: string): DailyPnL => {
@@ -403,7 +451,7 @@ export function getDailyPnLMap(
     return entry;
   };
 
-  for (const expense of expenses) {
+  for (const expense of filteredExpenses) {
     if (!expense.date) continue;
     const dateKey = expense.date.slice(0, 10);
     const entry = getOrCreate(dateKey);
@@ -411,7 +459,7 @@ export function getDailyPnLMap(
     entry.totalExpenses += expense.amount || 0;
   }
 
-  for (const withdrawal of withdrawals) {
+  for (const withdrawal of filteredWithdrawals) {
     if (!withdrawal.date) continue;
     const dateKey = withdrawal.date.slice(0, 10);
     const entry = getOrCreate(dateKey);
@@ -429,6 +477,17 @@ export function getDailyPnLMap(
   }
 
   return map;
+}
+
+/**
+ * Filtered version of getDailyPnLMap by accountId.
+ */
+export function getFilteredDailyPnLMap(
+  expenses: Expense[],
+  withdrawals: Withdrawal[],
+  accountId?: string | 'all'
+): Map<string, DailyPnL> {
+  return getDailyPnLMap(expenses, withdrawals, accountId);
 }
 
 /**
