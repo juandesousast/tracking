@@ -1,3 +1,9 @@
+export interface ImpactedAsset {
+  symbol: string; // e.g. 'MNQ / NQ', 'MES / ES', 'EUR/USD', 'USD/CAD'
+  name: string;
+  type: 'futures' | 'forex' | 'commodities';
+}
+
 export interface EconomicEvent {
   id: string;
   title: string;
@@ -12,13 +18,74 @@ export interface EconomicEvent {
   period: string;
   source: string;
   comment: string;
+  impactedAssets: ImpactedAsset[];
 }
 
 export interface EconomicEventsFilter {
   minImportance?: number; // 1, 2, or 3
   currency?: string; // 'all' or 'USD', 'EUR', etc.
+  assetSymbol?: string; // 'all' or 'MNQ / NQ', 'MES / ES', 'EUR/USD', 'USD/CAD'
   fromDate?: string;
   toDate?: string;
+}
+
+/**
+ * Maps a currency and news title to the specific trading contracts / pairs it impacts most.
+ */
+export function getImpactedAssets(currency: string, title?: string): ImpactedAsset[] {
+  const c = currency.toUpperCase();
+  const t = (title || '').toLowerCase();
+
+  switch (c) {
+    case 'USD':
+      return [
+        { symbol: 'MNQ / NQ', name: 'Nasdaq 100 Futuros', type: 'futures' },
+        { symbol: 'MES / ES', name: 'S&P 500 Futuros', type: 'futures' },
+        { symbol: 'EUR/USD', name: 'Euro / Dólar', type: 'forex' },
+        { symbol: 'USD/CAD', name: 'Dólar / Canadiense', type: 'forex' },
+        { symbol: 'GBP/USD', name: 'Cable', type: 'forex' },
+        { symbol: 'USD/JPY', name: 'Dólar / Yen', type: 'forex' },
+        { symbol: 'GC / Oro', name: 'Oro Comex', type: 'commodities' },
+        { symbol: 'CL / Crudo', name: 'Petróleo WTI', type: 'commodities' },
+      ];
+    case 'CAD':
+      return [
+        { symbol: 'USD/CAD', name: 'Dólar / Canadiense', type: 'forex' },
+        { symbol: 'CL / Crudo', name: 'Petróleo WTI', type: 'commodities' },
+      ];
+    case 'EUR':
+      return [
+        { symbol: 'EUR/USD', name: 'Euro / Dólar', type: 'forex' },
+        { symbol: 'DAX 40', name: 'DAX Alemán', type: 'futures' },
+        { symbol: 'MES / ES', name: 'S&P 500 (Global)', type: 'futures' },
+      ];
+    case 'CNY':
+      return [
+        { symbol: 'MNQ / NQ', name: 'Nasdaq 100 (Cadenas Tech)', type: 'futures' },
+        { symbol: 'AUD/USD', name: 'Aussie / Dólar', type: 'forex' },
+        { symbol: 'MES / ES', name: 'S&P 500 (Asia)', type: 'futures' },
+      ];
+    case 'GBP':
+      return [
+        { symbol: 'GBP/USD', name: 'Cable', type: 'forex' },
+        { symbol: 'EUR/GBP', name: 'Euro / Libra', type: 'forex' },
+      ];
+    case 'JPY':
+      return [
+        { symbol: 'USD/JPY', name: 'Dólar / Yen', type: 'forex' },
+      ];
+    case 'AUD':
+      return [
+        { symbol: 'AUD/USD', name: 'Aussie / Dólar', type: 'forex' },
+      ];
+    case 'CHF':
+      return [
+        { symbol: 'USD/CHF', name: 'Dólar / Franco', type: 'forex' },
+        { symbol: 'EUR/CHF', name: 'Euro / Franco', type: 'forex' },
+      ];
+    default:
+      return [];
+  }
 }
 
 /**
@@ -36,11 +103,14 @@ export function normalizeReutersImportance(rawImportance: any): number {
  * Normalizes an raw event from TradingView / Reuters API into our typed structure.
  */
 export function normalizeEconomicEvent(raw: any): EconomicEvent {
+  const currency = String(raw.currency || 'USD').toUpperCase();
+  const title = String(raw.title || raw.indicator || 'Evento Económico');
+
   return {
     id: String(raw.id || Math.random().toString(36).slice(2)),
-    title: String(raw.title || raw.indicator || 'Evento Económico'),
+    title,
     country: String(raw.country || ''),
-    currency: String(raw.currency || 'USD').toUpperCase(),
+    currency,
     date: raw.date ? new Date(raw.date).toISOString() : new Date().toISOString(),
     importance: normalizeReutersImportance(raw.importance),
     actual: raw.actual !== undefined && raw.actual !== null ? raw.actual : null,
@@ -50,6 +120,7 @@ export function normalizeEconomicEvent(raw: any): EconomicEvent {
     period: String(raw.period || ''),
     source: String(raw.source || ''),
     comment: String(raw.comment || ''),
+    impactedAssets: getImpactedAssets(currency, title),
   };
 }
 
@@ -66,6 +137,10 @@ export function filterEconomicEvents(
     }
     if (filters.currency && filters.currency !== 'all' && ev.currency !== filters.currency) {
       return false;
+    }
+    if (filters.assetSymbol && filters.assetSymbol !== 'all') {
+      const hasAsset = ev.impactedAssets?.some((a) => a.symbol === filters.assetSymbol);
+      if (!hasAsset) return false;
     }
     if (filters.fromDate && ev.date < filters.fromDate) {
       return false;
@@ -198,6 +273,10 @@ export function getFallbackEconomicEvents(): EconomicEvent[] {
       period: 'Sep 2026',
       source: 'ISM',
       comment: 'Nivel del índice difuso basado en gerentes de compras encuestados en el sector manufacturero.',
+      impactedAssets: getImpactedAssets('USD', 'PMI'),
     },
-  ];
+  ].map((e) => ({
+    ...e,
+    impactedAssets: e.impactedAssets || getImpactedAssets(e.currency, e.title),
+  }));
 }

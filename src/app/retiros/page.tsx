@@ -53,6 +53,7 @@ import {
   Building2,
 } from "lucide-react";
 import { getPropFirmLogo } from "@/lib/constants/prop-firms";
+import { PropFirmLogo } from "@/components/ui/prop-firm-logo";
 
 export default function RetirosPage() {
   const [isLoading, setIsLoading] = useState(true);
@@ -338,20 +339,12 @@ export default function RetirosPage() {
                       <TableCell className="text-xs font-semibold whitespace-nowrap">
                         {firm ? (
                           <div className="flex items-center gap-2">
-                            {(() => {
-                              const logo = getPropFirmLogo(firm.name, firm.logo_url);
-                              return logo ? (
-                                <img
-                                  src={logo}
-                                  alt={firm.name}
-                                  className="h-6 w-6 rounded-md object-contain bg-white dark:bg-slate-800 p-0.5 border border-slate-200 dark:border-slate-700 shrink-0"
-                                />
-                              ) : (
-                                <div className="h-6 w-6 rounded-md bg-blue-50 dark:bg-blue-950 flex items-center justify-center text-blue-600 shrink-0">
-                                  <Building2 className="h-3.5 w-3.5" />
-                                </div>
-                              );
-                            })()}
+                            <PropFirmLogo
+                              name={firm.name}
+                              logoUrl={firm.logo_url}
+                              website={firm.website}
+                              size="xs"
+                            />
                             <span>{firm.name}</span>
                           </div>
                         ) : (

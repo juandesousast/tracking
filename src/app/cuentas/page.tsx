@@ -52,6 +52,7 @@ import {
   Calendar,
 } from "lucide-react";
 import { getPropFirmLogo } from "@/lib/constants/prop-firms";
+import { PropFirmLogo } from "@/components/ui/prop-firm-logo";
 
 export default function CuentasPage() {
   const [isLoading, setIsLoading] = useState(true);
@@ -401,26 +402,12 @@ export default function CuentasPage() {
                 >
                   <CardHeader className="pb-2 pt-4 px-5 flex flex-row items-center justify-between space-y-0">
                     <div className="flex items-center gap-2.5 min-w-0">
-                      {firm ? (
-                        (() => {
-                          const logo = getPropFirmLogo(firm.name, firm.logo_url);
-                          return logo ? (
-                            <img
-                              src={logo}
-                              alt={firm.name}
-                              className="h-7 w-7 rounded-lg object-contain bg-white dark:bg-slate-800 p-0.5 border border-slate-200 dark:border-slate-700 shrink-0"
-                            />
-                          ) : (
-                            <div className="h-7 w-7 rounded-lg bg-blue-50 dark:bg-blue-950 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
-                              <Building2 className="h-4 w-4" />
-                            </div>
-                          );
-                        })()
-                      ) : (
-                        <div className="h-7 w-7 rounded-lg bg-blue-50 dark:bg-blue-950 flex items-center justify-center text-blue-600 shrink-0">
-                          <Building2 className="h-4 w-4" />
-                        </div>
-                      )}
+                      <PropFirmLogo
+                        name={firm?.name || "Sin Empresa"}
+                        logoUrl={firm?.logo_url}
+                        website={firm?.website}
+                        size="sm"
+                      />
                       <CardTitle className="text-sm font-bold text-slate-900 dark:text-white truncate">
                         {firm?.name || "Sin Empresa"}
                       </CardTitle>

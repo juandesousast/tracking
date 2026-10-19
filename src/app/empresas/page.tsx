@@ -54,6 +54,7 @@ import {
   Percent,
 } from "lucide-react";
 import { getPropFirmLogo } from "@/lib/constants/prop-firms";
+import { PropFirmLogo } from "@/components/ui/prop-firm-logo";
 import { formatCurrency, formatPercent } from "@/lib/formatters";
 
 interface FirmFinancialMetric {
@@ -388,17 +389,12 @@ export default function EmpresasPage() {
                       {/* Card Header with Official Logo */}
                       <CardHeader className="pb-3 pt-5 px-5 flex flex-row items-center justify-between space-y-0">
                         <div className="flex items-center gap-3 min-w-0">
-                          {logoUrl ? (
-                            <img
-                              src={logoUrl}
-                              alt={firm.name}
-                              className="h-10 w-10 rounded-xl object-contain bg-white dark:bg-slate-800 p-1 border border-slate-200 dark:border-slate-700 shrink-0 shadow-xs"
-                            />
-                          ) : (
-                            <div className="h-10 w-10 rounded-xl bg-blue-50 dark:bg-blue-950 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
-                              <Building2 className="h-5 w-5" />
-                            </div>
-                          )}
+                          <PropFirmLogo
+                            name={firm.name}
+                            logoUrl={firm.logo_url}
+                            website={firm.website}
+                            size="lg"
+                          />
                           <div className="min-w-0">
                             <CardTitle className="text-sm font-bold text-slate-900 dark:text-white truncate">
                               {firm.name}

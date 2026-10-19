@@ -54,6 +54,8 @@ function EconomicCalendarContent() {
   const [importanceFilter, setImportanceFilter] = useState<string>("all");
   const [currencyFilter, setCurrencyFilter] = useState<string>("all");
   const [dateFilter, setDateFilter] = useState<string>("today"); // 'today' | 'week' | 'all'
+  const [assetFilter, setAssetFilter] = useState<string>("all"); // 'all' | 'MNQ / NQ' | 'MES / ES' | 'EUR/USD' | 'USD/CAD' etc.
+  const [propFirmOnly, setPropFirmOnly] = useState<boolean>(false); // Only high-impact prop firm restriction events
   const [selectedEvent, setSelectedEvent] = useState<EconomicEvent | null>(null);
 
   const fetchEvents = async () => {
@@ -81,6 +83,15 @@ function EconomicCalendarContent() {
       // Date Filter
       if (dateFilter === "today" && !ev.date.startsWith(todayStr)) return false;
 
+      // Prop Firm Restrictions Only (Level 3 - High Impact)
+      if (propFirmOnly && ev.importance !== 3) return false;
+
+      // Asset Filter (MNQ, ES, EUR/USD, USD/CAD, etc.)
+      if (assetFilter !== "all") {
+        const hasAsset = ev.impactedAssets?.some((a) => a.symbol === assetFilter);
+        if (!hasAsset) return false;
+      }
+
       // Importance
       if (importanceFilter === "high" && ev.importance !== 3) return false;
       if (importanceFilter === "medium_high" && ev.importance < 2) return false;
@@ -96,12 +107,17 @@ function EconomicCalendarContent() {
         const matchesCountry = ev.country.toLowerCase().includes(q);
         const matchesCurr = ev.currency.toLowerCase().includes(q);
         const matchesSource = ev.source.toLowerCase().includes(q);
-        if (!matchesTitle && !matchesCountry && !matchesCurr && !matchesSource) return false;
+        const matchesAsset = ev.impactedAssets?.some((a) =>
+          a.symbol.toLowerCase().includes(q) || a.name.toLowerCase().includes(q)
+        );
+        if (!matchesTitle && !matchesCountry && !matchesCurr && !matchesSource && !matchesAsset) {
+          return false;
+        }
       }
 
       return true;
     });
-  }, [events, dateFilter, importanceFilter, currencyFilter, searchTerm, todayStr]);
+  }, [events, dateFilter, propFirmOnly, assetFilter, importanceFilter, currencyFilter, searchTerm, todayStr]);
 
   // Statistics
   const highImpactToday = useMemo(() => {
@@ -260,6 +276,64 @@ function EconomicCalendarContent() {
           <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
             Sincronizado vía Reuters
           </p>
+        </div>
+      </div>
+
+      {/* 3.5 Asset / Prop Firm Products Filter Bar */}
+      <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
+              🎯 Mis Activos / Contratos en Fondeo:
+            </span>
+            <span className="text-[11px] text-slate-500">
+              (Filtra noticias con impacto directo en tus cuentas)
+            </span>
+          </div>
+
+          <Button
+            variant={propFirmOnly ? "default" : "outline"}
+            size="sm"
+            onClick={() => setPropFirmOnly(!propFirmOnly)}
+            className={`text-xs font-bold gap-1.5 h-8 rounded-xl transition-all ${
+              propFirmOnly
+                ? "bg-rose-600 hover:bg-rose-700 text-white shadow-xs"
+                : "text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:bg-rose-50 dark:hover:bg-rose-950/30"
+            }`}
+          >
+            <ShieldAlert className={`h-3.5 w-3.5 ${propFirmOnly ? "text-white" : "text-rose-600"}`} />
+            {propFirmOnly ? "Solo Restricciones de Fondeo (Activo)" : "Filtrar Regla Prop Firm (±2m)"}
+          </Button>
+        </div>
+
+        {/* Quick Asset Pills */}
+        <div className="flex items-center gap-2 flex-wrap">
+          {[
+            { label: "Todos los Activos", value: "all" },
+            { label: "🚀 MNQ / NQ (Nasdaq)", value: "MNQ / NQ" },
+            { label: "📊 MES / ES (S&P 500)", value: "MES / ES" },
+            { label: "💶 EUR/USD (Euro)", value: "EUR/USD" },
+            { label: "🍁 USD/CAD (Canadiense)", value: "USD/CAD" },
+            { label: "💷 GBP/USD (Cable)", value: "GBP/USD" },
+            { label: "💴 USD/JPY (Yen)", value: "USD/JPY" },
+            { label: "🥇 GC / Oro", value: "GC / Oro" },
+            { label: "🛢️ CL / Crudo", value: "CL / Crudo" },
+          ].map((item) => {
+            const active = assetFilter === item.value;
+            return (
+              <button
+                key={item.value}
+                onClick={() => setAssetFilter(item.value)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                  active
+                    ? "bg-blue-600 text-white shadow-xs"
+                    : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 border border-transparent"
+                }`}
+              >
+                {item.label}
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -441,15 +515,44 @@ function EconomicCalendarContent() {
                         )}
                       </TableCell>
 
-                      {/* Event Title */}
-                      <TableCell className="text-xs font-semibold text-slate-900 dark:text-white">
-                        <div className="flex flex-col">
-                          <span>{ev.title}</span>
-                          {ev.period && (
-                            <span className="text-[10px] text-slate-400 font-normal">
-                              Período: {ev.period} {ev.source ? `• Fuente: ${ev.source}` : ""}
-                            </span>
-                          )}
+                      {/* Event Title & Impacted Prop Firm Assets */}
+                      <TableCell className="text-xs font-semibold text-slate-900 dark:text-white py-3">
+                        <div className="flex flex-col gap-1.5">
+                          <span className="text-sm font-bold tracking-tight">{ev.title}</span>
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            {ev.period && (
+                              <span className="text-[10px] text-slate-400 font-normal mr-1">
+                                Período: {ev.period} {ev.source ? `• ${ev.source}` : ""}
+                              </span>
+                            )}
+                            {ev.impactedAssets?.map((asset) => {
+                              const isSelected = assetFilter === asset.symbol;
+                              return (
+                                <button
+                                  key={asset.symbol}
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setAssetFilter(isSelected ? "all" : asset.symbol);
+                                  }}
+                                  className={`px-1.5 py-0.5 rounded-md text-[10px] font-bold transition-all ${
+                                    isSelected
+                                      ? "bg-blue-600 text-white shadow-xs"
+                                      : "bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/60 border border-blue-200/60 dark:border-blue-800/60"
+                                  }`}
+                                  title={`Filtrar noticias que afectan a ${asset.name}`}
+                                >
+                                  {asset.symbol}
+                                </button>
+                              );
+                            })}
+                            {isHigh && (
+                              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-400 border border-rose-200 dark:border-rose-800/60">
+                                <ShieldAlert className="h-2.5 w-2.5 text-rose-600" />
+                                Restricción Prop Firm ±2m
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </TableCell>
 
@@ -557,9 +660,36 @@ function EconomicCalendarContent() {
                 </div>
               )}
 
+              {/* Impacted Prop Firm Assets */}
+              {selectedEvent.impactedAssets && selectedEvent.impactedAssets.length > 0 && (
+                <div className="space-y-1.5">
+                  <span className="text-xs font-semibold text-slate-900 dark:text-white">
+                    🎯 Activos de Trading Afectados Directamente:
+                  </span>
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    {selectedEvent.impactedAssets.map((asset) => (
+                      <span
+                        key={asset.symbol}
+                        className="px-2 py-1 rounded-lg text-xs font-bold bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200/80 dark:border-blue-800"
+                      >
+                        {asset.symbol} ({asset.name})
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {selectedEvent.importance === 3 && (
-                <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/40 text-[11px] text-rose-800 dark:text-rose-300">
-                  ⚠️ <strong>Recordatorio Prop Firm:</strong> No abras operaciones ni mantengas órdenes pendientes en instrumentos vinculados a {selectedEvent.currency} 2 minutos antes y después de esta publicación.
+                <div className="p-3.5 rounded-xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/60 text-xs text-rose-800 dark:text-rose-300 space-y-1">
+                  <div className="font-bold flex items-center gap-1.5 text-rose-900 dark:text-rose-200">
+                    <ShieldAlert className="h-4 w-4 text-rose-600" />
+                    Regla de Fondeo (Apex, Topstep, FTMO):
+                  </div>
+                  <p className="text-[11px] leading-relaxed">
+                    Prohibido ejecutar órdenes o mantener órdenes límite/stop en{" "}
+                    <strong>{selectedEvent.impactedAssets?.map((a) => a.symbol).join(", ") || selectedEvent.currency}</strong>{" "}
+                    durante la ventana de <strong>±2 minutos</strong> de la publicación para evitar el bloqueo o fallo de la cuenta.
+                  </p>
                 </div>
               )}
             </div>
