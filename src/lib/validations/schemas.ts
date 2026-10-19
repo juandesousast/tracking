@@ -5,6 +5,16 @@ export const loginSchema = z.object({
   password: z.string().min(1, { message: 'La contraseña es obligatoria' }),
 })
 
+export const EXPENSE_CATEGORIES = [
+  'evaluation',
+  'activation',
+  'reset',
+  'subscription',
+  'other',
+] as const
+
+export type ExpenseCategoryType = (typeof EXPENSE_CATEGORIES)[number]
+
 export const firmSchema = z.object({
   name: z.string().trim().min(1, { message: 'El nombre de la empresa es obligatorio' }),
   website: z
@@ -13,6 +23,11 @@ export const firmSchema = z.object({
     .optional()
     .nullable()
     .transform((val) => (val === '' ? null : val)),
+  logo_url: z
+    .preprocess(
+      (val) => (val === '' ? null : val),
+      z.string().url({ message: 'URL del logo no es válida' }).nullable().optional()
+    ),
 })
 
 export const accountSchema = z.object({

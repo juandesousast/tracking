@@ -1,8 +1,17 @@
+export type ExpenseCategory =
+  | 'evaluation'
+  | 'activation'
+  | 'reset'
+  | 'subscription'
+  | 'other'
+  | string;
+
 export interface PropFirm {
   id: string;
   user_id: string;
   name: string;
   website: string | null;
+  logo_url?: string | null;
   created_at: string;
 }
 
@@ -24,7 +33,7 @@ export interface Expense {
   firm_id: string | null;
   account_id: string | null;
   amount: number;
-  category: string;
+  category: ExpenseCategory;
   description: string | null;
   date: string;
   created_at: string;

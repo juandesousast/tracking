@@ -42,7 +42,7 @@ export function AddExpenseModal({
   const [firmId, setFirmId] = useState(firms[0]?.id || "");
   const [accountId, setAccountId] = useState("");
   const [amount, setAmount] = useState("");
-  const [category, setCategory] = useState("Challenge Fee");
+  const [category, setCategory] = useState("evaluation");
   const [date, setDate] = useState(today);
   const [description, setDescription] = useState("");
   const [error, setError] = useState("");
@@ -128,10 +128,12 @@ export function AddExpenseModal({
     if (scannedData.date) setDate(scannedData.date);
     if (scannedData.description) setDescription(scannedData.description);
     if (scannedData.category) {
-      const matchCat = ["Challenge Fee", "Reset", "Activation", "Otro"].find(
-        (c) => c.toLowerCase() === scannedData.category.toLowerCase()
-      );
-      setCategory(matchCat || scannedData.category || "Challenge Fee");
+      const lower = scannedData.category.toLowerCase();
+      if (lower.includes("eval") || lower.includes("chall")) setCategory("evaluation");
+      else if (lower.includes("activ")) setCategory("activation");
+      else if (lower.includes("reset")) setCategory("reset");
+      else if (lower.includes("sub") || lower.includes("susc")) setCategory("subscription");
+      else setCategory("other");
     }
 
     const matchResult = matchAccountFromScan(
@@ -313,10 +315,11 @@ export function AddExpenseModal({
               onChange={(e) => setCategory(e.target.value)}
               className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-xs shadow-xs transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             >
-              <option value="Challenge Fee">Challenge Fee</option>
-              <option value="Reset">Reset</option>
-              <option value="Activation">Activation</option>
-              <option value="Otro">Otro</option>
+              <option value="evaluation">Prueba / Evaluación</option>
+              <option value="activation">Tarifa de Activación (Funded)</option>
+              <option value="reset">Reinicio de Cuenta (Reset)</option>
+              <option value="subscription">Suscripción Mensual</option>
+              <option value="other">Otros gastos</option>
             </select>
           </div>
         </div>

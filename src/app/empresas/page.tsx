@@ -215,7 +215,7 @@ export default function EmpresasPage() {
             </Button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredFirms.map((firm) => {
               const accCount = accountCountByFirm.get(firm.id) || 0;
               return (
@@ -223,18 +223,26 @@ export default function EmpresasPage() {
                   key={firm.id}
                   className="bg-white dark:bg-slate-900 border-slate-200/60 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-all shadow-xs rounded-2xl overflow-hidden flex flex-col justify-between"
                 >
-                  <CardHeader className="pb-2 pt-4 px-5 flex flex-row items-center justify-between space-y-0">
-                    <div className="flex items-center gap-3 truncate">
-                      <div className="h-9 w-9 rounded-xl bg-blue-50 dark:bg-blue-950/50 flex items-center justify-center shrink-0">
-                        <Building2 className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                      </div>
+                  <CardHeader className="p-6 pb-3 flex flex-row items-center justify-between space-y-0">
+                    <div className="flex items-center gap-3.5 truncate">
+                      {firm.logo_url ? (
+                        <img
+                          src={firm.logo_url}
+                          alt={firm.name}
+                          className="h-10 w-10 rounded-xl bg-white border border-slate-200 dark:border-slate-800 p-1 object-contain shrink-0"
+                        />
+                      ) : (
+                        <div className="h-10 w-10 rounded-xl bg-blue-50 dark:bg-blue-950/50 flex items-center justify-center shrink-0">
+                          <Building2 className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                        </div>
+                      )}
                       <CardTitle className="text-base font-bold text-slate-900 dark:text-white truncate">
                         {firm.name}
                       </CardTitle>
                     </div>
 
                     <DropdownMenu>
-                      <DropdownMenuTrigger render={<Button variant="ghost" size="icon" className="h-7 w-7 text-slate-400 shrink-0" />}>
+                      <DropdownMenuTrigger render={<Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 shrink-0" />}>
                         <MoreVertical className="h-4 w-4" />
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-36 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
@@ -250,7 +258,7 @@ export default function EmpresasPage() {
                     </DropdownMenu>
                   </CardHeader>
 
-                  <CardContent className="px-5 pb-5 pt-2 flex-1 flex flex-col justify-between space-y-4">
+                  <CardContent className="px-6 pb-6 pt-2 flex-1 flex flex-col justify-between space-y-5">
                     <div className="space-y-2">
                       {firm.website ? (
                         <a

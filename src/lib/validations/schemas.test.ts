@@ -5,6 +5,7 @@ import {
   accountSchema,
   expenseSchema,
   withdrawalSchema,
+  EXPENSE_CATEGORIES,
 } from './schemas'
 
 describe('Validaciones con Zod (schemas.ts)', () => {
@@ -41,6 +42,43 @@ describe('Validaciones con Zod (schemas.ts)', () => {
 
     it('debe rechazar un nombre de empresa vacío', () => {
       const result = firmSchema.safeParse({ name: '   ' })
+      expect(result.success).toBe(false)
+    })
+
+    it('debe validar logo_url válido y transformar vacío a null', () => {
+      const resultValid = firmSchema.safeParse({
+        name: 'FTMO',
+        logo_url: 'https://example.com/logo.png',
+      })
+      expect(resultValid.success).toBe(true)
+      if (resultValid.success) {
+        expect(resultValid.data.logo_url).toBe('https://example.com/logo.png')
+      }
+
+      const resultEmpty = firmSchema.safeParse({
+        name: 'FTMO',
+        logo_url: '',
+      })
+      expect(resultEmpty.success).toBe(true)
+      if (resultEmpty.success) {
+        expect(resultEmpty.data.logo_url).toBeNull()
+      }
+
+      const resultNull = firmSchema.safeParse({
+        name: 'FTMO',
+        logo_url: null,
+      })
+      expect(resultNull.success).toBe(true)
+      if (resultNull.success) {
+        expect(resultNull.data.logo_url).toBeNull()
+      }
+    })
+
+    it('debe rechazar logo_url con formato no válido', () => {
+      const result = firmSchema.safeParse({
+        name: 'FTMO',
+        logo_url: 'not-a-valid-url',
+      })
       expect(result.success).toBe(false)
     })
   })
@@ -124,6 +162,24 @@ describe('Validaciones con Zod (schemas.ts)', () => {
         date: '2026-01-15',
       })
       expect(result.success).toBe(false)
+    })
+
+    it('debe aceptar las nuevas categorías de gastos (evaluation, activation, reset, subscription, other)', () => {
+      const expectedCategories = ['evaluation', 'activation', 'reset', 'subscription', 'other'] as const
+      expect(EXPENSE_CATEGORIES).toEqual(expectedCategories)
+
+      for (const cat of expectedCategories) {
+        const result = expenseSchema.safeParse({
+          firm_id: validUuid,
+          amount: 150,
+          category: cat,
+          date: '2026-01-15',
+        })
+        expect(result.success).toBe(true)
+        if (result.success) {
+          expect(result.data.category).toBe(cat)
+        }
+      }
     })
   })
 

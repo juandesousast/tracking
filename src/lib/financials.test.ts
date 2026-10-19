@@ -12,6 +12,8 @@ import {
   getGlobalTimelineData,
   filterTransactions,
   calculatePeriodComparison,
+  getDailyPnLMap,
+  getMonthPnLSummary,
 } from './financials';
 import { formatCurrency, formatPercent, formatNumber } from './formatters';
 import { Expense, Withdrawal, PropFirm, Account } from '../types/database';
@@ -506,5 +508,291 @@ describe('Financial Calculations', () => {
       });
     });
   });
+
+  describe('Financial Calendar Daily & Monthly PnL', () => {
+    describe('getDailyPnLMap', () => {
+      it('should group expenses and withdrawals across multiple distinct days and on the same day', () => {
+        const expenses: Expense[] = [
+          {
+            id: 'e1',
+            user_id: 'u1',
+            firm_id: 'f1',
+            account_id: 'a1',
+            amount: 100,
+            category: 'Fee',
+            description: null,
+            date: '2026-03-01',
+            created_at: '2026-03-01',
+          },
+          {
+            id: 'e2',
+            user_id: 'u1',
+            firm_id: 'f1',
+            account_id: 'a1',
+            amount: 50,
+            category: 'Reset',
+            description: null,
+            date: '2026-03-01',
+            created_at: '2026-03-01',
+          },
+          {
+            id: 'e3',
+            user_id: 'u1',
+            firm_id: 'f1',
+            account_id: 'a1',
+            amount: 200,
+            category: 'Fee',
+            description: null,
+            date: '2026-03-02',
+            created_at: '2026-03-02',
+          },
+        ];
+
+        const withdrawals: Withdrawal[] = [
+          {
+            id: 'w1',
+            user_id: 'u1',
+            firm_id: 'f1',
+            account_id: 'a1',
+            gross_amount: 500,
+            fee_amount: 20,
+            net_amount: 480,
+            status: 'completed',
+            date: '2026-03-01',
+            created_at: '2026-03-01',
+          },
+          {
+            id: 'w2',
+            user_id: 'u1',
+            firm_id: 'f1',
+            account_id: 'a1',
+            gross_amount: 300,
+            fee_amount: 10,
+            net_amount: 290,
+            status: 'completed',
+            date: '2026-03-03',
+            created_at: '2026-03-03',
+          },
+        ];
+
+        const map = getDailyPnLMap(expenses, withdrawals);
+
+        expect(map.size).toBe(3);
+
+        // Day 2026-03-01: Expenses: 100 + 50 = 150. Withdrawals: 480. Net: 330. TxCount: 3
+        const day1 = map.get('2026-03-01');
+        expect(day1).toBeDefined();
+        expect(day1?.date).toBe('2026-03-01');
+        expect(day1?.totalExpenses).toBe(150);
+        expect(day1?.totalWithdrawals).toBe(480);
+        expect(day1?.netProfit).toBe(330);
+        expect(day1?.txCount).toBe(3);
+        expect(day1?.expenses).toHaveLength(2);
+        expect(day1?.withdrawals).toHaveLength(1);
+
+        // Day 2026-03-02: Only expenses: 200. Withdrawals: 0. Net: -200. TxCount: 1
+        const day2 = map.get('2026-03-02');
+        expect(day2).toBeDefined();
+        expect(day2?.date).toBe('2026-03-02');
+        expect(day2?.totalExpenses).toBe(200);
+        expect(day2?.totalWithdrawals).toBe(0);
+        expect(day2?.netProfit).toBe(-200);
+        expect(day2?.txCount).toBe(1);
+        expect(day2?.expenses).toHaveLength(1);
+        expect(day2?.withdrawals).toHaveLength(0);
+
+        // Day 2026-03-03: Only withdrawals: 290. Expenses: 0. Net: 290. TxCount: 1
+        const day3 = map.get('2026-03-03');
+        expect(day3).toBeDefined();
+        expect(day3?.date).toBe('2026-03-03');
+        expect(day3?.totalExpenses).toBe(0);
+        expect(day3?.totalWithdrawals).toBe(290);
+        expect(day3?.netProfit).toBe(290);
+        expect(day3?.txCount).toBe(1);
+      });
+
+      it('should handle fallback calculation when net_amount is not defined on withdrawal', () => {
+        const withdrawals: Withdrawal[] = [
+          {
+            id: 'w1',
+            user_id: 'u1',
+            firm_id: 'f1',
+            account_id: 'a1',
+            gross_amount: 1000,
+            fee_amount: 50,
+            // @ts-expect-error test fallback when net_amount is undefined
+            net_amount: undefined,
+            status: 'completed',
+            date: '2026-03-05',
+            created_at: '2026-03-05',
+          },
+        ];
+
+        const map = getDailyPnLMap([], withdrawals);
+        const day = map.get('2026-03-05');
+        expect(day).toBeDefined();
+        expect(day?.totalWithdrawals).toBe(950);
+        expect(day?.netProfit).toBe(950);
+      });
+
+      it('should handle ISO date strings with timestamps correctly', () => {
+        const expenses: Expense[] = [
+          {
+            id: 'e1',
+            user_id: 'u1',
+            firm_id: 'f1',
+            account_id: 'a1',
+            amount: 75,
+            category: 'Fee',
+            description: null,
+            date: '2026-03-10T14:32:00.000Z',
+            created_at: '2026-03-10T14:32:00.000Z',
+          },
+        ];
+
+        const map = getDailyPnLMap(expenses, []);
+        expect(map.has('2026-03-10')).toBe(true);
+        expect(map.get('2026-03-10')?.totalExpenses).toBe(75);
+      });
+
+      it('should return an empty map when given empty arrays', () => {
+        const map = getDailyPnLMap([], []);
+        expect(map.size).toBe(0);
+      });
+
+      it('should ignore entries without date gracefully', () => {
+        const expenses = [
+          {
+            id: 'e1',
+            user_id: 'u1',
+            firm_id: 'f1',
+            account_id: 'a1',
+            amount: 50,
+            category: 'Fee',
+            description: null,
+            date: '',
+            created_at: '2026-03-01',
+          },
+        ] as Expense[];
+
+        const map = getDailyPnLMap(expenses, []);
+        expect(map.size).toBe(0);
+      });
+    });
+
+    describe('getMonthPnLSummary', () => {
+      it('should calculate green days, red days, breakeven days, totalNet and winRateDaysPercent', () => {
+        const expenses: Expense[] = [
+          // Day 1: net = +300 (green)
+          { id: 'e1', user_id: 'u1', firm_id: 'f1', account_id: 'a1', amount: 100, category: 'Fee', description: null, date: '2026-04-01', created_at: '2026-04-01' },
+          // Day 2: net = -150 (red)
+          { id: 'e2', user_id: 'u1', firm_id: 'f1', account_id: 'a1', amount: 150, category: 'Fee', description: null, date: '2026-04-02', created_at: '2026-04-02' },
+          // Day 3: net = 0 (breakeven with transactions)
+          { id: 'e3', user_id: 'u1', firm_id: 'f1', account_id: 'a1', amount: 80, category: 'Fee', description: null, date: '2026-04-03', created_at: '2026-04-03' },
+          // Day 4: net = +200 (green)
+          { id: 'e4', user_id: 'u1', firm_id: 'f1', account_id: 'a1', amount: 50, category: 'Fee', description: null, date: '2026-04-04', created_at: '2026-04-04' },
+          // Different month (May 2026) - should not be included in April summary
+          { id: 'e5', user_id: 'u1', firm_id: 'f1', account_id: 'a1', amount: 999, category: 'Fee', description: null, date: '2026-05-01', created_at: '2026-05-01' },
+        ];
+
+        const withdrawals: Withdrawal[] = [
+          // Day 1: gross 400, fee 0 -> net 400. PnL = 400 - 100 = +300 (Green)
+          { id: 'w1', user_id: 'u1', firm_id: 'f1', account_id: 'a1', gross_amount: 400, fee_amount: 0, net_amount: 400, status: 'completed', date: '2026-04-01', created_at: '2026-04-01' },
+          // Day 3: gross 80, fee 0 -> net 80. PnL = 80 - 80 = 0 (Breakeven)
+          { id: 'w2', user_id: 'u1', firm_id: 'f1', account_id: 'a1', gross_amount: 80, fee_amount: 0, net_amount: 80, status: 'completed', date: '2026-04-03', created_at: '2026-04-03' },
+          // Day 4: gross 250, fee 0 -> net 250. PnL = 250 - 50 = +200 (Green)
+          { id: 'w3', user_id: 'u1', firm_id: 'f1', account_id: 'a1', gross_amount: 250, fee_amount: 0, net_amount: 250, status: 'completed', date: '2026-04-04', created_at: '2026-04-04' },
+        ];
+
+        const dailyMap = getDailyPnLMap(expenses, withdrawals);
+        const summary = getMonthPnLSummary(dailyMap, 2026, 4);
+
+        // April active days:
+        // 2026-04-01: +300 (green)
+        // 2026-04-02: -150 (red)
+        // 2026-04-03: 0 (breakeven)
+        // 2026-04-04: +200 (green)
+        // totalNet = 300 - 150 + 0 + 200 = 350
+        // activeDays = 4
+        // greenDaysCount = 2
+        // redDaysCount = 1
+        // breakevenDaysCount = 1
+        // winRateDaysPercent = (2 / 4) * 100 = 50%
+        expect(summary.totalNet).toBe(350);
+        expect(summary.greenDaysCount).toBe(2);
+        expect(summary.redDaysCount).toBe(1);
+        expect(summary.breakevenDaysCount).toBe(1);
+        expect(summary.winRateDaysPercent).toBe(50);
+      });
+
+      it('should calculate 100% win rate when all active days are green', () => {
+        const withdrawals: Withdrawal[] = [
+          { id: 'w1', user_id: 'u1', firm_id: 'f1', account_id: 'a1', gross_amount: 500, fee_amount: 0, net_amount: 500, status: 'completed', date: '2026-06-01', created_at: '2026-06-01' },
+          { id: 'w2', user_id: 'u1', firm_id: 'f1', account_id: 'a1', gross_amount: 300, fee_amount: 0, net_amount: 300, status: 'completed', date: '2026-06-02', created_at: '2026-06-02' },
+        ];
+
+        const dailyMap = getDailyPnLMap([], withdrawals);
+        const summary = getMonthPnLSummary(dailyMap, 2026, 6);
+
+        expect(summary.totalNet).toBe(800);
+        expect(summary.greenDaysCount).toBe(2);
+        expect(summary.redDaysCount).toBe(0);
+        expect(summary.breakevenDaysCount).toBe(0);
+        expect(summary.winRateDaysPercent).toBe(100);
+      });
+
+      it('should calculate 0% win rate when all active days are red', () => {
+        const expenses: Expense[] = [
+          { id: 'e1', user_id: 'u1', firm_id: 'f1', account_id: 'a1', amount: 100, category: 'Fee', description: null, date: '2026-07-01', created_at: '2026-07-01' },
+          { id: 'e2', user_id: 'u1', firm_id: 'f1', account_id: 'a1', amount: 200, category: 'Fee', description: null, date: '2026-07-02', created_at: '2026-07-02' },
+        ];
+
+        const dailyMap = getDailyPnLMap(expenses, []);
+        const summary = getMonthPnLSummary(dailyMap, 2026, 7);
+
+        expect(summary.totalNet).toBe(-300);
+        expect(summary.greenDaysCount).toBe(0);
+        expect(summary.redDaysCount).toBe(2);
+        expect(summary.breakevenDaysCount).toBe(0);
+        expect(summary.winRateDaysPercent).toBe(0);
+      });
+
+      it('should handle month with zero activity (days without activity)', () => {
+        // Daily map has data for another month only
+        const expenses: Expense[] = [
+          { id: 'e1', user_id: 'u1', firm_id: 'f1', account_id: 'a1', amount: 100, category: 'Fee', description: null, date: '2026-08-15', created_at: '2026-08-15' },
+        ];
+
+        const dailyMap = getDailyPnLMap(expenses, []);
+        // Query September 2026 (no activity)
+        const summary = getMonthPnLSummary(dailyMap, 2026, 9);
+
+        expect(summary.totalNet).toBe(0);
+        expect(summary.greenDaysCount).toBe(0);
+        expect(summary.redDaysCount).toBe(0);
+        expect(summary.breakevenDaysCount).toBe(0);
+        expect(summary.winRateDaysPercent).toBe(0);
+      });
+
+      it('should not count days with txCount = 0 as breakeven days', () => {
+        const dailyMap = new Map();
+        // Day with zero transactions manually set
+        dailyMap.set('2026-09-01', {
+          date: '2026-09-01',
+          totalExpenses: 0,
+          totalWithdrawals: 0,
+          netProfit: 0,
+          txCount: 0,
+          expenses: [],
+          withdrawals: [],
+        });
+
+        const summary = getMonthPnLSummary(dailyMap, 2026, 9);
+        expect(summary.breakevenDaysCount).toBe(0);
+        expect(summary.winRateDaysPercent).toBe(0);
+      });
+    });
+  });
 });
+
 

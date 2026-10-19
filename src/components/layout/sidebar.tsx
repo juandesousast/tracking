@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
+  Calendar,
   Wallet,
   Receipt,
   ArrowDownToLine,
@@ -18,6 +19,7 @@ import { cn } from "@/lib/utils";
 
 export const menuItems = [
   { name: "Dashboard", href: "/", icon: LayoutDashboard },
+  { name: "Calendario PnL", href: "/calendario", icon: Calendar },
   { name: "Empresas", href: "/empresas", icon: Building2 },
   { name: "Cuentas", href: "/cuentas", icon: Wallet },
   { name: "Gastos", href: "/gastos", icon: Receipt },

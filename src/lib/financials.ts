@@ -357,3 +357,123 @@ export function calculatePeriodComparison(
     ),
   };
 }
+
+export interface DailyPnL {
+  date: string; // YYYY-MM-DD
+  totalExpenses: number;
+  totalWithdrawals: number;
+  netProfit: number;
+  txCount: number;
+  expenses: Expense[];
+  withdrawals: Withdrawal[];
+}
+
+export interface MonthPnLSummary {
+  totalNet: number;
+  greenDaysCount: number;
+  redDaysCount: number;
+  breakevenDaysCount: number;
+  winRateDaysPercent: number;
+}
+
+/**
+ * Groups expenses and withdrawals by calendar date (YYYY-MM-DD).
+ * Computes daily totalExpenses, totalWithdrawals, netProfit, and txCount.
+ */
+export function getDailyPnLMap(
+  expenses: Expense[],
+  withdrawals: Withdrawal[]
+): Map<string, DailyPnL> {
+  const map = new Map<string, DailyPnL>();
+
+  const getOrCreate = (dateKey: string): DailyPnL => {
+    let entry = map.get(dateKey);
+    if (!entry) {
+      entry = {
+        date: dateKey,
+        totalExpenses: 0,
+        totalWithdrawals: 0,
+        netProfit: 0,
+        txCount: 0,
+        expenses: [],
+        withdrawals: [],
+      };
+      map.set(dateKey, entry);
+    }
+    return entry;
+  };
+
+  for (const expense of expenses) {
+    if (!expense.date) continue;
+    const dateKey = expense.date.slice(0, 10);
+    const entry = getOrCreate(dateKey);
+    entry.expenses.push(expense);
+    entry.totalExpenses += expense.amount || 0;
+  }
+
+  for (const withdrawal of withdrawals) {
+    if (!withdrawal.date) continue;
+    const dateKey = withdrawal.date.slice(0, 10);
+    const entry = getOrCreate(dateKey);
+    entry.withdrawals.push(withdrawal);
+    const netAmount =
+      typeof withdrawal.net_amount === 'number'
+        ? withdrawal.net_amount
+        : (withdrawal.gross_amount || 0) - (withdrawal.fee_amount || 0);
+    entry.totalWithdrawals += netAmount;
+  }
+
+  for (const entry of map.values()) {
+    entry.netProfit = entry.totalWithdrawals - entry.totalExpenses;
+    entry.txCount = entry.expenses.length + entry.withdrawals.length;
+  }
+
+  return map;
+}
+
+/**
+ * Computes monthly PnL summary for a given year and month (1-12) from daily PnL map.
+ * Returns totalNet, greenDaysCount, redDaysCount, breakevenDaysCount, and winRateDaysPercent.
+ *
+ * @param dailyMap - Map of date string (YYYY-MM-DD) to DailyPnL
+ * @param year - Calendar year (e.g. 2026)
+ * @param month - Calendar month (1-12, where 1 = January, 12 = December)
+ */
+export function getMonthPnLSummary(
+  dailyMap: Map<string, DailyPnL>,
+  year: number,
+  month: number
+): MonthPnLSummary {
+  const monthStr = String(month).padStart(2, '0');
+  const monthPrefix = `${year}-${monthStr}`;
+
+  let totalNet = 0;
+  let greenDaysCount = 0;
+  let redDaysCount = 0;
+  let breakevenDaysCount = 0;
+
+  for (const [date, daily] of dailyMap.entries()) {
+    if (date.startsWith(monthPrefix)) {
+      totalNet += daily.netProfit;
+      if (daily.netProfit > 0) {
+        greenDaysCount++;
+      } else if (daily.netProfit < 0) {
+        redDaysCount++;
+      } else if (daily.txCount > 0) {
+        breakevenDaysCount++;
+      }
+    }
+  }
+
+  const activeDays = greenDaysCount + redDaysCount + breakevenDaysCount;
+  const winRateDaysPercent = activeDays > 0 ? (greenDaysCount / activeDays) * 100 : 0;
+
+  return {
+    totalNet,
+    greenDaysCount,
+    redDaysCount,
+    breakevenDaysCount,
+    winRateDaysPercent,
+  };
+}
+

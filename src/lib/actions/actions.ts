@@ -97,7 +97,11 @@ export async function getWithdrawals(): Promise<Withdrawal[]> {
   })) as Withdrawal[]
 }
 
-export async function addFirm(firmData: { name: string; website?: string | null }) {
+export async function addFirm(firmData: {
+  name: string
+  website?: string | null
+  logo_url?: string | null
+}) {
   const validated = firmSchema.parse(firmData)
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -109,6 +113,7 @@ export async function addFirm(firmData: { name: string; website?: string | null 
       user_id: user.id,
       name: validated.name,
       website: validated.website || null,
+      logo_url: validated.logo_url || null,
     })
     .select()
     .single()
@@ -155,7 +160,10 @@ export async function addAccount(accData: {
   } as Account
 }
 
-export async function updateFirm(id: string, firmData: { name: string; website?: string | null }) {
+export async function updateFirm(
+  id: string,
+  firmData: { name: string; website?: string | null; logo_url?: string | null }
+) {
   const validated = firmSchema.parse(firmData)
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -166,6 +174,7 @@ export async function updateFirm(id: string, firmData: { name: string; website?:
     .update({
       name: validated.name,
       website: validated.website || null,
+      logo_url: validated.logo_url || null,
     })
     .eq('id', id)
     .eq('user_id', user.id)
