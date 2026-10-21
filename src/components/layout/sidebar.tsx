@@ -18,6 +18,7 @@ import {
   BarChart3,
   ListOrdered,
   Activity,
+  Calculator,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -29,6 +30,7 @@ export const navSections = [
       { name: "Calendario PnL", href: "/calendario", icon: Calendar },
       { name: "Calendario Económico", href: "/calendario-economico", icon: CalendarDays },
       { name: "Simulador de Mercado", href: "/simulador", icon: Activity },
+      { name: "Calculadoras & Fondeo", href: "/tools", icon: Calculator },
       { name: "Historial de Trades", href: "/trades", icon: ListOrdered },
       { name: "Analítica & Equity", href: "/analytics", icon: BarChart3 },
     ],
