@@ -24,6 +24,7 @@ import { ReplayControls } from '@/components/simulator/replay-controls';
 import { OrderPanel } from '@/components/simulator/order-panel';
 import { SessionMetricsView } from '@/components/simulator/session-metrics-view';
 import { formatCurrency } from '@/lib/formatters';
+import { LinearLoader } from '@/components/ui/linear-loader';
 import { ArrowLeft, Activity, ShieldCheck, Database } from 'lucide-react';
 
 export default function SimulatorWorkspacePage() {
@@ -435,8 +436,8 @@ export default function SimulatorWorkspacePage() {
 
   if (isLoading) {
     return (
-      <div className="p-16 text-center text-sm text-slate-400">
-        Cargando espacio de trabajo del simulador...
+      <div className="min-h-[60vh] flex flex-col items-center justify-center p-8 select-none animate-in fade-in duration-300">
+        <LinearLoader size="md" label="Cargando espacio de trabajo del simulador..." />
       </div>
     );
   }

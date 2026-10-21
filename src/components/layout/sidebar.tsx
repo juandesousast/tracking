@@ -76,9 +76,9 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden md:flex flex-col w-64 border-r border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 h-screen sticky top-0 z-30 shadow-xs">
+    <aside className="hidden md:flex flex-col w-64 border-r border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-[#090a0f] h-screen sticky top-0 z-30 shadow-xs">
       {/* Brand Header */}
-      <div className="flex items-center gap-3 px-6 h-16 shrink-0 border-b border-slate-200/80 dark:border-slate-800">
+      <div className="flex items-center gap-3 px-6 h-16 shrink-0 border-b border-slate-200/80 dark:border-white/[0.08]">
         <div className="h-9 w-9 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-xs">
           <TrendingUp className="h-5 w-5" />
         </div>
