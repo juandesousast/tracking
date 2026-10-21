@@ -132,4 +132,73 @@ export interface DashboardTradingState {
   equityCurve: { date: string; balance: number; dailyPnL: number }[];
 }
 
+export type OrderSide = 'BUY' | 'SELL';
+export type OrderType = 'MARKET' | 'LIMIT';
+export type PositionStatus = 'OPEN' | 'CLOSED';
+export type SessionStatus = 'not_started' | 'in_progress' | 'finished';
+
+export interface BacktestingSession {
+  id: string;
+  user_id: string;
+  name: string;
+  symbol: string;
+  initial_balance: number;
+  current_balance: number;
+  start_date: string;
+  end_date: string;
+  status: SessionStatus;
+  created_at: string;
+  updated_at?: string;
+}
+
+export interface BacktestingPosition {
+  id: string;
+  session_id: string;
+  user_id: string;
+  symbol: string;
+  side: OrderSide;
+  type: OrderType;
+  status: PositionStatus;
+  quantity: number;
+  entry_price: number;
+  exit_price?: number | null;
+  stop_loss?: number | null;
+  take_profit?: number | null;
+  pnl?: number | null;
+  r_multiple?: number | null;
+  entry_time: string;
+  exit_time?: string | null;
+  created_at?: string;
+}
+
+export interface SimulatorSymbolConfig {
+  value: string;
+  label: string;
+  category: 'INDEX' | 'FOREX' | 'COMMODITY' | 'CRYPTO';
+  decimals: number;
+  pricescale: number;
+  contractSize: number;
+  minmov: number;
+  startDate: string;
+  endDate: string;
+}
+
+export interface SimulatorSessionStats {
+  trades: BacktestingPosition[];
+  curve: { trade: number; balance: number; drawdown: number }[];
+  netPnl: number;
+  winningCount: number;
+  losingCount: number;
+  winRate: number;
+  avgProfit: number;
+  avgLoss: number;
+  profitFactor: number | null;
+  expectancy: number;
+  avgR: number | null;
+  maxDrawdown: number;
+  maxDrawdownPct: number;
+  maxWinStreak: number;
+  maxLossStreak: number;
+}
+
 

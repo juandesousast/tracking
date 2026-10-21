@@ -103,6 +103,28 @@ export const copierRuleSchema = z.object({
   is_active: z.boolean().optional(),
 })
 
+export const createSessionSchema = z.object({
+  name: z.string().trim().min(1, { message: 'El nombre de la sesión es obligatorio' }),
+  symbol: z.string().trim().min(1, { message: 'El instrumento es obligatorio' }),
+  initial_balance: z.number().gt(0, { message: 'El balance inicial debe ser mayor a 0' }),
+  start_date: z.string().trim().min(1, { message: 'La fecha de inicio es obligatoria' }),
+  end_date: z.string().trim().min(1, { message: 'La fecha de fin es obligatoria' }),
+})
+
+export const orderPlacementSchema = z.object({
+  session_id: z.string().uuid({ message: 'ID de sesión no válido' }),
+  symbol: z.string().trim().min(1, { message: 'El símbolo es obligatorio' }),
+  side: z.enum(['BUY', 'SELL']),
+  type: z.enum(['MARKET', 'LIMIT']).default('MARKET'),
+  quantity: z.number().gt(0, { message: 'La cantidad debe ser mayor a 0' }),
+  entry_price: z.number().gt(0, { message: 'El precio de entrada debe ser mayor a 0' }),
+  stop_loss: z.number().nullable().optional(),
+  take_profit: z.number().nullable().optional(),
+})
+
+export type CreateSessionInput = z.infer<typeof createSessionSchema>
+export type OrderPlacementInput = z.infer<typeof orderPlacementSchema>
+
 export type SaveTradovateCredentialInput = z.infer<typeof saveTradovateCredentialSchema>
 export type CopierRuleInput = z.infer<typeof copierRuleSchema>
 
