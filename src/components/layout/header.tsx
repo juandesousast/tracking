@@ -28,7 +28,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { menuItems, supportItems } from "./sidebar";
+import { navSections } from "./sidebar";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 
@@ -59,11 +59,21 @@ export function Header() {
   // Derive breadcrumb section name
   const getPageTitle = () => {
     if (pathname === "/") return "Dashboard";
-    if (pathname === "/empresas") return "Empresas de Fondeo";
-    if (pathname === "/cuentas") return "Cuentas";
-    if (pathname === "/gastos") return "Gastos";
-    if (pathname === "/retiros") return "Retiros";
+    if (pathname === "/calendario") return "Calendario PnL";
+    if (pathname === "/calendario-economico") return "Calendario Económico";
+    if (pathname === "/simulador" || pathname.startsWith("/simulador/")) return "Simulador de Mercado";
+    if (pathname === "/strategies") return "Playbook de Estrategias";
+    if (pathname === "/tools") return "Calculadoras & Fondeo";
+    if (pathname === "/trades") return "Historial de Trades";
+    if (pathname === "/analytics") return "Analítica & Equity";
+    if (pathname === "/portfolio") return "Radar de Portafolio";
+    if (pathname === "/progress-tracker") return "Progreso a Fondeo";
+    if (pathname === "/cuentas") return "Cuentas de Fondeo";
+    if (pathname === "/gastos") return "Exámenes & Gastos";
+    if (pathname === "/retiros") return "Retiros & Cobros";
+    if (pathname === "/empresas") return "Empresas & Logos";
     if (pathname === "/copier") return "Copiador de Operaciones";
+    if (pathname === "/risk-config") return "Gestión de Riesgo";
     if (pathname === "/settings") return "Ajustes";
     if (pathname === "/support") return "Soporte";
     return "Dashboard";
@@ -88,59 +98,35 @@ export function Header() {
                   <span className="font-bold text-base text-slate-900 dark:text-white">PropFirm Tracker</span>
                 </SheetTitle>
               </SheetHeader>
-              <div className="px-3 py-4 space-y-6 overflow-y-auto">
-                <div>
-                  <h3 className="px-3 text-[10px] font-bold text-slate-400 dark:text-slate-500 tracking-wider uppercase mb-2">
-                    MENU
-                  </h3>
-                  <nav className="space-y-1">
-                    {menuItems.map((item) => {
-                      const isActive = pathname === item.href;
-                      const Icon = item.icon;
-                      return (
-                        <Link
-                          key={item.name}
-                          href={item.href}
-                          className={cn(
-                            "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
-                            isActive
-                              ? "bg-blue-50 text-blue-600 font-semibold dark:bg-blue-950/40 dark:text-blue-400"
-                              : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
-                          )}
-                        >
-                          <Icon className="h-4 w-4" />
-                          {item.name}
-                        </Link>
-                      );
-                    })}
-                  </nav>
-                </div>
-                <div>
-                  <h3 className="px-3 text-[10px] font-bold text-slate-400 dark:text-slate-500 tracking-wider uppercase mb-2">
-                    SUPPORT
-                  </h3>
-                  <nav className="space-y-1">
-                    {supportItems.map((item) => {
-                      const isActive = pathname === item.href;
-                      const Icon = item.icon;
-                      return (
-                        <Link
-                          key={item.name}
-                          href={item.href}
-                          className={cn(
-                            "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
-                            isActive
-                              ? "bg-blue-50 text-blue-600 font-semibold dark:bg-blue-950/40 dark:text-blue-400"
-                              : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
-                          )}
-                        >
-                          <Icon className="h-4 w-4" />
-                          {item.name}
-                        </Link>
-                      );
-                    })}
-                  </nav>
-                </div>
+              <div className="px-3 py-4 space-y-6 overflow-y-auto max-h-[calc(100vh-5rem)]">
+                {navSections.map((section) => (
+                  <div key={section.title}>
+                    <h3 className="px-3 text-[10px] font-bold text-slate-400 dark:text-slate-500 tracking-wider uppercase mb-2">
+                      {section.title}
+                    </h3>
+                    <nav className="space-y-1">
+                      {section.items.map((item) => {
+                        const isActive = pathname === item.href;
+                        const Icon = item.icon;
+                        return (
+                          <Link
+                            key={item.name}
+                            href={item.href}
+                            className={cn(
+                              "flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium transition-all",
+                              isActive
+                                ? "bg-blue-50 text-blue-600 font-semibold dark:bg-blue-950/40 dark:text-blue-400"
+                                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
+                            )}
+                          >
+                            <Icon className="h-4 w-4" />
+                            {item.name}
+                          </Link>
+                        );
+                      })}
+                    </nav>
+                  </div>
+                ))}
               </div>
             </SheetContent>
           </Sheet>
