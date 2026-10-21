@@ -1,16 +1,16 @@
 # Graph Report - tracking  (2026-10-21)
 
 ## Corpus Check
-- 132 files · ~79,835 words
+- 132 files · ~80,785 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 647 nodes · 2030 edges · 30 communities (24 shown, 6 thin omitted)
+- 649 nodes · 2038 edges · 32 communities (26 shown, 6 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 1 edges (avg confidence: 0.5)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `bb51e158`
+- Built from commit: `dc857537`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -23,9 +23,9 @@
 - compilerOptions
 - components.json
 - drawer.tsx
-- button.tsx
+- PropFirm
 - app/page.tsx
-- header.tsx
+- utils.ts
 - cn
 - AGENTS.md
 - eslint.config.mjs
@@ -34,21 +34,23 @@
 - retiros/page.tsx
 - copier/page.tsx
 - src/middleware.ts
-- PropFirm
 - database.ts
+- [id]/page.tsx
 - 2. Contratos de Datos y APIs Institucionales
 - calendario/page.tsx
 - economic-events.ts
-- utils.ts
+- tabs.tsx
 - analytics/page.tsx
 - trading-calculators.ts
+- login/page.tsx
+- header.tsx
 
 ## God Nodes (most connected - your core abstractions)
 1. `cn()` - 103 edges
 2. `formatCurrency()` - 49 edges
 3. `PropFirm` - 43 edges
-4. `Account` - 40 edges
-5. `createClient()` - 39 edges
+4. `createClient()` - 40 edges
+5. `Account` - 40 edges
 6. `Button()` - 37 edges
 7. `Expense` - 28 edges
 8. `Withdrawal` - 28 edges
@@ -70,7 +72,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (30 total, 6 thin omitted)
+## Communities (32 total, 6 thin omitted)
 
 ### Community 2 - "README.md"
 Cohesion: 0.50
@@ -96,25 +98,25 @@ Nodes (21): aliases, components, hooks, lib, ui, utils, iconLibrary, menuAccent 
 Cohesion: 0.13
 Nodes (13): react, react, Drawer(), DrawerContent(), DrawerContext, DrawerContextProps, DrawerDescription(), DrawerFooter() (+5 more)
 
-### Community 8 - "button.tsx"
+### Community 8 - "PropFirm"
 Cohesion: 0.09
-Nodes (39): LoginPage(), SettingsPage(), StrategiesPageContent(), EmptyStateProps, AddFirmModalProps, EditExpenseModal(), EditWithdrawalModal(), ResponsiveModal() (+31 more)
+Nodes (44): FirmFinancialMetric, StrategiesPageContent(), AccountsDueWidget(), AccountsDueWidgetProps, DashboardFiltersProps, AddAccountModalProps, AddExpenseModalProps, AddFirmModal() (+36 more)
 
 ### Community 9 - "app/page.tsx"
-Cohesion: 0.13
-Nodes (43): AnalyticsPageContent(), CalendarioContent(), CuentasPage(), EmpresasPage(), GastosPage(), HomePageContent(), FIRM_COLORS, PortfolioPageContent() (+35 more)
+Cohesion: 0.15
+Nodes (40): AnalyticsPageContent(), CalendarioContent(), CuentasPage(), EmpresasPage(), GastosPage(), HomePageContent(), FIRM_COLORS, PortfolioPageContent() (+32 more)
 
-### Community 10 - "header.tsx"
-Cohesion: 0.17
-Nodes (12): DashboardLayout(), metadata, plusJakartaSans, Header(), MobileNav(), menuItems, navigationItems, navSections (+4 more)
+### Community 10 - "utils.ts"
+Cohesion: 0.16
+Nodes (10): DashboardLayout(), metadata, plusJakartaSans, MobileNav(), mobileNavItems, menuItems, navigationItems, navSections (+2 more)
 
 ### Community 11 - "cn"
 Cohesion: 0.14
-Nodes (18): AlertDialogMedia(), AlertDialogOverlay(), Avatar(), AvatarBadge(), AvatarFallback(), AvatarGroup(), AvatarGroupCount(), AvatarImage() (+10 more)
+Nodes (14): AlertDialogMedia(), AlertDialogOverlay(), DialogOverlay(), DropdownMenuCheckboxItem(), DropdownMenuLabel(), DropdownMenuRadioItem(), DropdownMenuSeparator(), DropdownMenuShortcut() (+6 more)
 
 ### Community 16 - "retiros/page.tsx"
-Cohesion: 0.09
-Nodes (28): DashboardFilters(), TransactionTable(), TransactionType, AddAccountModal(), EditAccountModal(), AlertDialog(), AlertDialogAction(), AlertDialogCancel() (+20 more)
+Cohesion: 0.11
+Nodes (28): DashboardFilters(), TransactionType, AddAccountModal(), EditExpenseModal(), EditWithdrawalModal(), AlertDialog(), AlertDialogAction(), AlertDialogCancel() (+20 more)
 
 ### Community 19 - "copier/page.tsx"
 Cohesion: 0.20
@@ -124,13 +126,13 @@ Nodes (20): CopierPage(), AddTradovateConnectionModal(), AddTradovateConnectionM
 Cohesion: 0.60
 Nodes (3): updateSession(), config, middleware()
 
-### Community 21 - "PropFirm"
-Cohesion: 0.06
-Nodes (62): FirmFinancialMetric, UnifiedTradeRow, AccountsDueWidget(), AccountsDueWidgetProps, ChartPoint, CumulativeProfitChart(), CumulativeProfitChartProps, NetProfitSparkline() (+54 more)
+### Community 21 - "database.ts"
+Cohesion: 0.07
+Nodes (57): UnifiedTradeRow, CumulativeProfitChartProps, FirmPerformanceChart(), FirmPerformanceChartProps, NetProfitSparkline(), NetProfitSparklineProps, PerformanceLineChart(), PerformanceLineChartProps (+49 more)
 
-### Community 22 - "database.ts"
-Cohesion: 0.05
-Nodes (66): SimulatorWorkspacePage(), SimulatorDashboardPage(), FirmPerformanceChart(), FirmPerformanceChartProps, CreateSimulatorSessionModal(), CreateSimulatorSessionModalProps, LightweightChartView(), LightweightChartViewProps (+58 more)
+### Community 22 - "[id]/page.tsx"
+Cohesion: 0.07
+Nodes (56): SimulatorWorkspacePage(), SimulatorDashboardPage(), CreateSimulatorSessionModal(), CreateSimulatorSessionModalProps, LightweightChartView(), LightweightChartViewProps, OrderPanel(), OrderPanelProps (+48 more)
 
 ### Community 23 - "2. Contratos de Datos y APIs Institucionales"
 Cohesion: 0.14
@@ -144,9 +146,9 @@ Nodes (11): CATEGORY_LABELS, MONTH_NAMES, WEEKDAY_NAMES, Sheet(), SheetContent()
 Cohesion: 0.28
 Nodes (11): EconomicCalendarContent(), EconomicEvent, EconomicEventsFilter, filterEconomicEvents(), getEconomicEvents(), getFallbackEconomicEvents(), getImpactedAssets(), ImpactedAsset (+3 more)
 
-### Community 26 - "utils.ts"
-Cohesion: 0.25
-Nodes (6): Skeleton(), Tabs(), TabsContent(), TabsList(), tabsListVariants, TabsTrigger()
+### Community 26 - "tabs.tsx"
+Cohesion: 0.40
+Nodes (5): Tabs(), TabsContent(), TabsList(), tabsListVariants, TabsTrigger()
 
 ### Community 28 - "analytics/page.tsx"
 Cohesion: 0.23
@@ -156,8 +158,16 @@ Nodes (9): SelectContent(), SelectGroup(), SelectItem(), SelectLabel(), SelectSc
 Cohesion: 0.35
 Nodes (9): TradingToolsPage(), calculateConsistencyRule(), calculateDrawdownBuffer(), calculatePositionSize(), ConsistencyResult, DrawdownBufferResult, INSTRUMENT_SPECS, InstrumentSpec (+1 more)
 
+### Community 30 - "login/page.tsx"
+Cohesion: 0.17
+Nodes (16): LoginPage(), SettingsPage(), ChartPoint, CumulativeProfitChart(), EmptyStateProps, Header(), Badge(), badgeVariants (+8 more)
+
+### Community 31 - "header.tsx"
+Cohesion: 0.36
+Nodes (6): Avatar(), AvatarBadge(), AvatarFallback(), AvatarGroup(), AvatarGroupCount(), AvatarImage()
+
 ## Knowledge Gaps
-- **147 isolated node(s):** `$schema`, `style`, `rsc`, `tsx`, `config` (+142 more)
+- **150 isolated node(s):** `$schema`, `style`, `rsc`, `tsx`, `config` (+145 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **6 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -165,13 +175,13 @@ Nodes (9): TradingToolsPage(), calculateConsistencyRule(), calculateDrawdownBuff
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `dependencies` connect `dependencies` to `devDependencies`, `drawer.tsx`?**
-  _High betweenness centrality (0.156) - this node is a cross-community bridge._
-- **Why does `cn()` connect `cn` to `drawer.tsx`, `button.tsx`, `app/page.tsx`, `header.tsx`, `retiros/page.tsx`, `copier/page.tsx`, `calendario/page.tsx`, `utils.ts`, `analytics/page.tsx`?**
-  _High betweenness centrality (0.129) - this node is a cross-community bridge._
+  _High betweenness centrality (0.155) - this node is a cross-community bridge._
+- **Why does `cn()` connect `cn` to `drawer.tsx`, `PropFirm`, `app/page.tsx`, `utils.ts`, `retiros/page.tsx`, `copier/page.tsx`, `calendario/page.tsx`, `tabs.tsx`, `analytics/page.tsx`, `login/page.tsx`, `header.tsx`?**
+  _High betweenness centrality (0.131) - this node is a cross-community bridge._
 - **Why does `react` connect `drawer.tsx` to `dependencies`?**
   _High betweenness centrality (0.079) - this node is a cross-community bridge._
 - **What connects `$schema`, `style`, `rsc` to the rest of the system?**
-  _147 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _150 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `dependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.06451612903225806 - nodes in this community are weakly interconnected._
 - **Should `devDependencies` be split into smaller, more focused modules?**

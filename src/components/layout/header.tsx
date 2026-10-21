@@ -31,6 +31,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { navSections } from "./sidebar";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export function Header() {
   const pathname = usePathname();
@@ -144,8 +145,10 @@ export function Header() {
           <span className="text-slate-700 dark:text-slate-300 font-semibold">{getPageTitle()}</span>
         </div>
 
-        {/* User Profile */}
-        <div className="flex items-center gap-3">
+        {/* User Profile & Controls */}
+        <div className="flex items-center gap-2">
+          {/* Theme Mode Toggle */}
+          <ThemeToggle />
 
           {/* Notifications button */}
           <Button
