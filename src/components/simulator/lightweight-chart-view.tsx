@@ -5,6 +5,8 @@ import {
   createChart,
   IChartApi,
   ISeriesApi,
+  CandlestickSeries,
+  HistogramSeries,
   CandlestickData,
   HistogramData,
   Time,
@@ -40,41 +42,38 @@ export function LightweightChartView({
   useEffect(() => {
     if (!chartContainerRef.current) return;
 
-    const isDark = document.documentElement.classList.contains('dark');
+    try {
+      const isDark = document.documentElement.classList.contains('dark');
 
-    const chart = createChart(chartContainerRef.current, {
-      layout: {
-        background: { type: ColorType.Solid, color: isDark ? '#090d16' : '#ffffff' },
-        textColor: isDark ? '#94a3b8' : '#475569',
-      },
-      grid: {
-        vertLines: { color: isDark ? '#1e293b' : '#f1f5f9' },
-        horzLines: { color: isDark ? '#1e293b' : '#f1f5f9' },
-      },
-      crosshair: {
-        mode: CrosshairMode.Normal,
-      },
-      rightPriceScale: {
-        borderColor: isDark ? '#334155' : '#e2e8f0',
-        scaleMargins: {
-          top: 0.1,
-          bottom: 0.2,
+      const chart = createChart(chartContainerRef.current, {
+        layout: {
+          background: { type: ColorType.Solid, color: isDark ? '#090d16' : '#ffffff' },
+          textColor: isDark ? '#94a3b8' : '#475569',
         },
-      },
-      timeScale: {
-        borderColor: isDark ? '#334155' : '#e2e8f0',
-        timeVisible: true,
-        secondsVisible: false,
-      },
-      width: chartContainerRef.current.clientWidth,
-      height: 480,
-    });
+        grid: {
+          vertLines: { color: isDark ? '#1e293b' : '#f1f5f9' },
+          horzLines: { color: isDark ? '#1e293b' : '#f1f5f9' },
+        },
+        crosshair: {
+          mode: CrosshairMode.Normal,
+        },
+        rightPriceScale: {
+          borderColor: isDark ? '#334155' : '#e2e8f0',
+          scaleMargins: {
+            top: 0.1,
+            bottom: 0.2,
+          },
+        },
+        timeScale: {
+          borderColor: isDark ? '#334155' : '#e2e8f0',
+          timeVisible: true,
+          secondsVisible: false,
+        },
+        width: chartContainerRef.current.clientWidth || 800,
+        height: 480,
+      });
 
-    const candleSeries = chart.addSeries(
-      {
-        type: 'Candlestick',
-      } as any,
-      {
+      const candleSeries = chart.addSeries(CandlestickSeries, {
         upColor: '#10b981',
         downColor: '#ef4444',
         borderVisible: false,
@@ -85,78 +84,79 @@ export function LightweightChartView({
           precision: decimals,
           minMove: Math.pow(10, -decimals),
         },
-      }
-    );
+      });
 
-    const volumeSeries = chart.addSeries(
-      {
-        type: 'Histogram',
-      } as any,
-      {
+      const volumeSeries = chart.addSeries(HistogramSeries, {
         color: '#64748b',
         priceFormat: {
           type: 'volume',
         },
         priceScaleId: '', // overlay
-      }
-    );
+      });
 
-    volumeSeries.priceScale().applyOptions({
-      scaleMargins: {
-        top: 0.8,
-        bottom: 0,
-      },
-    });
+      volumeSeries.priceScale().applyOptions({
+        scaleMargins: {
+          top: 0.8,
+          bottom: 0,
+        },
+      });
 
-    chartRef.current = chart;
-    candleSeriesRef.current = candleSeries as any;
-    volumeSeriesRef.current = volumeSeries as any;
+      chartRef.current = chart;
+      candleSeriesRef.current = candleSeries;
+      volumeSeriesRef.current = volumeSeries;
 
-    const handleResize = () => {
-      if (chartContainerRef.current && chartRef.current) {
-        chartRef.current.applyOptions({
-          width: chartContainerRef.current.clientWidth,
-        });
-      }
-    };
+      const handleResize = () => {
+        if (chartContainerRef.current && chartRef.current) {
+          chartRef.current.applyOptions({
+            width: chartContainerRef.current.clientWidth,
+          });
+        }
+      };
 
-    window.addEventListener('resize', handleResize);
+      window.addEventListener('resize', handleResize);
 
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      chart.remove();
-      chartRef.current = null;
-      candleSeriesRef.current = null;
-      volumeSeriesRef.current = null;
-    };
+      return () => {
+        window.removeEventListener('resize', handleResize);
+        chart.remove();
+        chartRef.current = null;
+        candleSeriesRef.current = null;
+        volumeSeriesRef.current = null;
+      };
+    } catch (err) {
+      console.error('Failed to initialize LightweightChart:', err);
+    }
   }, [decimals]);
 
   // Update visible candles data
   useEffect(() => {
     if (!candleSeriesRef.current || !volumeSeriesRef.current || candles.length === 0) return;
 
-    const visibleCandles = candles.slice(0, Math.min(visibleCount, candles.length));
+    try {
+      const visibleCandles = candles.slice(0, Math.min(visibleCount, candles.length));
 
-    const candleData: CandlestickData<Time>[] = visibleCandles.map((c) => ({
-      time: c.time as Time,
-      open: c.open,
-      high: c.high,
-      low: c.low,
-      close: c.close,
-    }));
+      const candleData: CandlestickData<Time>[] = visibleCandles.map((c) => ({
+        time: c.time as Time,
+        open: c.open,
+        high: c.high,
+        low: c.low,
+        close: c.close,
+      }));
 
-    const volumeData: HistogramData<Time>[] = visibleCandles.map((c) => ({
-      time: c.time as Time,
-      value: c.volume || 100,
-      color: c.close >= c.open ? 'rgba(16, 185, 129, 0.25)' : 'rgba(239, 68, 68, 0.25)',
-    }));
+      const volumeData: HistogramData<Time>[] = visibleCandles.map((c) => ({
+        time: c.time as Time,
+        value: c.volume || 100,
+        color: c.close >= c.open ? 'rgba(16, 185, 129, 0.25)' : 'rgba(239, 68, 68, 0.25)',
+      }));
 
-    candleSeriesRef.current.setData(candleData);
-    volumeSeriesRef.current.setData(volumeData);
+      candleSeriesRef.current.setData(candleData);
+      volumeSeriesRef.current.setData(volumeData);
 
-    // Maintain recent focus
-    if (chartRef.current && candleData.length > 0) {
-      chartRef.current.timeScale().scrollToPosition(3, false);
+      // Maintain recent focus
+      if (chartRef.current && candleData.length > 0) {
+        chartRef.current.timeScale().scrollToPosition(3, false);
+      }
+    } catch (err) {
+      console.warn('Error setting candle data:', err);
     }
   }, [candles, visibleCount]);
 
@@ -176,41 +176,45 @@ export function LightweightChartView({
 
     // Add lines for current open positions
     openPositions.forEach((pos) => {
-      // Entry line
-      const entryLine = candleSeriesRef.current?.createPriceLine({
-        price: pos.entry_price,
-        color: pos.side === 'BUY' ? '#3b82f6' : '#f59e0b',
-        lineWidth: 2,
-        lineStyle: LineStyle.Dotted,
-        axisLabelVisible: true,
-        title: `${pos.side} @ ${pos.entry_price}`,
-      });
-      if (entryLine) priceLinesRef.current.push(entryLine);
-
-      // Stop Loss line
-      if (pos.stop_loss) {
-        const slLine = candleSeriesRef.current?.createPriceLine({
-          price: pos.stop_loss,
-          color: '#ef4444',
+      try {
+        // Entry line
+        const entryLine = candleSeriesRef.current?.createPriceLine({
+          price: pos.entry_price,
+          color: pos.side === 'BUY' ? '#3b82f6' : '#f59e0b',
           lineWidth: 2,
-          lineStyle: LineStyle.Dashed,
+          lineStyle: LineStyle.Dotted,
           axisLabelVisible: true,
-          title: `SL @ ${pos.stop_loss}`,
+          title: `${pos.side} @ ${pos.entry_price}`,
         });
-        if (slLine) priceLinesRef.current.push(slLine);
-      }
+        if (entryLine) priceLinesRef.current.push(entryLine);
 
-      // Take Profit line
-      if (pos.take_profit) {
-        const tpLine = candleSeriesRef.current?.createPriceLine({
-          price: pos.take_profit,
-          color: '#10b981',
-          lineWidth: 2,
-          lineStyle: LineStyle.Dashed,
-          axisLabelVisible: true,
-          title: `TP @ ${pos.take_profit}`,
-        });
-        if (tpLine) priceLinesRef.current.push(tpLine);
+        // Stop Loss line
+        if (pos.stop_loss) {
+          const slLine = candleSeriesRef.current?.createPriceLine({
+            price: pos.stop_loss,
+            color: '#ef4444',
+            lineWidth: 2,
+            lineStyle: LineStyle.Dashed,
+            axisLabelVisible: true,
+            title: `SL @ ${pos.stop_loss}`,
+          });
+          if (slLine) priceLinesRef.current.push(slLine);
+        }
+
+        // Take Profit line
+        if (pos.take_profit) {
+          const tpLine = candleSeriesRef.current?.createPriceLine({
+            price: pos.take_profit,
+            color: '#10b981',
+            lineWidth: 2,
+            lineStyle: LineStyle.Dashed,
+            axisLabelVisible: true,
+            title: `TP @ ${pos.take_profit}`,
+          });
+          if (tpLine) priceLinesRef.current.push(tpLine);
+        }
+      } catch (e) {
+        console.warn('Error creating price line:', e);
       }
     });
   }, [openPositions]);

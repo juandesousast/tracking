@@ -66,7 +66,7 @@ export function ReplayControls({
           className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 text-slate-700 dark:text-slate-200 text-xs font-semibold transition-colors"
         >
           <SkipForward className="h-4 w-4" />
-          <span>+1 Vela</span>
+          <span>Avanzar Vela</span>
         </button>
       </div>
 

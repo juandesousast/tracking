@@ -114,7 +114,7 @@ export default function SimulatorDashboardPage() {
           className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-blue-600 hover:bg-blue-500 active:scale-[0.98] text-white font-bold text-sm shadow-sm shadow-blue-600/25 transition-all cursor-pointer self-start sm:self-auto"
         >
           <Plus className="h-4 w-4" />
-          <span>+ Nueva Sesión</span>
+          <span>Nueva Sesión</span>
         </button>
       </div>
 
@@ -169,7 +169,7 @@ export default function SimulatorDashboardPage() {
             Modo Replay
           </span>
           <div className="text-2xl font-bold text-slate-900 dark:text-white mt-1.5 flex items-center gap-2">
-            <span>TradingView</span>
+            <span>Alta Precisión</span>
             <span className="h-2 w-2 rounded-full bg-emerald-500" />
           </div>
           <span className="text-xs text-slate-500 mt-1 block">

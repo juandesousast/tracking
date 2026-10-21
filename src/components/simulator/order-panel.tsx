@@ -122,16 +122,16 @@ export function OrderPanel({
           onClick={handleBuy}
           className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] text-white font-bold text-sm shadow-sm shadow-emerald-600/20 transition-all cursor-pointer"
         >
-          <ArrowUpRight className="h-5 w-5" />
-          <span>COMPRAR (LONG)</span>
+          <ArrowUpRight className="h-4 w-4" />
+          <span>Comprar (Long)</span>
         </button>
 
         <button
           onClick={handleSell}
           className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-rose-600 hover:bg-rose-500 active:scale-[0.98] text-white font-bold text-sm shadow-sm shadow-rose-600/20 transition-all cursor-pointer"
         >
-          <ArrowDownRight className="h-5 w-5" />
-          <span>VENDER (SHORT)</span>
+          <ArrowDownRight className="h-4 w-4" />
+          <span>Vender (Short)</span>
         </button>
       </div>
     </div>
