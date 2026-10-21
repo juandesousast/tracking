@@ -21,6 +21,7 @@ import {
   Calculator,
   ShieldAlert,
   Target,
+  PieChart,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -40,6 +41,7 @@ export const navSections = [
   {
     title: "PROP FIRMS & CAPITAL",
     items: [
+      { name: "Radar de Portafolio", href: "/portfolio", icon: PieChart },
       { name: "Progreso a Fondeo", href: "/progress-tracker", icon: Target },
       { name: "Cuentas de Fondeo", href: "/cuentas", icon: Wallet },
       { name: "Exámenes & Gastos", href: "/gastos", icon: Receipt },
