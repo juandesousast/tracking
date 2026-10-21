@@ -7,12 +7,15 @@ import {
   getSimulatorSession,
   placeSimulatorOrder,
   closeSimulatorPosition,
+  closeAllSimulatorPositions,
   getRealSimulatorCandles,
 } from '@/lib/actions/simulator-actions';
 import {
   generateHistoricalCandles,
   getSymbolConfig,
   calculateSessionStats,
+  calculatePositionPnl,
+  calculateRMultiple,
   Candle,
 } from '@/lib/services/simulator-engine';
 import { BacktestingSession, BacktestingPosition } from '@/types/database';
@@ -36,6 +39,35 @@ export default function SimulatorWorkspacePage() {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [speed, setSpeed] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  // Concurrency & Idempotency guards
+  const [isExecutingOrder, setIsExecutingOrder] = useState<boolean>(false);
+  const [isClosingAll, setIsClosingAll] = useState<boolean>(false);
+  const [closingPositionIds, setClosingPositionIds] = useState<string[]>([]);
+
+  // Synchronized positions ref to prevent closure race conditions
+  const positionsRef = useRef<BacktestingPosition[]>([]);
+  positionsRef.current = positions;
+
+  const isExecutingOrderRef = useRef<boolean>(false);
+  const isClosingAllRef = useRef<boolean>(false);
+  const closingPositionIdsRef = useRef<Set<string>>(new Set());
+
+  // Functional positions updater that keeps state, ref, and localStorage in perfect sync
+  const updatePositions = (
+    updater: (prev: BacktestingPosition[]) => BacktestingPosition[]
+  ) => {
+    setPositions((prev) => {
+      const updated = updater(prev);
+      positionsRef.current = updated;
+      try {
+        localStorage.setItem(`sim_positions_${sessionId}`, JSON.stringify(updated));
+      } catch (e) {
+        // ignore
+      }
+      return updated;
+    });
+  };
 
   // Load session data
   useEffect(() => {
@@ -66,6 +98,7 @@ export default function SimulatorWorkspacePage() {
         if (foundSession) {
           setSession(foundSession);
           setPositions(foundPositions);
+          positionsRef.current = foundPositions;
 
           // Fetch real historical candles with graceful fallback
           const marketRes = await getRealSimulatorCandles(
@@ -93,85 +126,86 @@ export default function SimulatorWorkspacePage() {
   const currentCandle = candles[visibleCount - 1] || null;
   const currentPrice = currentCandle ? currentCandle.close : 0;
 
-  // Save positions helper
-  const syncPositions = (updated: BacktestingPosition[]) => {
-    setPositions(updated);
-    localStorage.setItem(`sim_positions_${sessionId}`, JSON.stringify(updated));
-  };
+  // Automated SL / TP hit evaluation on every step (reads positionsRef.current to avoid resurrection bugs)
+  const checkStopLossAndTakeProfit = (evalCandle: Candle) => {
+    const currentPositions = positionsRef.current;
+    const triggers: {
+      pos: BacktestingPosition;
+      exitPrice: number;
+      pnl: number;
+      rMultiple: number | null;
+      exitTime: string;
+    }[] = [];
 
-  // Automated SL / TP hit evaluation on every step
-  const checkStopLossAndTakeProfit = (
-    evalCandle: Candle,
-    currentPositions: BacktestingPosition[]
-  ): BacktestingPosition[] => {
-    let changed = false;
-    const updated = currentPositions.map((pos) => {
-      if (pos.status !== 'OPEN') return pos;
+    currentPositions.forEach((pos) => {
+      if (pos.status !== 'OPEN') return;
 
       let exitPrice: number | null = null;
 
       if (pos.side === 'BUY') {
-        // SL hit check
         if (pos.stop_loss && evalCandle.low <= pos.stop_loss) {
           exitPrice = pos.stop_loss;
-        }
-        // TP hit check
-        else if (pos.take_profit && evalCandle.high >= pos.take_profit) {
+        } else if (pos.take_profit && evalCandle.high >= pos.take_profit) {
           exitPrice = pos.take_profit;
         }
       } else {
-        // SELL SL hit check
         if (pos.stop_loss && evalCandle.high >= pos.stop_loss) {
           exitPrice = pos.stop_loss;
-        }
-        // SELL TP hit check
-        else if (pos.take_profit && evalCandle.low <= pos.take_profit) {
+        } else if (pos.take_profit && evalCandle.low <= pos.take_profit) {
           exitPrice = pos.take_profit;
         }
       }
 
       if (exitPrice !== null) {
-        changed = true;
         const diff =
           pos.side === 'BUY'
             ? exitPrice - pos.entry_price
             : pos.entry_price - exitPrice;
         const pnl = Number((diff * pos.quantity * symbolConfig.contractSize).toFixed(2));
-
         const risk = pos.stop_loss ? Math.abs(pos.entry_price - pos.stop_loss) : 0;
-        const rMultiple =
-          risk > 0 ? Number(((diff) / risk).toFixed(2)) : null;
+        const rMultiple = risk > 0 ? Number((diff / risk).toFixed(2)) : null;
+        const exitTime = new Date(evalCandle.time * 1000).toISOString();
 
-        // Async server update
-        closeSimulatorPosition({
-          positionId: pos.id,
-          sessionId,
-          symbol: pos.symbol,
-          side: pos.side,
-          quantity: pos.quantity,
-          entryPrice: pos.entry_price,
-          exitPrice,
-          stopLoss: pos.stop_loss,
-          exitTime: new Date(evalCandle.time * 1000).toISOString(),
-        });
-
-        return {
-          ...pos,
-          status: 'CLOSED' as const,
-          exit_price: exitPrice,
-          exit_time: new Date(evalCandle.time * 1000).toISOString(),
-          pnl,
-          r_multiple: rMultiple,
-        };
+        triggers.push({ pos, exitPrice, pnl, rMultiple, exitTime });
       }
-
-      return pos;
     });
 
-    if (changed) {
-      syncPositions(updated);
+    if (triggers.length > 0) {
+      const triggeredIds = new Set(triggers.map((t) => t.pos.id));
+
+      // Atomic functional state update
+      updatePositions((prev) =>
+        prev.map((p) => {
+          const match = triggers.find((t) => t.pos.id === p.id);
+          if (match) {
+            return {
+              ...p,
+              status: 'CLOSED' as const,
+              exit_price: match.exitPrice,
+              exit_time: match.exitTime,
+              pnl: match.pnl,
+              r_multiple: match.rMultiple,
+            };
+          }
+          return p;
+        })
+      );
+
+      // Async backend updates
+      triggers.forEach((t) => {
+        closeSimulatorPosition({
+          positionId: t.pos.id,
+          sessionId,
+          symbol: t.pos.symbol,
+          side: t.pos.side,
+          quantity: t.pos.quantity,
+          entryPrice: t.pos.entry_price,
+          exitPrice: t.exitPrice,
+          stopLoss: t.pos.stop_loss,
+          exitTime: t.exitTime,
+        });
+      });
     }
-    return updated;
   };
 
   // Advance 1 candle step forward
@@ -181,7 +215,7 @@ export default function SimulatorWorkspacePage() {
       setVisibleCount(nextIndex);
       const nextCandle = candles[nextIndex - 1];
       if (nextCandle) {
-        checkStopLossAndTakeProfit(nextCandle, positions);
+        checkStopLossAndTakeProfit(nextCandle);
       }
     } else {
       setIsPlaying(false);
@@ -202,77 +236,176 @@ export default function SimulatorWorkspacePage() {
         const next = prev + 1;
         const nextCandle = candles[next - 1];
         if (nextCandle) {
-          checkStopLossAndTakeProfit(nextCandle, positions);
+          checkStopLossAndTakeProfit(nextCandle);
         }
         return next;
       });
     }, intervalMs);
 
     return () => clearInterval(timer);
-  }, [isPlaying, speed, candles, positions]);
+  }, [isPlaying, speed, candles]);
 
-  // Execute Order
+  // Execute Order with concurrency lock & clientOrderId idempotency
   const handleExecuteOrder = async (params: {
     side: 'BUY' | 'SELL';
     quantity: number;
     stopLoss: number | null;
     takeProfit: number | null;
   }) => {
-    if (!currentPrice) return;
+    if (!currentPrice || isExecutingOrderRef.current || isClosingAllRef.current) {
+      return;
+    }
 
-    const newPos = await placeSimulatorOrder({
-      session_id: sessionId,
-      symbol: symbolConfig.value,
-      side: params.side,
-      type: 'MARKET',
-      quantity: params.quantity,
-      entry_price: currentPrice,
-      stop_loss: params.stopLoss,
-      take_profit: params.takeProfit,
-    });
+    isExecutingOrderRef.current = true;
+    setIsExecutingOrder(true);
 
-    const updated = [...positions, newPos];
-    syncPositions(updated);
+    const clientOrderId = crypto.randomUUID();
+
+    try {
+      const newPos = await placeSimulatorOrder({
+        session_id: sessionId,
+        client_order_id: clientOrderId,
+        symbol: symbolConfig.value,
+        side: params.side,
+        type: 'MARKET',
+        quantity: params.quantity,
+        entry_price: currentPrice,
+        stop_loss: params.stopLoss,
+        take_profit: params.takeProfit,
+      });
+
+      // Atomic functional addition
+      updatePositions((prev) => {
+        if (prev.some((p) => p.id === newPos.id)) {
+          return prev;
+        }
+        return [...prev, newPos];
+      });
+    } catch (err) {
+      console.error('Failed to execute simulator order:', err);
+    } finally {
+      isExecutingOrderRef.current = false;
+      setIsExecutingOrder(false);
+    }
   };
 
-  // Close single position manually
+  // Close single position manually with idempotency & in-flight guard
   const handleClosePosition = async (positionId: string) => {
-    const target = positions.find((p) => p.id === positionId);
-    if (!target || !currentPrice) return;
+    if (!currentPrice) return;
 
-    const res = await closeSimulatorPosition({
-      positionId: target.id,
-      sessionId,
-      symbol: target.symbol,
-      side: target.side,
-      quantity: target.quantity,
-      entryPrice: target.entry_price,
-      exitPrice: currentPrice,
-      stopLoss: target.stop_loss,
-      exitTime: new Date(currentCandle ? currentCandle.time * 1000 : Date.now()).toISOString(),
-    });
+    // Guard against double clicks on the same position
+    if (closingPositionIdsRef.current.has(positionId)) {
+      return;
+    }
 
-    const updated = positions.map((p) =>
-      p.id === positionId
-        ? {
-            ...p,
-            status: 'CLOSED' as const,
-            exit_price: currentPrice,
-            exit_time: new Date().toISOString(),
-            pnl: res.pnl,
-            r_multiple: res.rMultiple,
-          }
-        : p
+    const currentPositions = positionsRef.current;
+    const target = currentPositions.find((p) => p.id === positionId);
+    if (!target || target.status !== 'OPEN') {
+      return;
+    }
+
+    closingPositionIdsRef.current.add(positionId);
+    setClosingPositionIds(Array.from(closingPositionIdsRef.current));
+
+    const exitTime = new Date(currentCandle ? currentCandle.time * 1000 : Date.now()).toISOString();
+    const pnl = calculatePositionPnl(
+      { side: target.side, quantity: target.quantity, entry_price: target.entry_price },
+      currentPrice,
+      target.symbol
     );
-    syncPositions(updated);
+    const rMultiple = calculateRMultiple(
+      target.entry_price,
+      currentPrice,
+      target.stop_loss,
+      target.side
+    );
+
+    // Optimistic atomic update
+    updatePositions((prev) =>
+      prev.map((p) =>
+        p.id === positionId
+          ? {
+              ...p,
+              status: 'CLOSED' as const,
+              exit_price: currentPrice,
+              exit_time: exitTime,
+              pnl,
+              r_multiple: rMultiple,
+            }
+          : p
+      )
+    );
+
+    try {
+      await closeSimulatorPosition({
+        positionId: target.id,
+        sessionId,
+        symbol: target.symbol,
+        side: target.side,
+        quantity: target.quantity,
+        entryPrice: target.entry_price,
+        exitPrice: currentPrice,
+        stopLoss: target.stop_loss,
+        exitTime,
+      });
+    } catch (err) {
+      console.error('Failed to close simulator position:', err);
+    } finally {
+      closingPositionIdsRef.current.delete(positionId);
+      setClosingPositionIds(Array.from(closingPositionIdsRef.current));
+    }
   };
 
-  // Close all open positions manually
+  // Close all open positions manually (atomic batch close)
   const handleCloseAll = async () => {
-    if (!currentPrice) return;
-    const openPos = positions.filter((p) => p.status === 'OPEN');
-    for (const p of openPos) {
-      await handleClosePosition(p.id);
+    if (!currentPrice || isClosingAllRef.current) return;
+
+    const openPositionsToClose = positionsRef.current.filter((p) => p.status === 'OPEN');
+    if (openPositionsToClose.length === 0) return;
+
+    isClosingAllRef.current = true;
+    setIsClosingAll(true);
+
+    const exitTime = new Date(currentCandle ? currentCandle.time * 1000 : Date.now()).toISOString();
+
+    // 1. Optimistic atomic update on client state for ALL open positions at once
+    updatePositions((prev) =>
+      prev.map((p) => {
+        if (p.status !== 'OPEN') return p;
+        const pnl = calculatePositionPnl(
+          { side: p.side, quantity: p.quantity, entry_price: p.entry_price },
+          currentPrice,
+          p.symbol
+        );
+        const rMultiple = calculateRMultiple(
+          p.entry_price,
+          currentPrice,
+          p.stop_loss,
+          p.side
+        );
+        return {
+          ...p,
+          status: 'CLOSED' as const,
+          exit_price: currentPrice,
+          exit_time: exitTime,
+          pnl,
+          r_multiple: rMultiple,
+        };
+      })
+    );
+
+    // 2. Atomic server batch close
+    try {
+      await closeAllSimulatorPositions({
+        sessionId,
+        exitPrice: currentPrice,
+        exitTime,
+      });
+    } catch (err) {
+      console.error('Failed to close all simulator positions:', err);
+    } finally {
+      isClosingAllRef.current = false;
+      setIsClosingAll(false);
     }
   };
 
@@ -433,6 +566,8 @@ export default function SimulatorWorkspacePage() {
             onExecuteOrder={handleExecuteOrder}
             onCloseAll={handleCloseAll}
             openPositionsCount={openPositions.length}
+            isExecutingOrder={isExecutingOrder}
+            isClosingAll={isClosingAll}
           />
         </div>
       </div>
@@ -444,6 +579,7 @@ export default function SimulatorWorkspacePage() {
         onClosePosition={handleClosePosition}
         config={symbolConfig}
         currentPrice={currentPrice}
+        closingPositionIds={closingPositionIds}
       />
     </div>
   );

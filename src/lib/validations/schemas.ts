@@ -112,7 +112,8 @@ export const createSessionSchema = z.object({
 })
 
 export const orderPlacementSchema = z.object({
-  session_id: z.string().uuid({ message: 'ID de sesión no válido' }),
+  session_id: z.string().min(1, { message: 'ID de sesión no válido' }),
+  client_order_id: z.string().optional(),
   symbol: z.string().trim().min(1, { message: 'El símbolo es obligatorio' }),
   side: z.enum(['BUY', 'SELL']),
   type: z.enum(['MARKET', 'LIMIT']).default('MARKET'),

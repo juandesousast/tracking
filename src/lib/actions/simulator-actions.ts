@@ -195,9 +195,31 @@ export async function placeSimulatorOrder(
   } = await supabase.auth.getUser();
 
   const userId = user?.id || 'demo-user';
+  const orderId = validated.client_order_id || crypto.randomUUID();
+
+  // Idempotency check: if client_order_id was provided and already exists, return existing
+  if (validated.client_order_id) {
+    try {
+      const { data: existing } = await supabase
+        .from('backtesting_positions')
+        .select('*')
+        .eq('id', validated.client_order_id)
+        .maybeSingle();
+
+      if (existing) {
+        return {
+          ...existing,
+          quantity: Number(existing.quantity),
+          entry_price: Number(existing.entry_price),
+        } as BacktestingPosition;
+      }
+    } catch {
+      // ignore
+    }
+  }
 
   const newPosition: BacktestingPosition = {
-    id: crypto.randomUUID(),
+    id: orderId,
     session_id: validated.session_id,
     user_id: userId,
     symbol: validated.symbol,
@@ -275,6 +297,18 @@ export async function closeSimulatorPosition(params: {
 
   try {
     const supabase = await createClient();
+
+    // Idempotency: verify position is still OPEN before updating balance
+    const { data: currentPos } = await supabase
+      .from('backtesting_positions')
+      .select('status')
+      .eq('id', params.positionId)
+      .maybeSingle();
+
+    if (currentPos && currentPos.status === 'CLOSED') {
+      return { pnl: 0, rMultiple: null };
+    }
+
     await supabase
       .from('backtesting_positions')
       .update({
@@ -308,4 +342,82 @@ export async function closeSimulatorPosition(params: {
   }
 
   return { pnl, rMultiple };
+}
+
+export async function closeAllSimulatorPositions(params: {
+  sessionId: string;
+  exitPrice: number;
+  exitTime?: string;
+}): Promise<{ closedCount: number; totalPnl: number }> {
+  const exitTime = params.exitTime || new Date().toISOString();
+  let closedCount = 0;
+  let totalPnl = 0;
+
+  try {
+    const supabase = await createClient();
+    const { data: openPositions, error } = await supabase
+      .from('backtesting_positions')
+      .select('*')
+      .eq('session_id', params.sessionId)
+      .eq('status', 'OPEN');
+
+    if (error || !openPositions || openPositions.length === 0) {
+      return { closedCount: 0, totalPnl: 0 };
+    }
+
+    for (const pos of openPositions) {
+      const pnl = calculatePositionPnl(
+        {
+          side: pos.side,
+          quantity: Number(pos.quantity),
+          entry_price: Number(pos.entry_price),
+        },
+        params.exitPrice,
+        pos.symbol
+      );
+
+      const rMultiple = calculateRMultiple(
+        Number(pos.entry_price),
+        params.exitPrice,
+        pos.stop_loss ? Number(pos.stop_loss) : null,
+        pos.side
+      );
+
+      await supabase
+        .from('backtesting_positions')
+        .update({
+          status: 'CLOSED',
+          exit_price: params.exitPrice,
+          exit_time: exitTime,
+          pnl,
+          r_multiple: rMultiple,
+        })
+        .eq('id', pos.id);
+
+      totalPnl += pnl;
+      closedCount++;
+    }
+
+    // Update session balance with aggregated PnL
+    const { data: session } = await supabase
+      .from('backtesting_sessions')
+      .select('current_balance')
+      .eq('id', params.sessionId)
+      .single();
+
+    if (session) {
+      const updatedBalance = Number(session.current_balance) + totalPnl;
+      await supabase
+        .from('backtesting_sessions')
+        .update({
+          current_balance: updatedBalance,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', params.sessionId);
+    }
+  } catch (err) {
+    console.warn('Fallback closeAllSimulatorPositions:', err);
+  }
+
+  return { closedCount, totalPnl };
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ArrowUpRight, ArrowDownRight, ShieldAlert, Target, XCircle } from 'lucide-react';
+import { ArrowUpRight, ArrowDownRight, ShieldAlert, Target, XCircle, Loader2 } from 'lucide-react';
 import { SimulatorSymbolConfig } from '@/types/database';
 
 interface OrderPanelProps {
@@ -15,6 +15,8 @@ interface OrderPanelProps {
   }) => void;
   onCloseAll: () => void;
   openPositionsCount: number;
+  isExecutingOrder?: boolean;
+  isClosingAll?: boolean;
 }
 
 export function OrderPanel({
@@ -23,12 +25,15 @@ export function OrderPanel({
   onExecuteOrder,
   onCloseAll,
   openPositionsCount,
+  isExecutingOrder = false,
+  isClosingAll = false,
 }: OrderPanelProps) {
   const [quantity, setQuantity] = useState<number>(1);
   const [stopLoss, setStopLoss] = useState<string>('');
   const [takeProfit, setTakeProfit] = useState<string>('');
 
   const handleBuy = () => {
+    if (isExecutingOrder || isClosingAll) return;
     onExecuteOrder({
       side: 'BUY',
       quantity,
@@ -38,6 +43,7 @@ export function OrderPanel({
   };
 
   const handleSell = () => {
+    if (isExecutingOrder || isClosingAll) return;
     onExecuteOrder({
       side: 'SELL',
       quantity,
@@ -61,10 +67,15 @@ export function OrderPanel({
         {openPositionsCount > 0 && (
           <button
             onClick={onCloseAll}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-100 dark:bg-rose-950/40 dark:text-rose-400 dark:hover:bg-rose-900/60 border border-rose-200 dark:border-rose-900/50 transition-colors"
+            disabled={isClosingAll || isExecutingOrder}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-100 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-rose-950/40 dark:text-rose-400 dark:hover:bg-rose-900/60 border border-rose-200 dark:border-rose-900/50 transition-colors cursor-pointer"
           >
-            <XCircle className="h-3.5 w-3.5" />
-            Cerrar Todo ({openPositionsCount})
+            {isClosingAll ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <XCircle className="h-3.5 w-3.5" />
+            )}
+            <span>{isClosingAll ? 'Cerrando...' : `Cerrar Todo (${openPositionsCount})`}</span>
           </button>
         )}
       </div>
@@ -120,17 +131,27 @@ export function OrderPanel({
       <div className="grid grid-cols-2 gap-3 mt-1">
         <button
           onClick={handleBuy}
-          className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] text-white font-bold text-sm shadow-sm shadow-emerald-600/20 transition-all cursor-pointer"
+          disabled={isExecutingOrder || isClosingAll}
+          className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 text-white font-bold text-sm shadow-sm shadow-emerald-600/20 transition-all cursor-pointer"
         >
-          <ArrowUpRight className="h-4 w-4" />
+          {isExecutingOrder ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <ArrowUpRight className="h-4 w-4" />
+          )}
           <span>Comprar (Long)</span>
         </button>
 
         <button
           onClick={handleSell}
-          className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-rose-600 hover:bg-rose-500 active:scale-[0.98] text-white font-bold text-sm shadow-sm shadow-rose-600/20 transition-all cursor-pointer"
+          disabled={isExecutingOrder || isClosingAll}
+          className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-rose-600 hover:bg-rose-500 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 text-white font-bold text-sm shadow-sm shadow-rose-600/20 transition-all cursor-pointer"
         >
-          <ArrowDownRight className="h-4 w-4" />
+          {isExecutingOrder ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <ArrowDownRight className="h-4 w-4" />
+          )}
           <span>Vender (Short)</span>
         </button>
       </div>

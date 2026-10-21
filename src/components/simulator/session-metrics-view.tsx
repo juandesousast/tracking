@@ -7,7 +7,7 @@ import {
   SimulatorSymbolConfig,
 } from '@/types/database';
 import { formatCurrency } from '@/lib/formatters';
-import { TrendingUp, TrendingDown, Target, Shield, Clock, X, BarChart3, ListFilter } from 'lucide-react';
+import { TrendingUp, TrendingDown, Target, Shield, Clock, X, BarChart3, ListFilter, Loader2 } from 'lucide-react';
 
 interface SessionMetricsViewProps {
   stats: SimulatorSessionStats;
@@ -15,6 +15,7 @@ interface SessionMetricsViewProps {
   onClosePosition: (positionId: string) => void;
   config: SimulatorSymbolConfig;
   currentPrice: number;
+  closingPositionIds?: string[];
 }
 
 export function SessionMetricsView({
@@ -23,6 +24,7 @@ export function SessionMetricsView({
   onClosePosition,
   config,
   currentPrice,
+  closingPositionIds = [],
 }: SessionMetricsViewProps) {
   const [activeTab, setActiveTab] = useState<'open' | 'history' | 'stats'>('open');
 
@@ -201,10 +203,15 @@ export function SessionMetricsView({
                         <td className="py-3 px-4 text-right">
                           <button
                             onClick={() => onClosePosition(pos.id)}
-                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[11px] font-semibold transition-colors"
+                            disabled={closingPositionIds.includes(pos.id)}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[11px] font-semibold transition-colors cursor-pointer"
                           >
-                            <X className="h-3 w-3" />
-                            Cerrar
+                            {closingPositionIds.includes(pos.id) ? (
+                              <Loader2 className="h-3 w-3 animate-spin" />
+                            ) : (
+                              <X className="h-3 w-3" />
+                            )}
+                            <span>{closingPositionIds.includes(pos.id) ? 'Cerrando...' : 'Cerrar'}</span>
                           </button>
                         </td>
                       </tr>

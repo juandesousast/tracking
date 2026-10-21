@@ -145,13 +145,13 @@
     "semantic_hash": ""
   },
   "src/components/layout/header.tsx": {
-    "mtime": 1786298075.1487622,
-    "ast_hash": "f2678238d8c90f7709c06fd563b9f8bc",
+    "mtime": 1792606369.330386,
+    "ast_hash": "a5b67e6acaa5569bfd890ba947bd4006",
     "semantic_hash": ""
   },
   "src/components/layout/mobile-nav.tsx": {
-    "mtime": 1786216366.7712615,
-    "ast_hash": "e518dee90490b6cccba09a3fff8fa3e4",
+    "mtime": 1792606383.493361,
+    "ast_hash": "51b4c48c51120598165d1dfe7e3c7916",
     "semantic_hash": ""
   },
   "src/components/layout/sidebar.tsx": {
@@ -375,8 +375,8 @@
     "semantic_hash": ""
   },
   "src/lib/validations/schemas.ts": {
-    "mtime": 1792600255.3415685,
-    "ast_hash": "d5659c81e71ca1525622b0f522d07b94",
+    "mtime": 1792606766.9516435,
+    "ast_hash": "6ede781cb4f238d2ce52ee607ccd9a06",
     "semantic_hash": ""
   },
   "src/components/ui/receipt-scanner.tsx": {
@@ -530,8 +530,8 @@
     "semantic_hash": ""
   },
   "src/app/simulador/[id]/page.tsx": {
-    "mtime": 1792602904.3312972,
-    "ast_hash": "a495e56a91e23fa33b86fcf021ffff2c",
+    "mtime": 1792606884.4909213,
+    "ast_hash": "03b681351a00038a237804f41c57f0c4",
     "semantic_hash": ""
   },
   "src/app/simulador/page.tsx": {
@@ -565,8 +565,8 @@
     "semantic_hash": ""
   },
   "src/components/simulator/order-panel.tsx": {
-    "mtime": 1792601774.86286,
-    "ast_hash": "26fe5bce9b2328ab2a523f0868fb7129",
+    "mtime": 1792606813.6538389,
+    "ast_hash": "7ab2ec1e57e891efbbd9c31d3143e0ec",
     "semantic_hash": ""
   },
   "src/components/simulator/replay-controls.tsx": {
@@ -575,8 +575,8 @@
     "semantic_hash": ""
   },
   "src/components/simulator/session-metrics-view.tsx": {
-    "mtime": 1792600814.2075243,
-    "ast_hash": "4c9a82eb299a754aefcb2e95ad9c3901",
+    "mtime": 1792606827.5266204,
+    "ast_hash": "dac732fbafff715d9d9d77b499fcef49",
     "semantic_hash": ""
   },
   "src/components/ui/prop-firm-logo.tsx": {
@@ -585,8 +585,8 @@
     "semantic_hash": ""
   },
   "src/lib/actions/simulator-actions.ts": {
-    "mtime": 1792602866.0673842,
-    "ast_hash": "021cfdfecd5a8e21d16c4f294c5e73f5",
+    "mtime": 1792606787.54226,
+    "ast_hash": "c402cd338068d907ba54d74675af079c",
     "semantic_hash": ""
   },
   "src/lib/constants/prop-firms.ts": {
@@ -640,8 +640,8 @@
     "semantic_hash": ""
   },
   "src/lib/services/simulator-engine.test.ts": {
-    "mtime": 1792603321.1853728,
-    "ast_hash": "0d079cedfaa09c884d9f401b5cedf445",
+    "mtime": 1792606899.437732,
+    "ast_hash": "46acd27739328280321d9812155b26d0",
     "semantic_hash": ""
   },
   "src/lib/services/simulator-engine.ts": {

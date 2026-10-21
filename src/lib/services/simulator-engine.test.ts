@@ -184,5 +184,57 @@ describe('Simulator Engine', () => {
       expect(stats.curve.length).toBe(4); // initial + 3 trades
       expect(stats.curve[3].balance).toBe(10150);
     });
+
+    it('correctly flattens multiple open positions at current market price', () => {
+      const openPositions: BacktestingPosition[] = [
+        {
+          id: 'pos-1',
+          session_id: 's1',
+          user_id: 'u1',
+          symbol: 'NAS100',
+          side: 'BUY',
+          type: 'MARKET',
+          status: 'OPEN',
+          quantity: 2,
+          entry_price: 18000,
+          entry_time: '2024-01-01T10:00:00Z',
+        },
+        {
+          id: 'pos-2',
+          session_id: 's1',
+          user_id: 'u1',
+          symbol: 'NAS100',
+          side: 'SELL',
+          type: 'MARKET',
+          status: 'OPEN',
+          quantity: 1,
+          entry_price: 18100,
+          entry_time: '2024-01-01T10:05:00Z',
+        },
+      ];
+
+      const currentPrice = 18050;
+      const closed = openPositions.map((p) => {
+        const pnl = calculatePositionPnl(
+          { side: p.side, quantity: p.quantity, entry_price: p.entry_price },
+          currentPrice,
+          p.symbol
+        );
+        return {
+          ...p,
+          status: 'CLOSED' as const,
+          exit_price: currentPrice,
+          pnl,
+        };
+      });
+
+      expect(closed.length).toBe(2);
+      expect(closed[0].status).toBe('CLOSED');
+      // BUY pos-1: (18050 - 18000) * 2 = 100
+      expect(closed[0].pnl).toBe(100);
+      // SELL pos-2: (18100 - 18050) * 1 = 50
+      expect(closed[1].status).toBe('CLOSED');
+      expect(closed[1].pnl).toBe(50);
+    });
   });
 });
