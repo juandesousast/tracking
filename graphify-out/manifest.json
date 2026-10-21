@@ -45,8 +45,8 @@
     "semantic_hash": ""
   },
   "src/app/layout.tsx": {
-    "mtime": 1792607783.8624697,
-    "ast_hash": "ed806c8406dcdf6a00c221400357d215",
+    "mtime": 1792609381.86635,
+    "ast_hash": "80277bab6d06aa1cb8bc0d88de6c36ea",
     "semantic_hash": ""
   },
   "src/app/page.tsx": {
@@ -145,8 +145,8 @@
     "semantic_hash": ""
   },
   "src/components/layout/header.tsx": {
-    "mtime": 1792607656.6988292,
-    "ast_hash": "f6d585d216c454c034008309d6a66233",
+    "mtime": 1792609362.2674809,
+    "ast_hash": "0fbee9c5c9a00c03174e459bcff6e7b0",
     "semantic_hash": ""
   },
   "src/components/layout/mobile-nav.tsx": {
@@ -155,8 +155,8 @@
     "semantic_hash": ""
   },
   "src/components/layout/sidebar.tsx": {
-    "mtime": 1792608153.7334318,
-    "ast_hash": "60d564be41dddaf4913fe13404a5209d",
+    "mtime": 1792609355.2327232,
+    "ast_hash": "cbe5d37634465220a4cc526f4d2c86a7",
     "semantic_hash": ""
   },
   "src/components/ui/avatar.tsx": {
@@ -170,8 +170,8 @@
     "semantic_hash": ""
   },
   "src/components/ui/card.tsx": {
-    "mtime": 1792607697.6292388,
-    "ast_hash": "21ab35272cb6d4f039847f8621e9207d",
+    "mtime": 1792609345.200908,
+    "ast_hash": "07a65f46e8aebe6849a039c051351174",
     "semantic_hash": ""
   },
   "src/components/ui/dropdown-menu.tsx": {
@@ -490,8 +490,8 @@
     "semantic_hash": ""
   },
   "src/components/ui/page-skeleton.tsx": {
-    "mtime": 1792438293.4469204,
-    "ast_hash": "6155dec1ecb4da0ea6da2f38a1d9f5d0",
+    "mtime": 1792609390.5132976,
+    "ast_hash": "487197ffb0c3b9d97e2cc6397529c866",
     "semantic_hash": ""
   },
   "src/app/login/layout.tsx": {
@@ -530,8 +530,8 @@
     "semantic_hash": ""
   },
   "src/app/simulador/[id]/page.tsx": {
-    "mtime": 1792606884.4909213,
-    "ast_hash": "03b681351a00038a237804f41c57f0c4",
+    "mtime": 1792609454.0655916,
+    "ast_hash": "b9457172bdec08723e24606f854d4ff0",
     "semantic_hash": ""
   },
   "src/app/simulador/page.tsx": {
@@ -687,6 +687,16 @@
   "src/components/theme-toggle.tsx": {
     "mtime": 1792607642.4660523,
     "ast_hash": "2f5e5bdefc7b88f32f1ac1a86d638153",
+    "semantic_hash": ""
+  },
+  "src/components/ui/linear-loader.tsx": {
+    "mtime": 1792609144.1783361,
+    "ast_hash": "c22873c6f001e49154cf1bb00d5375ce",
+    "semantic_hash": ""
+  },
+  "src/components/ui/top-nav-loader.tsx": {
+    "mtime": 1792609150.7276907,
+    "ast_hash": "09dcc41811bde2cd098aad319b2f4761",
     "semantic_hash": ""
   }
 }

@@ -1,16 +1,16 @@
 # Graph Report - tracking  (2026-10-21)
 
 ## Corpus Check
-- 133 files · ~81,025 words
+- 133 files · ~81,072 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 652 nodes · 2044 edges · 27 communities (20 shown, 7 thin omitted)
+- 652 nodes · 2056 edges · 27 communities (20 shown, 7 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 1 edges (avg confidence: 0.5)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `a6f4cb0f`
+- Built from commit: `ae172eeb`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -41,12 +41,12 @@
 - trading-calculators.ts
 
 ## God Nodes (most connected - your core abstractions)
-1. `cn()` - 103 edges
+1. `cn()` - 107 edges
 2. `formatCurrency()` - 49 edges
 3. `PropFirm` - 43 edges
-4. `createClient()` - 40 edges
-5. `Account` - 40 edges
-6. `Button()` - 38 edges
+4. `Button()` - 41 edges
+5. `createClient()` - 40 edges
+6. `Account` - 40 edges
 7. `Expense` - 28 edges
 8. `Withdrawal` - 28 edges
 9. `getFirms()` - 25 edges
@@ -147,8 +147,8 @@ _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `dependencies` connect `dependencies` to `devDependencies`?**
   _High betweenness centrality (0.155) - this node is a cross-community bridge._
-- **Why does `cn()` connect `cn` to `dependencies`, `PropFirm`, `app/page.tsx`, `calendario/page.tsx`, `copier/page.tsx`?**
-  _High betweenness centrality (0.131) - this node is a cross-community bridge._
+- **Why does `cn()` connect `cn` to `dependencies`, `PropFirm`, `app/page.tsx`, `calendario/page.tsx`, `copier/page.tsx`, `risk-config/page.tsx`, `trading-calculators.ts`?**
+  _High betweenness centrality (0.147) - this node is a cross-community bridge._
 - **What connects `$schema`, `style`, `rsc` to the rest of the system?**
   _151 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `dependencies` be split into smaller, more focused modules?**
