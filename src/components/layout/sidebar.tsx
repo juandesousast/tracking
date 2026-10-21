@@ -20,6 +20,7 @@ import {
   Activity,
   Calculator,
   ShieldAlert,
+  Target,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -39,6 +40,7 @@ export const navSections = [
   {
     title: "PROP FIRMS & CAPITAL",
     items: [
+      { name: "Progreso a Fondeo", href: "/progress-tracker", icon: Target },
       { name: "Cuentas de Fondeo", href: "/cuentas", icon: Wallet },
       { name: "Exámenes & Gastos", href: "/gastos", icon: Receipt },
       { name: "Retiros & Cobros", href: "/retiros", icon: ArrowDownToLine },
