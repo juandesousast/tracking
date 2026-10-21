@@ -321,46 +321,54 @@ function ProgressTrackerContent() {
       {/* Control Bar: Filters & Search */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900">
         <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800/80 p-1 rounded-xl">
-          <button
+          <Button
+            size="sm"
+            variant={statusFilter === "all" ? "secondary" : "ghost"}
             onClick={() => setStatusFilter("all")}
-            className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+            className={`h-8 px-3 rounded-lg text-xs font-semibold transition-colors ${
               statusFilter === "all"
                 ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
-                : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
+                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
             }`}
           >
             Todas ({progressList.length})
-          </button>
-          <button
+          </Button>
+          <Button
+            size="sm"
+            variant={statusFilter === "eval" ? "secondary" : "ghost"}
             onClick={() => setStatusFilter("eval")}
-            className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+            className={`h-8 px-3 rounded-lg text-xs font-semibold transition-colors ${
               statusFilter === "eval"
                 ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
-                : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
+                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
             }`}
           >
             En Evaluación ({kpis.evalCount})
-          </button>
-          <button
+          </Button>
+          <Button
+            size="sm"
+            variant={statusFilter === "ready" ? "secondary" : "ghost"}
             onClick={() => setStatusFilter("ready")}
-            className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+            className={`h-8 px-3 rounded-lg text-xs font-semibold transition-colors ${
               statusFilter === "ready"
                 ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
-                : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
+                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
             }`}
           >
             Listas para Pase 🏆 ({kpis.readyCount})
-          </button>
-          <button
+          </Button>
+          <Button
+            size="sm"
+            variant={statusFilter === "funded" ? "secondary" : "ghost"}
             onClick={() => setStatusFilter("funded")}
-            className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+            className={`h-8 px-3 rounded-lg text-xs font-semibold transition-colors ${
               statusFilter === "funded"
                 ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
-                : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
+                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
             }`}
           >
             Fondeadas / PA
-          </button>
+          </Button>
         </div>
 
         <div className="relative w-full sm:w-72">
@@ -620,12 +628,14 @@ function ProgressTrackerContent() {
                         Simulador What-If (+/- PnL proyectado)
                       </span>
                       {isSimulated && (
-                        <button
+                        <Button
+                          variant="ghost"
+                          size="xs"
                           onClick={() => handleSetSimulatedTrade(item.accountId, 0)}
-                          className="text-[10px] text-blue-600 hover:underline"
+                          className="h-5 px-1.5 text-[11px] text-blue-600 dark:text-blue-400 hover:text-blue-700"
                         >
                           Restablecer
-                        </button>
+                        </Button>
                       )}
                     </div>
                     <div className="flex items-center gap-2">

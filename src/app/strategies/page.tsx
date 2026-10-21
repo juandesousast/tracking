@@ -256,17 +256,19 @@ function StrategiesPageContent() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900">
         <div className="flex items-center gap-1 overflow-x-auto pb-1 sm:pb-0">
           {categories.map((cat) => (
-            <button
+            <Button
               key={cat}
+              size="sm"
+              variant={selectedCategory === cat ? "secondary" : "ghost"}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1.5 text-xs font-medium rounded-lg whitespace-nowrap transition-colors ${
+              className={`h-8 px-3 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
                 selectedCategory === cat
                   ? "bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-xs"
                   : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
               }`}
             >
               {cat === "all" ? "Todas las Categorías" : cat}
-            </button>
+            </Button>
           ))}
         </div>
 

@@ -10,6 +10,7 @@ import {
 } from '@/lib/actions/simulator-actions';
 import { BacktestingSession } from '@/types/database';
 import { formatCurrency } from '@/lib/formatters';
+import { Button } from '@/components/ui/button';
 import { CreateSimulatorSessionModal } from '@/components/modals/create-simulator-session-modal';
 import {
   Activity,
@@ -109,13 +110,13 @@ export default function SimulatorDashboardPage() {
           </p>
         </div>
 
-        <button
+        <Button
           onClick={() => setIsModalOpen(true)}
-          className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-blue-600 hover:bg-blue-500 active:scale-[0.98] text-white font-bold text-sm shadow-sm shadow-blue-600/25 transition-all cursor-pointer self-start sm:self-auto"
+          className="gap-2 self-start sm:self-auto"
         >
           <Plus className="h-4 w-4" />
           <span>Nueva Sesión</span>
-        </button>
+        </Button>
       </div>
 
       {/* KPI Cards */}
@@ -201,13 +202,13 @@ export default function SimulatorDashboardPage() {
             <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto mb-5">
               Inicia una nueva sesión para practicar en vivo sobre velas históricas del Nasdaq, Dow Jones, Forex o Cripto.
             </p>
-            <button
+            <Button
               onClick={() => setIsModalOpen(true)}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-sm transition-all"
+              className="gap-2"
             >
               <Plus className="h-4 w-4" />
               <span>Crear mi primera sesión</span>
-            </button>
+            </Button>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -226,13 +227,15 @@ export default function SimulatorDashboardPage() {
                       <span className="px-2 py-0.5 rounded-md font-mono text-[11px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200">
                         {s.symbol}
                       </span>
-                      <button
+                      <Button
+                        variant="ghost"
+                        size="icon-xs"
                         onClick={(e) => handleDeleteSession(s.id, e)}
                         title="Eliminar sesión"
-                        className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-all"
+                        className="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40"
                       >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
                     </div>
 
                     <h3 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-1">

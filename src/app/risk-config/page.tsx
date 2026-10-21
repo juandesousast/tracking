@@ -12,6 +12,8 @@ import {
 } from '@/lib/services/risk-config-actions';
 import { Account, AccountRiskConfig } from '@/types/database';
 import { formatCurrency } from '@/lib/formatters';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import {
   ShieldAlert,
   ShieldCheck,
@@ -176,8 +178,11 @@ export default function RiskConfigPage() {
           </div>
           <button
             type="button"
+            role="switch"
+            aria-checked={isActive}
+            aria-label="Toggle escudo de riesgo"
             onClick={() => setIsActive(!isActive)}
-            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer ${
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 ${
               isActive ? 'bg-emerald-500' : 'bg-slate-300 dark:bg-slate-700'
             }`}
           >
@@ -204,17 +209,20 @@ export default function RiskConfigPage() {
           ) : (
             <div className="space-y-2">
               {accounts.map((acc) => (
-                <button
+                <Button
                   key={acc.id}
+                  type="button"
+                  variant="outline"
                   onClick={() => handleAccountChange(acc.id)}
-                  className={`w-full text-left p-3.5 rounded-2xl border transition-all flex items-center justify-between ${
+                  className={cn(
+                    "w-full h-auto text-left p-3.5 rounded-2xl border transition-all flex items-center justify-between font-normal whitespace-normal",
                     selectedAccountId === acc.id
-                      ? 'border-blue-600 bg-blue-50/60 dark:bg-blue-950/40 shadow-xs'
-                      : 'border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50'
-                  }`}
+                      ? "border-blue-600 bg-blue-50/60 dark:bg-blue-950/40 shadow-xs text-slate-900 dark:text-white"
+                      : "border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50 text-slate-800 dark:text-slate-200"
+                  )}
                 >
                   <div className="flex items-center gap-2.5">
-                    <Wallet className="h-4 w-4 text-slate-500" />
+                    <Wallet className="h-4 w-4 text-slate-500 shrink-0" />
                     <div>
                       <div className="text-xs font-bold text-slate-900 dark:text-white">
                         {acc.alias || `Cuenta #${acc.account_number || acc.id.slice(0, 6)}`}
@@ -225,9 +233,9 @@ export default function RiskConfigPage() {
                     </div>
                   </div>
                   {selectedAccountId === acc.id && (
-                    <span className="h-2 w-2 rounded-full bg-blue-600" />
+                    <span className="h-2 w-2 rounded-full bg-blue-600 shrink-0" />
                   )}
-                </button>
+                </Button>
               ))}
             </div>
           )}
@@ -239,18 +247,22 @@ export default function RiskConfigPage() {
             </label>
             <div className="space-y-2">
               {PROP_FIRM_RISK_TEMPLATES.map((tmpl) => (
-                <button
+                <Button
                   key={tmpl.id}
+                  type="button"
+                  variant="outline"
+                  size="sm"
                   onClick={() => handleApplyTemplate(tmpl)}
-                  className={`w-full text-left p-2.5 rounded-xl border text-xs transition-colors flex items-center justify-between ${
+                  className={cn(
+                    "w-full justify-between h-9 text-xs font-medium rounded-xl",
                     selectedTemplateId === tmpl.id
-                      ? 'border-blue-500 bg-blue-50/40 dark:bg-blue-950/30 font-bold text-blue-600 dark:text-blue-400'
-                      : 'border-slate-200/80 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50'
-                  }`}
+                      ? "border-blue-500 bg-blue-50/50 dark:bg-blue-950/40 font-bold text-blue-600 dark:text-blue-400"
+                      : "text-slate-600 dark:text-slate-400"
+                  )}
                 >
                   <span>{tmpl.label}</span>
                   <Zap className="h-3.5 w-3.5 opacity-60" />
-                </button>
+                </Button>
               ))}
             </div>
           </div>
@@ -296,29 +308,33 @@ export default function RiskConfigPage() {
                 <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                   Acción ante el límite
                 </label>
-                <div className="grid grid-cols-2 gap-2 h-10">
-                  <button
+                <div className="grid grid-cols-2 gap-2">
+                  <Button
                     type="button"
+                    variant={dailyLossAction === 'liquidate' ? 'destructive' : 'outline'}
+                    size="sm"
                     onClick={() => setDailyLossAction('liquidate')}
-                    className={`text-xs font-bold rounded-xl border transition-all ${
-                      dailyLossAction === 'liquidate'
-                        ? 'border-rose-600 bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300'
-                        : 'border-slate-200 dark:border-slate-800 text-slate-500'
-                    }`}
+                    className={cn(
+                      "h-10 text-xs font-bold rounded-xl",
+                      dailyLossAction !== 'liquidate' && "text-slate-500 border-slate-200 dark:border-slate-800"
+                    )}
                   >
                     Liquidación (Aplanar)
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     type="button"
+                    variant={dailyLossAction === 'notify' ? 'secondary' : 'outline'}
+                    size="sm"
                     onClick={() => setDailyLossAction('notify')}
-                    className={`text-xs font-bold rounded-xl border transition-all ${
+                    className={cn(
+                      "h-10 text-xs font-bold rounded-xl",
                       dailyLossAction === 'notify'
-                        ? 'border-amber-600 bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300'
-                        : 'border-slate-200 dark:border-slate-800 text-slate-500'
-                    }`}
+                        ? "border-amber-500 bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300"
+                        : "text-slate-500 border-slate-200 dark:border-slate-800"
+                    )}
                   >
                     Solo Alerta
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -439,14 +455,15 @@ export default function RiskConfigPage() {
               )}
             </div>
 
-            <button
+            <Button
               type="submit"
               disabled={isSaving}
-              className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-blue-600 hover:bg-blue-500 active:scale-[0.98] text-white font-bold text-sm shadow-sm shadow-blue-600/25 transition-all cursor-pointer disabled:opacity-50"
+              size="lg"
+              className="gap-2"
             >
               <Save className="h-4 w-4" />
               <span>{isSaving ? 'Guardando...' : 'Guardar Reglas de Riesgo'}</span>
-            </button>
+            </Button>
           </div>
         </form>
       </div>

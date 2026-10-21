@@ -496,11 +496,13 @@ function CalendarioContent() {
             Vista:
           </span>
           <div className="flex items-center rounded-xl bg-slate-100 dark:bg-slate-800/80 p-1 border border-slate-200/80 dark:border-slate-700/80 shadow-2xs">
-            <button
+            <Button
               type="button"
+              size="sm"
+              variant={viewMode === "currency" ? "secondary" : "ghost"}
               onClick={() => setViewMode("currency")}
               className={cn(
-                "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer",
+                "h-8 px-3 rounded-lg text-xs font-semibold gap-1.5",
                 viewMode === "currency"
                   ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
                   : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
@@ -508,12 +510,14 @@ function CalendarioContent() {
             >
               <CircleDollarSign className="h-3.5 w-3.5 text-slate-600 dark:text-slate-300" />
               <span>Monetario (€)</span>
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
+              size="sm"
+              variant={viewMode === "percentage" ? "secondary" : "ghost"}
               onClick={() => setViewMode("percentage")}
               className={cn(
-                "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer",
+                "h-8 px-3 rounded-lg text-xs font-semibold gap-1.5",
                 viewMode === "percentage"
                   ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
                   : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
@@ -521,7 +525,7 @@ function CalendarioContent() {
             >
               <Percent className="h-3.5 w-3.5 text-slate-600 dark:text-slate-300" />
               <span>Porcentaje (%)</span>
-            </button>
+            </Button>
           </div>
         </div>
       </div>

@@ -321,17 +321,17 @@ function EconomicCalendarContent() {
           ].map((item) => {
             const active = assetFilter === item.value;
             return (
-              <button
+              <Button
                 key={item.value}
+                size="sm"
+                variant={active ? "default" : "secondary"}
                 onClick={() => setAssetFilter(item.value)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
-                  active
-                    ? "bg-blue-600 text-white shadow-xs"
-                    : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 border border-transparent"
+                className={`h-8 px-3 rounded-xl text-xs font-semibold transition-all ${
+                  !active && "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 border-transparent"
                 }`}
               >
                 {item.label}
-              </button>
+              </Button>
             );
           })}
         </div>
@@ -528,22 +528,22 @@ function EconomicCalendarContent() {
                             {ev.impactedAssets?.map((asset) => {
                               const isSelected = assetFilter === asset.symbol;
                               return (
-                                <button
+                                <Button
                                   key={asset.symbol}
                                   type="button"
+                                  size="xs"
+                                  variant={isSelected ? "default" : "secondary"}
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     setAssetFilter(isSelected ? "all" : asset.symbol);
                                   }}
-                                  className={`px-1.5 py-0.5 rounded-md text-[10px] font-bold transition-all ${
-                                    isSelected
-                                      ? "bg-blue-600 text-white shadow-xs"
-                                      : "bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/60 border border-blue-200/60 dark:border-blue-800/60"
+                                  className={`h-5 px-1.5 py-0 rounded-md text-[10px] font-bold transition-all ${
+                                    !isSelected && "bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/60 border border-blue-200/60 dark:border-blue-800/60"
                                   }`}
                                   title={`Filtrar noticias que afectan a ${asset.name}`}
                                 >
                                   {asset.symbol}
-                                </button>
+                                </Button>
                               );
                             })}
                             {isHigh && (
