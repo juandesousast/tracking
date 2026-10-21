@@ -155,8 +155,8 @@
     "semantic_hash": ""
   },
   "src/components/layout/sidebar.tsx": {
-    "mtime": 1792607687.658348,
-    "ast_hash": "75dcefc71863e79d1bdb98cc646b5e47",
+    "mtime": 1792608153.7334318,
+    "ast_hash": "60d564be41dddaf4913fe13404a5209d",
     "semantic_hash": ""
   },
   "src/components/ui/avatar.tsx": {
@@ -505,13 +505,13 @@
     "semantic_hash": ""
   },
   "src/app/calendario-economico/page.tsx": {
-    "mtime": 1792438705.837316,
-    "ast_hash": "5a2776d49a601e3d804a7a601c3f3817",
+    "mtime": 1792608636.0103283,
+    "ast_hash": "6eeb2dc1ed5040574c22c68e94a5cf09",
     "semantic_hash": ""
   },
   "src/app/calendario/page.tsx": {
-    "mtime": 1792437175.2393441,
-    "ast_hash": "fd626825d7968c60cfa221a490dc3120",
+    "mtime": 1792608591.332892,
+    "ast_hash": "2a0c5b82ed81f9aaf7771f17ccbc2a2d",
     "semantic_hash": ""
   },
   "src/app/portfolio/page.tsx": {
@@ -520,13 +520,13 @@
     "semantic_hash": ""
   },
   "src/app/progress-tracker/page.tsx": {
-    "mtime": 1792605668.9447975,
-    "ast_hash": "9a57c9c31d1f2eae63da476ac7b7c486",
+    "mtime": 1792608620.467791,
+    "ast_hash": "46f074674c2a29ecea215a13558dbb9b",
     "semantic_hash": ""
   },
   "src/app/risk-config/page.tsx": {
-    "mtime": 1792605318.6003354,
-    "ast_hash": "3afe09e2e1cb96058970e9170536d85b",
+    "mtime": 1792608781.1935658,
+    "ast_hash": "442e5c30f6e851aee798c01012334add",
     "semantic_hash": ""
   },
   "src/app/simulador/[id]/page.tsx": {
@@ -535,18 +535,18 @@
     "semantic_hash": ""
   },
   "src/app/simulador/page.tsx": {
-    "mtime": 1792601749.8849664,
-    "ast_hash": "cf6a109cb7f7e9c7d2fde035d354616c",
+    "mtime": 1792608581.1765757,
+    "ast_hash": "c7177589bb240e71f701f4ff8951c7aa",
     "semantic_hash": ""
   },
   "src/app/strategies/page.tsx": {
-    "mtime": 1792606015.142849,
-    "ast_hash": "555c3f96934b23b9c88c3e7d05ed2ca7",
+    "mtime": 1792608599.8512406,
+    "ast_hash": "828a356c8440991667663de511a07104",
     "semantic_hash": ""
   },
   "src/app/tools/page.tsx": {
-    "mtime": 1792604034.8206291,
-    "ast_hash": "aea3c81ff4e420927776121ccdcba7b7",
+    "mtime": 1792608759.5194614,
+    "ast_hash": "d0f7e779ad3b3aa58cdab23052a34cf6",
     "semantic_hash": ""
   },
   "src/app/trades/page.tsx": {
