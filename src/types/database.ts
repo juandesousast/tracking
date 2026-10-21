@@ -201,4 +201,20 @@ export interface SimulatorSessionStats {
   maxLossStreak: number;
 }
 
+export interface AccountRiskConfig {
+  id?: string;
+  account_id: string;
+  user_id?: string;
+  template_id?: string | null;
+  daily_loss_limit_amount: number | null;
+  daily_loss_limit_action: 'liquidate' | 'notify';
+  daily_profit_target_amount: number | null;
+  max_contracts_limit: number | null;
+  trailing_drawdown_limit: number | null;
+  consistency_percentage_limit: number | null;
+  auto_eod_close_time: string | null;
+  is_active: boolean;
+  updated_at?: string;
+}
+
 

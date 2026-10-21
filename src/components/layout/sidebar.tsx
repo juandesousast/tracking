@@ -19,6 +19,7 @@ import {
   ListOrdered,
   Activity,
   Calculator,
+  ShieldAlert,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -45,9 +46,10 @@ export const navSections = [
     ],
   },
   {
-    title: "AUTOMATIZACIÓN",
+    title: "AUTOMATIZACIÓN & RIESGO",
     items: [
       { name: "Copiador de Futuros", href: "/copier", icon: Repeat },
+      { name: "Gestión de Riesgo", href: "/risk-config", icon: ShieldAlert },
     ],
   },
   {
