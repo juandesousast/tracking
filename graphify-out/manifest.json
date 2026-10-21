@@ -35,8 +35,8 @@
     "semantic_hash": ""
   },
   "package.json": {
-    "mtime": 1786275193.021317,
-    "ast_hash": "3bc4bce20d861f0a6a0ff3f60efde5c6",
+    "mtime": 1792600110.3781881,
+    "ast_hash": "61bfeb5ff0b52069e39f308ccc29492e",
     "semantic_hash": ""
   },
   "postcss.config.mjs": {
@@ -50,8 +50,8 @@
     "semantic_hash": ""
   },
   "src/app/page.tsx": {
-    "mtime": 1786376681.5630198,
-    "ast_hash": "3e287567ed2679122c0d934f44ca91db",
+    "mtime": 1792435367.3940132,
+    "ast_hash": "ca4bda8d7f6b46d1f0cbc78f0117612d",
     "semantic_hash": ""
   },
   "src/components/ui/button.tsx": {
@@ -110,18 +110,18 @@
     "semantic_hash": ""
   },
   "src/lib/financials.test.ts": {
-    "mtime": 1786273993.4913366,
-    "ast_hash": "e388476ecdc89e2e2a4de4a4c5b1744b",
+    "mtime": 1792435081.584798,
+    "ast_hash": "44862e93082986aed4074d2ae1c93adc",
     "semantic_hash": ""
   },
   "src/lib/financials.ts": {
-    "mtime": 1786273978.2729826,
-    "ast_hash": "cbbc784370094512f25abfbf27193891",
+    "mtime": 1792435049.46931,
+    "ast_hash": "b022d6d43b3496b0caafcff2e2ef7205",
     "semantic_hash": ""
   },
   "src/types/database.ts": {
-    "mtime": 1786299988.0818791,
-    "ast_hash": "4e26a17f19c9ca75b681db475bca812f",
+    "mtime": 1792605268.8948064,
+    "ast_hash": "1af218b5b585b6fb75959822c5ba199e",
     "semantic_hash": ""
   },
   "src/app/dashboard-layout.tsx": {
@@ -155,8 +155,8 @@
     "semantic_hash": ""
   },
   "src/components/layout/sidebar.tsx": {
-    "mtime": 1786297746.5779436,
-    "ast_hash": "e94ef138dc84e7ad6de79e9a554a69cb",
+    "mtime": 1792605973.2611892,
+    "ast_hash": "9fb5a942fbf1b469b6f646e4a30100f5",
     "semantic_hash": ""
   },
   "src/components/ui/avatar.tsx": {
@@ -200,13 +200,13 @@
     "semantic_hash": ""
   },
   "src/components/modals/add-expense-modal.tsx": {
-    "mtime": 1786300450.9442916,
-    "ast_hash": "e86c8a5f41f1e21d903a63f66082cd3c",
+    "mtime": 1792431614.8300014,
+    "ast_hash": "cd4c0128b00aace9e072320e3203ddab",
     "semantic_hash": ""
   },
   "src/components/modals/add-firm-modal.tsx": {
-    "mtime": 1786300436.7056847,
-    "ast_hash": "ab919d338e1331678d86720b3cfa207e",
+    "mtime": 1792434226.4962938,
+    "ast_hash": "b6525732c148c056dadf826a007ee4aa",
     "semantic_hash": ""
   },
   "src/components/modals/add-withdrawal-modal.tsx": {
@@ -265,8 +265,8 @@
     "semantic_hash": ""
   },
   "src/lib/actions/actions.ts": {
-    "mtime": 1786278614.3021023,
-    "ast_hash": "e34f923c7392460ba19c2681cce98e2b",
+    "mtime": 1792439558.5921671,
+    "ast_hash": "13b3fcf1c24f1ff12be22f35a3530c46",
     "semantic_hash": ""
   },
   "src/lib/formatters.ts": {
@@ -320,8 +320,8 @@
     "semantic_hash": ""
   },
   "src/components/modals/edit-firm-modal.tsx": {
-    "mtime": 1786300439.9900935,
-    "ast_hash": "725f5e891e07dc47f33a294461afb219",
+    "mtime": 1792434255.0713441,
+    "ast_hash": "5c88b57b4c1560007795906f18bc5fa2",
     "semantic_hash": ""
   },
   "src/components/modals/edit-withdrawal-modal.tsx": {
@@ -350,18 +350,18 @@
     "semantic_hash": ""
   },
   "src/app/cuentas/page.tsx": {
-    "mtime": 1786376676.5436258,
-    "ast_hash": "7a906e2fe548d5aeb1ebbde16970c58d",
+    "mtime": 1792438731.1312163,
+    "ast_hash": "758f393d6c8c33fe8ea2f6d731393dcf",
     "semantic_hash": ""
   },
   "src/app/gastos/page.tsx": {
-    "mtime": 1786376679.642315,
-    "ast_hash": "5a4c3372b92bea441285ad5791e58392",
+    "mtime": 1792438794.9442,
+    "ast_hash": "df8b72f998fda13303a2a11aab28f633",
     "semantic_hash": ""
   },
   "src/app/retiros/page.tsx": {
-    "mtime": 1786376683.5276008,
-    "ast_hash": "f9c1c55888fbb3967a23169f39cb9f5e",
+    "mtime": 1792438813.2098727,
+    "ast_hash": "6594307472a04ec673e9ff6796ef72c3",
     "semantic_hash": ""
   },
   "src/components/dashboard/dashboard-filters.tsx": {
@@ -370,13 +370,13 @@
     "semantic_hash": ""
   },
   "src/lib/validations/schemas.test.ts": {
-    "mtime": 1786278616.4824288,
-    "ast_hash": "a84234359b9aee89d2ef13895e34a9b9",
+    "mtime": 1792431000.4860673,
+    "ast_hash": "5f3daf289fa71ccc6d5d7a4e65423c6f",
     "semantic_hash": ""
   },
   "src/lib/validations/schemas.ts": {
-    "mtime": 1786297741.8919857,
-    "ast_hash": "adc77d570d637cc0fc8c0c23280b9956",
+    "mtime": 1792600255.3415685,
+    "ast_hash": "d5659c81e71ca1525622b0f522d07b94",
     "semantic_hash": ""
   },
   "src/components/ui/receipt-scanner.tsx": {
@@ -395,8 +395,8 @@
     "semantic_hash": ""
   },
   "src/app/empresas/page.tsx": {
-    "mtime": 1786376677.4763064,
-    "ast_hash": "52b9c233d36f6c6983823bc4425c0018",
+    "mtime": 1792438778.1657379,
+    "ast_hash": "d5bf81169495ac6af837372e71290a8b",
     "semantic_hash": ""
   },
   "src/lib/match-account.ts": {
@@ -490,13 +490,198 @@
     "semantic_hash": ""
   },
   "src/components/ui/page-skeleton.tsx": {
-    "mtime": 1786301300.0072744,
-    "ast_hash": "797faa926e407cca9a37c32f4d7714cc",
+    "mtime": 1792438293.4469204,
+    "ast_hash": "6155dec1ecb4da0ea6da2f38a1d9f5d0",
     "semantic_hash": ""
   },
   "src/app/login/layout.tsx": {
     "mtime": 1786376589.7409482,
     "ast_hash": "3b3b2403fa02e6d3f5161f88c6c5bfcb",
+    "semantic_hash": ""
+  },
+  "src/app/analytics/page.tsx": {
+    "mtime": 1792435376.4684854,
+    "ast_hash": "d994f25f71c489c5ff18f4eecc8ac803",
+    "semantic_hash": ""
+  },
+  "src/app/calendario-economico/page.tsx": {
+    "mtime": 1792438705.837316,
+    "ast_hash": "5a2776d49a601e3d804a7a601c3f3817",
+    "semantic_hash": ""
+  },
+  "src/app/calendario/page.tsx": {
+    "mtime": 1792437175.2393441,
+    "ast_hash": "fd626825d7968c60cfa221a490dc3120",
+    "semantic_hash": ""
+  },
+  "src/app/portfolio/page.tsx": {
+    "mtime": 1792605777.3870776,
+    "ast_hash": "182e437901305c2aa6f272470f741195",
+    "semantic_hash": ""
+  },
+  "src/app/progress-tracker/page.tsx": {
+    "mtime": 1792605668.9447975,
+    "ast_hash": "9a57c9c31d1f2eae63da476ac7b7c486",
+    "semantic_hash": ""
+  },
+  "src/app/risk-config/page.tsx": {
+    "mtime": 1792605318.6003354,
+    "ast_hash": "3afe09e2e1cb96058970e9170536d85b",
+    "semantic_hash": ""
+  },
+  "src/app/simulador/[id]/page.tsx": {
+    "mtime": 1792602904.3312972,
+    "ast_hash": "a495e56a91e23fa33b86fcf021ffff2c",
+    "semantic_hash": ""
+  },
+  "src/app/simulador/page.tsx": {
+    "mtime": 1792601749.8849664,
+    "ast_hash": "cf6a109cb7f7e9c7d2fde035d354616c",
+    "semantic_hash": ""
+  },
+  "src/app/strategies/page.tsx": {
+    "mtime": 1792606015.142849,
+    "ast_hash": "555c3f96934b23b9c88c3e7d05ed2ca7",
+    "semantic_hash": ""
+  },
+  "src/app/tools/page.tsx": {
+    "mtime": 1792604034.8206291,
+    "ast_hash": "aea3c81ff4e420927776121ccdcba7b7",
+    "semantic_hash": ""
+  },
+  "src/app/trades/page.tsx": {
+    "mtime": 1792435435.5694818,
+    "ast_hash": "03998f248a290e6b2a079f1f4a2d9f6e",
+    "semantic_hash": ""
+  },
+  "src/components/modals/create-simulator-session-modal.tsx": {
+    "mtime": 1792600573.3641806,
+    "ast_hash": "c6a76e70ee61c079b226f0ff2f1be6fd",
+    "semantic_hash": ""
+  },
+  "src/components/simulator/lightweight-chart-view.tsx": {
+    "mtime": 1792601731.44659,
+    "ast_hash": "7ebf3e9716b6f677c9b950d63f767337",
+    "semantic_hash": ""
+  },
+  "src/components/simulator/order-panel.tsx": {
+    "mtime": 1792601774.86286,
+    "ast_hash": "26fe5bce9b2328ab2a523f0868fb7129",
+    "semantic_hash": ""
+  },
+  "src/components/simulator/replay-controls.tsx": {
+    "mtime": 1792601754.5013967,
+    "ast_hash": "090c0fcdc226ac957858dfebcebcfd1d",
+    "semantic_hash": ""
+  },
+  "src/components/simulator/session-metrics-view.tsx": {
+    "mtime": 1792600814.2075243,
+    "ast_hash": "4c9a82eb299a754aefcb2e95ad9c3901",
+    "semantic_hash": ""
+  },
+  "src/components/ui/prop-firm-logo.tsx": {
+    "mtime": 1792438588.2190478,
+    "ast_hash": "4295117bd23913c815c379571d7350b3",
+    "semantic_hash": ""
+  },
+  "src/lib/actions/simulator-actions.ts": {
+    "mtime": 1792602866.0673842,
+    "ast_hash": "021cfdfecd5a8e21d16c4f294c5e73f5",
+    "semantic_hash": ""
+  },
+  "src/lib/constants/prop-firms.ts": {
+    "mtime": 1792438580.7714427,
+    "ast_hash": "9b8381756bd138a2f0912f24d79c9d6d",
+    "semantic_hash": ""
+  },
+  "src/lib/constants/risk-templates.ts": {
+    "mtime": 1792605253.1458836,
+    "ast_hash": "84d09b80d1590b65fc7fa0a4adf00f0c",
+    "semantic_hash": ""
+  },
+  "src/lib/services/economic-events.test.ts": {
+    "mtime": 1792438839.8526428,
+    "ast_hash": "a8420c7fa33b1db85fe5421c87ad0299",
+    "semantic_hash": ""
+  },
+  "src/lib/services/economic-events.ts": {
+    "mtime": 1792438869.0465991,
+    "ast_hash": "e91c4b5750f6db6b590d44d1535d8ab1",
+    "semantic_hash": ""
+  },
+  "src/lib/services/portfolio-radar.test.ts": {
+    "mtime": 1792605740.242646,
+    "ast_hash": "f23c5ed21f2e0b4ea6aeda312d7e7482",
+    "semantic_hash": ""
+  },
+  "src/lib/services/portfolio-radar.ts": {
+    "mtime": 1792605729.9608777,
+    "ast_hash": "0a36a15a062069b4019b360b0bc28790",
+    "semantic_hash": ""
+  },
+  "src/lib/services/progress-tracker.test.ts": {
+    "mtime": 1792605531.5932958,
+    "ast_hash": "5d88aadfded67950c6962b82697529ac",
+    "semantic_hash": ""
+  },
+  "src/lib/services/progress-tracker.ts": {
+    "mtime": 1792605504.7267818,
+    "ast_hash": "8af1df6762108f13058ad4d1034286bf",
+    "semantic_hash": ""
+  },
+  "src/lib/services/real-market-data.ts": {
+    "mtime": 1792603312.5073304,
+    "ast_hash": "b959be0bbe00711b9ac8df6c94c10dbd",
+    "semantic_hash": ""
+  },
+  "src/lib/services/risk-config-actions.ts": {
+    "mtime": 1792605278.5395353,
+    "ast_hash": "e9673f68a0fc2c1e26a8ce538e035c91",
+    "semantic_hash": ""
+  },
+  "src/lib/services/simulator-engine.test.ts": {
+    "mtime": 1792603321.1853728,
+    "ast_hash": "0d079cedfaa09c884d9f401b5cedf445",
+    "semantic_hash": ""
+  },
+  "src/lib/services/simulator-engine.ts": {
+    "mtime": 1792603302.9067688,
+    "ast_hash": "fb91a4068a9330cfdf0f2b22d383035b",
+    "semantic_hash": ""
+  },
+  "src/lib/services/strategies.test.ts": {
+    "mtime": 1792605917.7782824,
+    "ast_hash": "1df7cb5763dee511f283b9c3f2bfd3bd",
+    "semantic_hash": ""
+  },
+  "src/lib/services/strategies.ts": {
+    "mtime": 1792605911.0381093,
+    "ast_hash": "3a676ffe2bf778fc907570c88ee1f5f4",
+    "semantic_hash": ""
+  },
+  "src/lib/services/trading-calculators.test.ts": {
+    "mtime": 1792603976.6106055,
+    "ast_hash": "228a7ffc77643465ffb9afd958e14555",
+    "semantic_hash": ""
+  },
+  "src/lib/services/trading-calculators.ts": {
+    "mtime": 1792603963.7862868,
+    "ast_hash": "a4ad664696fd543c53b17452fe7a4305",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/005_add_logo_url_to_prop_firms.sql": {
+    "mtime": 1792430898.5048692,
+    "ast_hash": "6cfceb7606cbbf002d643619f15ffb27",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/006_market_simulator.sql": {
+    "mtime": 1792600145.5435574,
+    "ast_hash": "30f476c4ecfe5924850c63583b26308d",
+    "semantic_hash": ""
+  },
+  "TRANSFORMATION_ROADMAP.md": {
+    "mtime": 1792436932.165624,
+    "ast_hash": "59554ded6f8258ead71a55b25a47e02e",
     "semantic_hash": ""
   }
 }
