@@ -7,7 +7,7 @@ import {
 export const SIMULATOR_SYMBOLS: SimulatorSymbolConfig[] = [
   {
     value: 'NAS100',
-    label: 'NAS100 (Nasdaq / NQ)',
+    label: 'NAS100 (Nasdaq / NQ / MNQ)',
     category: 'INDEX',
     decimals: 2,
     pricescale: 100,
@@ -17,8 +17,19 @@ export const SIMULATOR_SYMBOLS: SimulatorSymbolConfig[] = [
     endDate: '2026-10-20',
   },
   {
+    value: 'SP500',
+    label: 'SP500 (S&P 500 / ES / MES)',
+    category: 'INDEX',
+    decimals: 2,
+    pricescale: 100,
+    minmov: 0.25,
+    contractSize: 1,
+    startDate: '2023-01-01',
+    endDate: '2026-10-20',
+  },
+  {
     value: 'US30',
-    label: 'US30 (Dow Jones / YM)',
+    label: 'US30 (Dow Jones / YM / MYM)',
     category: 'INDEX',
     decimals: 2,
     pricescale: 100,
@@ -51,13 +62,24 @@ export const SIMULATOR_SYMBOLS: SimulatorSymbolConfig[] = [
   },
   {
     value: 'XAUUSD',
-    label: 'XAU/USD (Oro)',
+    label: 'XAU/USD (Oro / GC)',
     category: 'COMMODITY',
     decimals: 2,
     pricescale: 100,
     minmov: 1,
     contractSize: 100, // 100 oz per standard lot
     startDate: '2020-01-01',
+    endDate: '2026-10-20',
+  },
+  {
+    value: 'CL',
+    label: 'CL (Petróleo Crudo / WTI / MCL)',
+    category: 'COMMODITY',
+    decimals: 2,
+    pricescale: 100,
+    minmov: 0.01,
+    contractSize: 100,
+    startDate: '2023-01-01',
     endDate: '2026-10-20',
   },
   {
@@ -86,6 +108,24 @@ export const SIMULATOR_SYMBOLS: SimulatorSymbolConfig[] = [
 
 export function getSymbolConfig(symbol: string): SimulatorSymbolConfig {
   const norm = symbol.toUpperCase().replace(/[\/\-_]/g, '');
+
+  if (norm.includes('SP500') || norm.includes('SPX') || norm === 'ES' || norm === 'MES' || norm.includes('S&P')) {
+    const sp = SIMULATOR_SYMBOLS.find((s) => s.value === 'SP500');
+    if (sp) return sp;
+  }
+  if (norm.includes('NAS') || norm === 'NQ' || norm === 'MNQ') {
+    const nas = SIMULATOR_SYMBOLS.find((s) => s.value === 'NAS100');
+    if (nas) return nas;
+  }
+  if (norm.includes('US30') || norm === 'YM' || norm === 'MYM' || norm.includes('DOW')) {
+    const us = SIMULATOR_SYMBOLS.find((s) => s.value === 'US30');
+    if (us) return us;
+  }
+  if (norm === 'CL' || norm === 'MCL' || norm.includes('CRUDO') || norm.includes('OIL')) {
+    const cl = SIMULATOR_SYMBOLS.find((s) => s.value === 'CL');
+    if (cl) return cl;
+  }
+
   const found = SIMULATOR_SYMBOLS.find(
     (s) => s.value.toUpperCase() === norm || s.label.toUpperCase().includes(norm)
   );
@@ -141,7 +181,9 @@ function stringToSeed(str: string): number {
  */
 const BASE_PRICES: Record<string, number> = {
   NAS100: 17850.0,
+  SP500: 5850.0,
   US30: 38900.0,
+  CL: 75.5,
   EURUSD: 1.085,
   GBPUSD: 1.268,
   XAUUSD: 2350.0,

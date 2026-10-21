@@ -17,6 +17,17 @@ describe('Simulator Engine', () => {
       expect(nas.category).toBe('INDEX');
       expect(nas.decimals).toBe(2);
 
+      const sp = getSymbolConfig('SP500');
+      expect(sp.value).toBe('SP500');
+      expect(sp.category).toBe('INDEX');
+      expect(sp.minmov).toBe(0.25);
+
+      const es = getSymbolConfig('ES');
+      expect(es.value).toBe('SP500');
+
+      const mes = getSymbolConfig('MES');
+      expect(mes.value).toBe('SP500');
+
       const eurusd = getSymbolConfig('EUR/USD');
       expect(eurusd.value).toBe('EURUSD');
       expect(eurusd.category).toBe('FOREX');
