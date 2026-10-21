@@ -7,6 +7,7 @@ import {
   getSimulatorSession,
   placeSimulatorOrder,
   closeSimulatorPosition,
+  getRealSimulatorCandles,
 } from '@/lib/actions/simulator-actions';
 import {
   generateHistoricalCandles,
@@ -20,7 +21,7 @@ import { ReplayControls } from '@/components/simulator/replay-controls';
 import { OrderPanel } from '@/components/simulator/order-panel';
 import { SessionMetricsView } from '@/components/simulator/session-metrics-view';
 import { formatCurrency } from '@/lib/formatters';
-import { ArrowLeft, Activity, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, Activity, ShieldCheck, Database } from 'lucide-react';
 
 export default function SimulatorWorkspacePage() {
   const params = useParams();
@@ -30,6 +31,7 @@ export default function SimulatorWorkspacePage() {
   const [session, setSession] = useState<BacktestingSession | null>(null);
   const [positions, setPositions] = useState<BacktestingPosition[]>([]);
   const [candles, setCandles] = useState<Candle[]>([]);
+  const [isRealData, setIsRealData] = useState<boolean>(false);
   const [visibleCount, setVisibleCount] = useState<number>(30);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [speed, setSpeed] = useState<number>(1);
@@ -65,15 +67,15 @@ export default function SimulatorWorkspacePage() {
           setSession(foundSession);
           setPositions(foundPositions);
 
-          // Generate historical candle dataset
-          const candleData = generateHistoricalCandles(
+          // Fetch real historical candles with graceful fallback
+          const marketRes = await getRealSimulatorCandles(
             foundSession.symbol,
             foundSession.start_date,
-            foundSession.end_date,
-            60
+            foundSession.end_date
           );
-          setCandles(candleData);
-          setVisibleCount(Math.min(30, candleData.length));
+          setCandles(marketRes.candles);
+          setIsRealData(marketRes.isRealData);
+          setVisibleCount(Math.min(30, marketRes.candles.length));
         }
       } catch (err) {
         console.warn('Failed to load simulator workspace:', err);
@@ -351,6 +353,16 @@ export default function SimulatorWorkspacePage() {
               <span className="text-xs text-slate-400 font-medium">
                 {session.start_date} al {session.end_date}
               </span>
+              {isRealData ? (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900/40">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  Datos Reales de Mercado
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-500">
+                  Modo Replay
+                </span>
+              )}
             </div>
             <h1 className="text-xl font-bold text-slate-900 dark:text-white mt-0.5">
               {session.name}

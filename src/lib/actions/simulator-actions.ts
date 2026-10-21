@@ -15,7 +15,17 @@ import {
 import {
   calculatePositionPnl,
   calculateRMultiple,
+  Candle,
 } from '@/lib/services/simulator-engine';
+import { fetchRealMarketCandles } from '@/lib/services/real-market-data';
+
+export async function getRealSimulatorCandles(
+  symbol: string,
+  startDate: string,
+  endDate: string
+): Promise<{ candles: Candle[]; isRealData: boolean }> {
+  return await fetchRealMarketCandles(symbol, startDate, endDate, '1h');
+}
 
 export async function getSimulatorSessions(): Promise<BacktestingSession[]> {
   try {
