@@ -13,7 +13,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   // Tradovate
   getAccounts: () => ipcRenderer.invoke('tradovate:get-accounts'),
-  openTradovateLogin: () => ipcRenderer.invoke('tradovate:open-login'),
+  openTradovateLogin: (options) => ipcRenderer.invoke('tradovate:open-login', options),
   connectToken: (token, environment) =>
     ipcRenderer.invoke('tradovate:connect-token', { token, environment }),
   liquidateAll: () => ipcRenderer.invoke('tradovate:liquidate-all'),

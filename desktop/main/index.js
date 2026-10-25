@@ -65,59 +65,71 @@ function sendToRenderer(channel, data) {
 }
 
 async function fetchTradovateAccountsRest(token, environment = 'demo') {
-  const baseUrl =
-    environment === 'live'
-      ? 'https://live.tradovateapi.com/v1'
-      : 'https://demo.tradovateapi.com/v1';
+  async function tryFetch(env) {
+    const baseUrl =
+      env === 'live'
+        ? 'https://live.tradovateapi.com/v1'
+        : 'https://demo.tradovateapi.com/v1';
 
-  try {
-    console.log(`[TradovateREST] Requesting accounts from ${baseUrl}...`);
-    const [accRes, cashRes] = await Promise.all([
-      fetch(`${baseUrl}/account/list`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: 'application/json',
-        },
-      }),
-      fetch(`${baseUrl}/cashBalance/getcashbalances`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: 'application/json',
-        },
-      }),
-    ]);
+    try {
+      console.log(`[TradovateREST] Checking accounts on ${baseUrl}...`);
+      const [accRes, cashRes] = await Promise.all([
+        fetch(`${baseUrl}/account/list`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: 'application/json',
+          },
+        }),
+        fetch(`${baseUrl}/cashBalance/getcashbalances`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: 'application/json',
+          },
+        }),
+      ]);
 
-    if (accRes.ok) {
-      const accounts = await accRes.json();
-      let cashBalances = [];
-      if (cashRes.ok) {
-        try {
-          cashBalances = await cashRes.json();
-        } catch (e) {}
+      if (accRes.ok) {
+        const accounts = await accRes.json();
+        let cashBalances = [];
+        if (cashRes.ok) {
+          try {
+            cashBalances = await cashRes.json();
+          } catch (e) {}
+        }
+
+        if (Array.isArray(accounts) && accounts.length > 0) {
+          console.log(`[TradovateREST] Found ${accounts.length} accounts on ${env.toUpperCase()}!`);
+          return {
+            env,
+            accounts: accounts.map((a) => {
+              const cash = (cashBalances || []).find((c) => c.accountId === a.id);
+              return {
+                id: a.id,
+                name: a.name,
+                accountType: a.accountType || 'Customer',
+                balance: cash?.amount ?? 0,
+              };
+            }),
+          };
+        }
       }
-
-      console.log(`[TradovateREST] Successfully fetched ${accounts.length} accounts!`);
-      return accounts.map((a) => {
-        const cash = (cashBalances || []).find((c) => c.accountId === a.id);
-        return {
-          id: a.id,
-          name: a.name,
-          accountType: a.accountType || 'Customer',
-          balance: cash?.amount ?? 0,
-        };
-      });
-    } else {
-      console.warn(`[TradovateREST] /account/list returned HTTP ${accRes.status}`);
-      // If 401 on demo, maybe token was for live
-      if (accRes.status === 401 && environment === 'demo') {
-        console.log('[TradovateREST] Testing live endpoint as fallback...');
-        return fetchTradovateAccountsRest(token, 'live');
-      }
+    } catch (err) {
+      console.error(`[TradovateREST] Error on ${env}:`, err.message);
     }
-  } catch (err) {
-    console.error('[TradovateREST] Network error:', err.message);
+    return null;
   }
-  return null;
+
+  // 1. Try requested environment first
+  const primary = await tryFetch(environment);
+  if (primary && primary.accounts.length > 0) return primary;
+
+  // 2. Fallback to alternative environment
+  const altEnv = environment === 'live' ? 'demo' : 'live';
+  console.log(`[TradovateREST] 0 accounts on ${environment}, checking fallback ${altEnv}...`);
+  const fallback = await tryFetch(altEnv);
+  if (fallback && fallback.accounts.length > 0) return fallback;
+
+  return { env: environment, accounts: [] };
 }
 
 function sendTradovateWsMessage(endpoint, body) {
@@ -190,9 +202,25 @@ function connectTradovateWs(token, environment = 'demo') {
       : 'wss://demo.tradovateapi.com/v1/websocket';
 
   console.log(`[DesktopWS] Connecting to ${wsUrl} from local residential IP...`);
-  sendToRenderer('ws:status', { status: 'connecting', latency: 0 });
+  sendToRenderer('ws:status', { status: 'connecting', latency: 0, environment });
 
   activeWs = new WebSocket(wsUrl);
+
+  let isAuthorized = false;
+  const authWatchdog = setTimeout(() => {
+    if (!isAuthorized && activeWs) {
+      console.warn(`[DesktopWS] Authorization timed out on ${wsUrl}`);
+      sendToRenderer('ws:status', {
+        status: 'error',
+        error: `Tiempo de espera agotado en servidor ${environment.toUpperCase()}.`,
+        environment,
+      });
+      sendToRenderer('app:log', {
+        time: new Date().toLocaleTimeString(),
+        msg: `<span style="color: #fb7185;">⚠️ Tiempo de espera de autorización agotado en servidor Tradovate (${environment.toUpperCase()}). Verifica si tu cuenta es Demo o Live.</span>`,
+      });
+    }
+  }, 7000);
 
   activeWs.on('open', () => {
     console.log('[DesktopWS] Open! Sending authorization...');
@@ -218,6 +246,9 @@ function connectTradovateWs(token, environment = 'demo') {
 
         for (const msg of msgs) {
           if (msg.s === 200 && msg.i === 1) {
+            isAuthorized = true;
+            clearTimeout(authWatchdog);
+
             console.log('[DesktopWS] Authorized successfully!');
             sendToRenderer('ws:status', { status: 'connected', latency: 12, environment });
 
@@ -259,13 +290,15 @@ function connectTradovateWs(token, environment = 'demo') {
   });
 
   activeWs.on('error', (err) => {
+    clearTimeout(authWatchdog);
     console.error('[DesktopWS] Error:', err.message);
-    sendToRenderer('ws:status', { status: 'error', error: err.message });
+    sendToRenderer('ws:status', { status: 'error', error: err.message, environment });
   });
 
   activeWs.on('close', () => {
+    clearTimeout(authWatchdog);
     console.log('[DesktopWS] Closed');
-    sendToRenderer('ws:status', { status: 'disconnected', latency: 0 });
+    sendToRenderer('ws:status', { status: 'disconnected', latency: 0, environment });
   });
 }
 
@@ -291,7 +324,15 @@ ipcMain.handle('auth:get-session', async () => {
 
 ipcMain.handle('auth:logout', async () => {
   await copierEngine.logout();
-  saveConfig({ authSession: null });
+  saveConfig({ authSession: null, tradovateToken: null });
+  activeToken = null;
+  activeAccounts = [];
+  if (activeWs) {
+    try {
+      activeWs.close();
+    } catch (e) {}
+    activeWs = null;
+  }
   return { success: true };
 });
 
@@ -315,52 +356,63 @@ ipcMain.handle('tradovate:get-accounts', async () => {
   if (activeAccounts.length > 0) return activeAccounts;
   const cfg = loadStoredConfig();
   if (cfg.tradovateToken) {
-    const accs = await fetchTradovateAccountsRest(cfg.tradovateToken, cfg.environment || 'demo');
-    if (accs && accs.length > 0) {
-      activeAccounts = accs;
+    const result = await fetchTradovateAccountsRest(cfg.tradovateToken, cfg.environment || 'demo');
+    if (result && result.accounts.length > 0) {
+      activeAccounts = result.accounts;
       return activeAccounts;
     }
   }
   return [];
 });
 
-ipcMain.handle('tradovate:open-login', () => {
+ipcMain.handle('tradovate:open-login', (event, options = {}) => {
   return new Promise((resolve) => {
-    openTradovateLoginWindow(mainWindow, async ({ token, environment }) => {
-      activeToken = token;
-      activeEnvironment = environment || 'demo';
-      saveConfig({ tradovateToken: token, environment: activeEnvironment });
+    const cfg = loadStoredConfig();
+    const chosenEnv = options.environment || cfg.environment || 'demo';
 
-      // 1. Immediately fetch accounts via REST API for instant reliable loading
-      const restAccounts = await fetchTradovateAccountsRest(token, activeEnvironment);
-      if (restAccounts && restAccounts.length > 0) {
-        activeAccounts = restAccounts;
+    openTradovateLoginWindow(mainWindow, chosenEnv, async ({ token, environment }) => {
+      activeToken = token;
+
+      // 1. Fetch accounts with intelligent auto-environment fallback
+      const result = await fetchTradovateAccountsRest(token, environment);
+      const effectiveEnv = result.env || environment;
+      activeEnvironment = effectiveEnv;
+
+      saveConfig({ tradovateToken: token, environment: effectiveEnv });
+
+      if (result.accounts && result.accounts.length > 0) {
+        activeAccounts = result.accounts;
         sendToRenderer('tradovate:accounts', activeAccounts);
         sendToRenderer('app:log', {
           time: new Date().toLocaleTimeString(),
-          msg: `✅ Detectadas <strong>${restAccounts.length} cuenta(s)</strong> en Tradovate (${activeEnvironment.toUpperCase()}).`,
+          msg: `✅ Detectadas <strong>${result.accounts.length} cuenta(s)</strong> en Tradovate (${effectiveEnv.toUpperCase()}).`,
+        });
+      } else {
+        sendToRenderer('app:log', {
+          time: new Date().toLocaleTimeString(),
+          msg: `<span style="color: #fbbf24;">⚠️ Sesión conectada, pero este usuario de Tradovate no tiene cuentas de trading registradas. Inicia sesión con tus credenciales de fondeo/demo en Tradovate.</span>`,
         });
       }
 
-      // 2. Connect WebSocket for live order execution
-      connectTradovateWs(token, activeEnvironment);
-      resolve({ success: true, token, environment: activeEnvironment });
+      // 2. Connect WebSocket to effective environment
+      connectTradovateWs(token, effectiveEnv);
+      resolve({ success: true, token, environment: effectiveEnv });
     });
   });
 });
 
 ipcMain.handle('tradovate:connect-token', async (event, { token, environment }) => {
   activeToken = token;
-  activeEnvironment = environment || 'demo';
-  saveConfig({ tradovateToken: token, environment: activeEnvironment });
+  const env = environment || 'demo';
+  saveConfig({ tradovateToken: token, environment: env });
 
-  const restAccounts = await fetchTradovateAccountsRest(token, activeEnvironment);
-  if (restAccounts && restAccounts.length > 0) {
-    activeAccounts = restAccounts;
+  const result = await fetchTradovateAccountsRest(token, env);
+  if (result.accounts && result.accounts.length > 0) {
+    activeAccounts = result.accounts;
     sendToRenderer('tradovate:accounts', activeAccounts);
   }
 
-  connectTradovateWs(token, activeEnvironment);
+  connectTradovateWs(token, result.env || env);
   return { success: true };
 });
 
@@ -393,15 +445,15 @@ app.whenReady().then(async () => {
     activeToken = cfg.tradovateToken;
     activeEnvironment = cfg.environment || 'demo';
 
-    // Fetch accounts via REST first
-    fetchTradovateAccountsRest(cfg.tradovateToken, activeEnvironment).then((accs) => {
-      if (accs && accs.length > 0) {
-        activeAccounts = accs;
+    // Fetch accounts via REST first with auto-fallback
+    fetchTradovateAccountsRest(cfg.tradovateToken, activeEnvironment).then((result) => {
+      if (result && result.accounts.length > 0) {
+        activeAccounts = result.accounts;
+        activeEnvironment = result.env;
         sendToRenderer('tradovate:accounts', activeAccounts);
       }
+      connectTradovateWs(cfg.tradovateToken, activeEnvironment);
     });
-
-    connectTradovateWs(cfg.tradovateToken, activeEnvironment);
   }
 
   app.on('activate', () => {

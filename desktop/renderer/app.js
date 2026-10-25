@@ -275,11 +275,11 @@ async function saveAndSyncConfig() {
 btnConnectTradovate.addEventListener('click', async () => {
   btnConnectTradovate.disabled = true;
   btnConnectTradovate.textContent = 'Cargando Tradovate...';
-  appendLog(new Date().toLocaleTimeString(), 'Abriendo ventana de inicio de sesión de Tradovate...');
+  appendLog(new Date().toLocaleTimeString(), `Abriendo ventana de inicio de sesión de Tradovate (${envSelect.value.toUpperCase()})...`);
 
   try {
     if (window.electronAPI) {
-      await window.electronAPI.openTradovateLogin();
+      await window.electronAPI.openTradovateLogin({ environment: envSelect.value });
     }
   } catch (e) {
     console.error(e);

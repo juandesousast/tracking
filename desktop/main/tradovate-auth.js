@@ -2,18 +2,22 @@ const { BrowserWindow, session } = require('electron');
 
 /**
  * Opens an in-app native browser window loading Tradovate.
- * Automatically intercepts the session token when the user logs in,
- * with ZERO manual token copying and ZERO API fee.
+ * Clears old cookies so user can type their username/password (Apex, Topstep or Demo),
+ * and intercepts the session token without any manual copy-paste.
  */
-function openTradovateLoginWindow(parentWindow, onTokenCaptured) {
-  const authSession = session.fromPartition('persist:tradovate-login');
+function openTradovateLoginWindow(parentWindow, chosenEnvironment = 'demo', onTokenCaptured) {
+  const partitionName = 'persist:tradovate-auth-session';
+  const authSession = session.fromPartition(partitionName);
+
+  // Clear previous session cookies so user can log in with their desired Tradovate account
+  authSession.clearStorageData();
 
   const authWin = new BrowserWindow({
     width: 1040,
     height: 780,
     parent: parentWindow || null,
     modal: true,
-    title: 'Iniciar Sesión en Tradovate',
+    title: `Iniciar Sesión en Tradovate (${chosenEnvironment.toUpperCase()})`,
     backgroundColor: '#090d16',
     webPreferences: {
       session: authSession,
@@ -37,19 +41,17 @@ function openTradovateLoginWindow(parentWindow, onTokenCaptured) {
         const token = authHeader.replace(/^Bearer\s+/i, '');
         captured = true;
 
-        // Detect whether user logged in to Demo or Live from the request URL
-        const isDemo = details.url.includes('demo.tradovateapi.com');
-        const environment = isDemo ? 'demo' : 'live';
+        console.log(
+          `[TradovateAuth] Token captured successfully for environment: ${chosenEnvironment.toUpperCase()}`
+        );
 
-        console.log(`[TradovateAuth] Token captured! Detected environment: ${environment.toUpperCase()}`);
-
-        // Cleanup listener immediately to prevent duplicate triggers
+        // Remove listener immediately to avoid duplicates
         try {
           authSession.webRequest.onBeforeSendHeaders(filter, null);
         } catch (e) {}
 
         if (onTokenCaptured) {
-          onTokenCaptured({ token, environment });
+          onTokenCaptured({ token, environment: chosenEnvironment });
         }
 
         setTimeout(() => {
