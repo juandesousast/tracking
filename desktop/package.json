@@ -1,0 +1,41 @@
+{
+  "name": "edgeflow-copier-desktop",
+  "version": "1.0.0",
+  "description": "Desktop Futures Copier Companion with Local Residential IP and Auto Web Sync",
+  "main": "main/index.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "dist:mac": "electron-builder --mac",
+    "dist:win": "electron-builder --win"
+  },
+  "author": "EdgeFlow Technologies",
+  "license": "MIT",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.112.2",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.edgeflow.copier",
+    "productName": "EdgeFlow Copier",
+    "directories": {
+      "output": "dist"
+    },
+    "mac": {
+      "category": "public.app-category.finance",
+      "target": [
+        "dmg"
+      ]
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    }
+  }
+}
