@@ -157,6 +157,12 @@ function createWindow() {
 
   mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
 
+  mainWindow.webContents.on('did-finish-load', () => {
+    if (activeAccounts && activeAccounts.length > 0) {
+      sendToRenderer('tradovate:accounts', activeAccounts);
+    }
+  });
+
   mainWindow.on('close', (event) => {
     if (!app.isQuitting) {
       event.preventDefault();
@@ -305,6 +311,19 @@ ipcMain.handle('copier:set-paused', (event, isPaused) => {
 });
 
 // IPC Handlers - Tradovate
+ipcMain.handle('tradovate:get-accounts', async () => {
+  if (activeAccounts.length > 0) return activeAccounts;
+  const cfg = loadStoredConfig();
+  if (cfg.tradovateToken) {
+    const accs = await fetchTradovateAccountsRest(cfg.tradovateToken, cfg.environment || 'demo');
+    if (accs && accs.length > 0) {
+      activeAccounts = accs;
+      return activeAccounts;
+    }
+  }
+  return [];
+});
+
 ipcMain.handle('tradovate:open-login', () => {
   return new Promise((resolve) => {
     openTradovateLoginWindow(mainWindow, async ({ token, environment }) => {

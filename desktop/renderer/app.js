@@ -99,6 +99,13 @@ function renderMasterSelector() {
     return;
   }
 
+  // If no master is set, default to first account
+  if (!currentConfig.masterAccountId && availableAccounts.length > 0) {
+    currentConfig.masterAccountId = availableAccounts[0].id;
+    currentConfig.masterAccountName = availableAccounts[0].name;
+    saveAndSyncConfig();
+  }
+
   masterAccountsList.innerHTML = availableAccounts
     .map((acc) => {
       const isSelected = String(currentConfig.masterAccountId) === String(acc.id);
@@ -138,6 +145,7 @@ function renderMasterSelector() {
         saveAndSyncConfig();
         renderMasterSelector();
         renderSlavesList();
+        appendLog(new Date().toLocaleTimeString(), `Cuenta Master seleccionada: <strong>${acc.name}</strong>`);
       }
     });
   });
@@ -152,7 +160,17 @@ function renderSlavesList() {
   );
 
   if (candidateAccounts.length === 0) {
-    slavesList.innerHTML = '<div style="font-size: 12px; color: var(--text-dim); padding: 16px; text-align: center;">No hay cuentas esclavas disponibles para replicar. Conecta cuentas adicionales en Tradovate.</div>';
+    if (availableAccounts.length === 1) {
+      slavesList.innerHTML = `
+        <div style="font-size: 12px; color: var(--text-dim); padding: 20px; text-align: center; line-height: 1.5; background: rgba(59, 130, 246, 0.05); border: 1px dashed rgba(59, 130, 246, 0.2); border-radius: 12px;">
+          <div style="font-size: 16px; margin-bottom: 6px;">🎯</div>
+          <strong style="color: #93c5fd; display: block; margin-bottom: 4px;">Cuenta Master Configurada: ${currentConfig.masterAccountName}</strong>
+          Para replicar trades en cuentas secundarias, añade o vincula tus cuentas de evaluación/fondeo (Apex, Topstep, etc.) en tu usuario de Tradovate. Aparecerán aquí automáticamente para configurar su multiplicador.
+        </div>
+      `;
+    } else {
+      slavesList.innerHTML = '<div style="font-size: 12px; color: var(--text-dim); padding: 16px; text-align: center;">No hay cuentas esclavas disponibles para replicar. Conecta cuentas adicionales en Tradovate.</div>';
+    }
     statSlavesCount.textContent = '0';
     return;
   }
@@ -353,6 +371,22 @@ if (window.electronAPI) {
     renderSlavesList();
     appendLog(new Date().toLocaleTimeString(), `Cargadas ${availableAccounts.length} cuenta(s) en Tradovate.`);
   });
+
+  // Request existing accounts if already loaded in main process
+  if (typeof window.electronAPI.getAccounts === 'function') {
+    window.electronAPI.getAccounts().then((accounts) => {
+      if (accounts && accounts.length > 0) {
+        availableAccounts = accounts;
+        if (!currentConfig.masterAccountId && availableAccounts.length > 0) {
+          currentConfig.masterAccountId = accounts[0].id;
+          currentConfig.masterAccountName = accounts[0].name;
+        }
+        renderMasterSelector();
+        renderSlavesList();
+        appendLog(new Date().toLocaleTimeString(), `Cargadas ${availableAccounts.length} cuenta(s) en Tradovate.`);
+      }
+    });
+  }
 
   // Engine Status & Stats updates
   window.electronAPI.onStatus((status) => {

@@ -12,6 +12,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   setPaused: (isPaused) => ipcRenderer.invoke('copier:set-paused', isPaused),
 
   // Tradovate
+  getAccounts: () => ipcRenderer.invoke('tradovate:get-accounts'),
   openTradovateLogin: () => ipcRenderer.invoke('tradovate:open-login'),
   connectToken: (token, environment) =>
     ipcRenderer.invoke('tradovate:connect-token', { token, environment }),
