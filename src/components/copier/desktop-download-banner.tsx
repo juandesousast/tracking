@@ -3,58 +3,22 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { toast } from '@/lib/services/toast';
 import { cn } from '@/lib/utils';
 import {
   Laptop,
   Download,
   Apple,
-  CheckCircle2,
   ShieldCheck,
   Zap,
   Bell,
   Clock,
-  ExternalLink,
-  ChevronRight,
-  Terminal,
+  CheckCircle2,
   Cpu,
+  ArrowRight,
 } from 'lucide-react';
 
 export function DesktopDownloadBanner({ className }: { className?: string }) {
   const [selectedOS, setSelectedOS] = useState<'mac' | 'win'>('mac');
-  const [isCopiedCommand, setIsCopiedCommand] = useState(false);
-
-  const handleDownload = (os: 'mac-dmg' | 'mac-zip' | 'win-exe' | 'win-portable') => {
-    toast.success(
-      'Iniciando Descarga',
-      `Descargando EdgeFlow Copier (${os === 'mac-dmg' ? 'macOS .DMG' : os === 'win-exe' ? 'Windows .EXE' : 'Archivo Portable'}).`
-    );
-    // In local dev / production, direct link or release asset:
-    const link = document.createElement('a');
-    if (os === 'mac-dmg') {
-      link.href = '/download/EdgeFlow-Copier-mac-arm64.dmg';
-      link.download = 'EdgeFlow-Copier-1.0.0-arm64.dmg';
-    } else if (os === 'win-exe') {
-      link.href = '/download/EdgeFlow-Copier-setup.exe';
-      link.download = 'EdgeFlow-Copier-Setup-1.0.0.exe';
-    }
-    // Fallback info notification
-    setTimeout(() => {
-      toast.info(
-        'Modo Desarrollo Local',
-        'También puedes ejecutar `npm run desktop:start` en la terminal para iniciar la app de inmediato.'
-      );
-    }, 1200);
-  };
-
-  const handleCopyCliCommand = () => {
-    if (typeof navigator !== 'undefined' && navigator.clipboard) {
-      navigator.clipboard.writeText('npm run desktop:start');
-      setIsCopiedCommand(true);
-      toast.success('Comando Copiado', 'Pega `npm run desktop:start` en tu terminal para lanzar la app.');
-      setTimeout(() => setIsCopiedCommand(false), 3000);
-    }
-  };
 
   return (
     <div
@@ -177,80 +141,72 @@ export function DesktopDownloadBanner({ className }: { className?: string }) {
                 {selectedOS === 'mac' ? 'EdgeFlow Copier para macOS' : 'EdgeFlow Copier para Windows'}
               </span>
               <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-md bg-blue-500/20 text-blue-300 border border-blue-500/30">
-                v1.0.0
+                v1.0.0 Oficial
               </span>
             </div>
             <p className="text-xs text-slate-400">
               {selectedOS === 'mac'
                 ? 'Compatible con Apple Silicon (M1/M2/M3/M4) e Intel. Requiere macOS 11 o superior.'
-                : 'Compatible con Windows 10 y Windows 11 (64-bit). No requiere permisos de administrador.'}
+                : 'Compatible con Windows 10 y Windows 11 (64-bit). Instalador verificado.'}
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
             {selectedOS === 'mac' ? (
-              <>
-                <Button
-                  type="button"
-                  size="lg"
-                  onClick={() => handleDownload('mac-dmg')}
-                  className="bg-blue-600 hover:bg-blue-500 text-white font-bold gap-2 text-xs sm:text-sm h-11 px-5 rounded-xl shadow-lg shadow-blue-600/30 flex-1 sm:flex-none cursor-pointer"
-                >
-                  <Download className="h-4 w-4" />
-                  <span>Descargar DMG (.dmg)</span>
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="lg"
-                  onClick={() => handleDownload('mac-zip')}
-                  className="border-slate-700 hover:bg-slate-800 text-slate-200 font-bold gap-2 text-xs sm:text-sm h-11 px-4 rounded-xl flex-1 sm:flex-none cursor-pointer"
-                >
-                  <span>Archivo ZIP (.app)</span>
-                </Button>
-              </>
+              <a
+                href="/api/download?os=mac"
+                download="EdgeFlow-Copier-1.0.0-arm64.dmg"
+                className="inline-flex items-center justify-center bg-blue-600 hover:bg-blue-500 text-white font-bold gap-2 text-xs sm:text-sm h-11 px-6 rounded-xl shadow-lg shadow-blue-600/30 flex-1 sm:flex-none cursor-pointer transition-colors"
+              >
+                <Download className="h-4 w-4" />
+                <span>Descargar para macOS (.dmg)</span>
+              </a>
             ) : (
-              <>
-                <Button
-                  type="button"
-                  size="lg"
-                  onClick={() => handleDownload('win-exe')}
-                  className="bg-blue-600 hover:bg-blue-500 text-white font-bold gap-2 text-xs sm:text-sm h-11 px-5 rounded-xl shadow-lg shadow-blue-600/30 flex-1 sm:flex-none cursor-pointer"
-                >
-                  <Download className="h-4 w-4" />
-                  <span>Descargar Instalador (.exe)</span>
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="lg"
-                  onClick={() => handleDownload('win-portable')}
-                  className="border-slate-700 hover:bg-slate-800 text-slate-200 font-bold gap-2 text-xs sm:text-sm h-11 px-4 rounded-xl flex-1 sm:flex-none cursor-pointer"
-                >
-                  <span>Versión Portable</span>
-                </Button>
-              </>
+              <a
+                href="/api/download?os=win"
+                download="EdgeFlow-Copier-Setup-1.0.0.exe"
+                className="inline-flex items-center justify-center bg-blue-600 hover:bg-blue-500 text-white font-bold gap-2 text-xs sm:text-sm h-11 px-6 rounded-xl shadow-lg shadow-blue-600/30 flex-1 sm:flex-none cursor-pointer transition-colors"
+              >
+                <Download className="h-4 w-4" />
+                <span>Descargar para Windows (.exe)</span>
+              </a>
             )}
           </div>
         </div>
 
-        {/* Developer Quick-Start Terminal One-Liner */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 text-xs text-slate-400 border-t border-slate-800/80">
-          <div className="flex items-center gap-2">
-            <Terminal className="h-4 w-4 text-slate-500" />
-            <span>¿Prefieres ejecutarlo directamente desde el código fuente?</span>
-          </div>
+        {/* Clean 3-Step Setup Instructions */}
+        <div className="pt-2 border-t border-slate-800/80">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-slate-300">
+            <div className="flex items-start gap-2.5 p-3 rounded-xl bg-slate-950/40 border border-slate-800/60">
+              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-500/20 text-blue-400 font-mono font-bold text-[11px]">
+                1
+              </span>
+              <div>
+                <strong className="block text-white font-semibold mb-0.5">Descarga el Instalador</strong>
+                <span className="text-[11px] text-slate-400">Instala la aplicación en tu ordenador habitual de trading.</span>
+              </div>
+            </div>
 
-          <button
-            type="button"
-            onClick={handleCopyCliCommand}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 font-mono text-xs text-blue-300 hover:border-blue-500 transition-colors cursor-pointer"
-          >
-            <code>npm run desktop:start</code>
-            <span className="text-[10px] text-slate-500 font-sans">
-              {isCopiedCommand ? '✓ Copiado' : 'Copiar'}
-            </span>
-          </button>
+            <div className="flex items-start gap-2.5 p-3 rounded-xl bg-slate-950/40 border border-slate-800/60">
+              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-500/20 text-blue-400 font-mono font-bold text-[11px]">
+                2
+              </span>
+              <div>
+                <strong className="block text-white font-semibold mb-0.5">Inicia Sesión</strong>
+                <span className="text-[11px] text-slate-400">Accede con tu cuenta; tus configuraciones se cargarán solas.</span>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-2.5 p-3 rounded-xl bg-slate-950/40 border border-slate-800/60">
+              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-500/20 text-blue-400 font-mono font-bold text-[11px]">
+                3
+              </span>
+              <div>
+                <strong className="block text-white font-semibold mb-0.5">Opera Protegido</strong>
+                <span className="text-[11px] text-slate-400">Conecta Tradovate y opera con réplica local sin latencia.</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
