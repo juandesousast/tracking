@@ -156,7 +156,7 @@ function HomePageContent() {
 
   // Active accounts with resolved logos
   const activeAccountsList = useMemo(() => {
-    const active = accounts.filter((a) => a.status === "active");
+    const active = accounts.filter((a) => a.status?.toLowerCase() === "active");
     return active.map((a) => {
       const firm = firmMap.get(a.firm_id);
       const firmName = firm?.name || "Empresa Desconocida";

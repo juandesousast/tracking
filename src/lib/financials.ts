@@ -617,7 +617,7 @@ export function calculateTradingDashboardMetrics(
 
   const relevantAccounts =
     !selectedAccountId || selectedAccountId === 'all'
-      ? accounts.filter((a) => a.status === 'active')
+      ? accounts.filter((a) => a.status?.toLowerCase() === 'active')
       : accounts.filter((a) => a.id === selectedAccountId);
 
   const startingBalance = relevantAccounts.reduce(
