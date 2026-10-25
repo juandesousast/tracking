@@ -10,6 +10,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getConfig: () => ipcRenderer.invoke('app:get-config'),
   updateConfig: (cfg) => ipcRenderer.invoke('copier:update-config', cfg),
   setPaused: (isPaused) => ipcRenderer.invoke('copier:set-paused', isPaused),
+  getRiskConfig: () => ipcRenderer.invoke('risk:get-config'),
+  saveRiskConfig: (cfg) => ipcRenderer.invoke('risk:save-config', cfg),
 
   // Tradovate
   getAccounts: () => ipcRenderer.invoke('tradovate:get-accounts'),

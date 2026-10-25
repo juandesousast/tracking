@@ -478,6 +478,7 @@ ipcMain.handle('auth:login', async (event, { email, password }) => {
     // Load this specific user's config
     const userCfg = loadStoredUserConfig(currentUserId);
     copierEngine.updateConfig(userCfg);
+    if (userCfg.riskConfig) copierEngine.updateRiskConfig(userCfg.riskConfig);
 
     // If this user already has a Tradovate connection, restore it cleanly
     if (userCfg.tradovateToken) {
@@ -502,6 +503,7 @@ ipcMain.handle('auth:get-session', async () => {
       currentUserId = copierEngine.currentUser.id;
       const userCfg = loadStoredUserConfig(currentUserId);
       copierEngine.updateConfig(userCfg);
+      if (userCfg.riskConfig) copierEngine.updateRiskConfig(userCfg.riskConfig);
 
       if (userCfg.tradovateToken) {
         restoreUserTradovateSession(userCfg);
@@ -542,6 +544,44 @@ ipcMain.handle('copier:set-paused', (event, isPaused) => {
   saveUserConfig(currentUserId, { isPaused });
   copierEngine.updateConfig({ isPaused });
   return { success: true, isPaused };
+});
+
+// Risk Guardian Handlers (Strictly Scoped by Authenticated User)
+ipcMain.handle('risk:get-config', () => {
+  const userCfg = loadStoredUserConfig(currentUserId);
+  return userCfg.riskConfig || copierEngine.riskConfig;
+});
+
+ipcMain.handle('risk:save-config', async (event, riskCfg) => {
+  saveUserConfig(currentUserId, { riskConfig: riskCfg });
+  copierEngine.updateRiskConfig(riskCfg);
+
+  // Sync to Supabase account_risk_configs if user is authenticated
+  if (copierEngine.currentUser) {
+    try {
+      await copierEngine.supabase.from('account_risk_configs').upsert(
+        {
+          user_id: copierEngine.currentUser.id,
+          account_id: copierEngine.masterAccountId
+            ? String(copierEngine.masterAccountId)
+            : 'default-master',
+          template_id: riskCfg.templateId || null,
+          daily_loss_limit_amount: riskCfg.dailyLossLimit || 1000,
+          daily_loss_limit_action: riskCfg.dailyLossAction || 'liquidate',
+          daily_profit_target_amount: riskCfg.dailyProfitLock || null,
+          max_contracts_limit: riskCfg.maxContracts || 5,
+          auto_eod_close_time: riskCfg.eodCloseTime || null,
+          is_active: riskCfg.isActive !== false,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: 'account_id' }
+      );
+    } catch (e) {
+      console.warn('[CopierEngine] Non-critical error syncing risk config to cloud:', e.message);
+    }
+  }
+
+  return { success: true, riskConfig: riskCfg };
 });
 
 // Tradovate Handlers (Scoped per user)
@@ -677,6 +717,7 @@ app.whenReady().then(async () => {
       currentUserId = copierEngine.currentUser.id;
       const userCfg = loadStoredUserConfig(currentUserId);
       copierEngine.updateConfig(userCfg);
+      if (userCfg.riskConfig) copierEngine.updateRiskConfig(userCfg.riskConfig);
 
       if (userCfg.tradovateToken) {
         restoreUserTradovateSession(userCfg);

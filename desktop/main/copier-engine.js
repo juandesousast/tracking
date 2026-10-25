@@ -63,6 +63,18 @@ class DesktopCopierEngine {
     this.masterAccountName = '';
     this.slaves = []; // [{ id, name, multiplier: 1, convertMiniToMicro: false, isActive: true, maxDailyLoss: null }]
     this.processedOrderIds = new Set();
+
+    // Risk Guardian state
+    this.riskConfig = {
+      isActive: true,
+      templateId: 'topstep-50k',
+      dailyLossLimit: 1000,
+      dailyLossAction: 'liquidate',
+      dailyProfitLock: 1500,
+      maxContracts: 5,
+      eodCloseTime: '22:10',
+    };
+    this.startEodWatchdog();
   }
 
   // --- Auth Methods ---
@@ -144,6 +156,46 @@ class DesktopCopierEngine {
     );
   }
 
+  // --- Risk Guardian Configuration ---
+  updateRiskConfig(cfg) {
+    if (!cfg) return;
+    this.riskConfig = { ...this.riskConfig, ...cfg };
+    const statusLabel = this.riskConfig.isActive ? '<span style="color: #34d399;">ACTIVO</span>' : '<span style="color: #fbbf24;">PAUSADO</span>';
+    this.onLog(
+      new Date().toLocaleTimeString(),
+      `🛡️ Reglas de Riesgo actualizadas: [Escudo: ${statusLabel}] Límite: -$${this.riskConfig.dailyLossLimit || 1000} | Máx lotes: ${this.riskConfig.maxContracts || 5} | EOD: ${this.riskConfig.eodCloseTime || 'Off'}`
+    );
+  }
+
+  startEodWatchdog() {
+    if (this.eodInterval) clearInterval(this.eodInterval);
+    this.eodInterval = setInterval(() => {
+      if (!this.riskConfig || !this.riskConfig.isActive || !this.riskConfig.eodCloseTime) return;
+      const now = new Date();
+      const currentHHMM = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      if (currentHHMM === this.riskConfig.eodCloseTime && now.getSeconds() < 12) {
+        this.onLog(
+          new Date().toLocaleTimeString(),
+          `<span style="color: #fbbf24;">⏰ Guardián de Riesgo: Hora límite fin de día (${this.riskConfig.eodCloseTime}) alcanzada. Ejecutando aplanamiento automático...</span>`
+        );
+        this.liquidateAllAccounts();
+      }
+    }, 10000);
+  }
+
+  liquidateAllAccounts() {
+    const allAccounts = [];
+    if (this.masterAccountId) allAccounts.push({ id: this.masterAccountId });
+    for (const slave of this.slaves || []) {
+      allAccounts.push({ id: slave.id });
+    }
+    for (const acc of allAccounts) {
+      if (typeof this.sendWsMessage === 'function') {
+        this.sendWsMessage('order/liquidateposition', { accountId: Number(acc.id), admin: true });
+      }
+    }
+  }
+
   /**
    * Called when an order event arrives from the local Tradovate WebSocket.
    */
@@ -180,6 +232,17 @@ class DesktopCopierEngine {
       const qty = Number(order.orderQty) || 1;
       const symbol = order.symbol;
       const status = order.ordStatus;
+
+      // Risk Guardian: Check Max Contracts Limit
+      if (this.riskConfig && this.riskConfig.isActive && this.riskConfig.maxContracts) {
+        if (qty > this.riskConfig.maxContracts) {
+          this.onLog(
+            new Date().toLocaleTimeString(),
+            `<span style="color: #fb7185;">🛡️ Guardián de Riesgo: Orden master de ${qty}x ${symbol} BLOQUEADA porque excede el tope de seguridad (${this.riskConfig.maxContracts} lotes).</span>`
+          );
+          return;
+        }
+      }
 
       // Replicate on Working or Filled orders
       if (status === 'Working' || status === 'Filled') {
@@ -391,6 +454,7 @@ class DesktopCopierEngine {
 
   cleanup() {
     this.processedOrderIds.clear();
+    if (this.eodInterval) clearInterval(this.eodInterval);
   }
 }
 

@@ -726,6 +726,7 @@
     <div class="subnav-bar">
       <nav class="nav-tabs-container">
         <button id="navTabCopier" class="nav-tab-btn active">⚡ Copiador</button>
+        <button id="navTabRisk" class="nav-tab-btn">🎯 Gestor de Riesgo</button>
         <button id="navTabAccounts" class="nav-tab-btn">🛡️ Cuentas de Fondeo</button>
         <button id="navTabCalendar" class="nav-tab-btn">📰 Calendario Económico</button>
         <button id="navTabLogs" class="nav-tab-btn">📜 Historial Nube</button>
@@ -825,6 +826,152 @@
       <div class="console-panel" id="consoleBox">
         <div class="console-entry">
           <span class="console-time">[Sistema]</span> Motor local de réplica inicializado con éxito.
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 2: Risk Manager & Prop Firm Guardian View -->
+    <div id="viewRisk" class="view-container">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <h2 style="font-size: 16px; font-weight: 800;">Gestor de Riesgo y Guardián de Fondeo</h2>
+            <span id="riskShieldStatusBadge" class="pill-badge pill-green" style="font-size: 10px; padding: 2px 8px;">
+              <span class="dot"></span>
+              <span id="riskShieldStatusText">Escudo Activo</span>
+            </span>
+          </div>
+          <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+            Automatizaciones locales de emergencia para proteger tus cuentas de Apex, Topstep y evitar rupturas de reglas.
+          </p>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; background: #0c1220; padding: 6px 12px; border-radius: 9px; border: 1px solid var(--border-color);">
+            <span style="font-size: 11px; font-weight: 700; color: white;">Activar Escudo</span>
+            <label class="switch">
+              <input type="checkbox" id="riskShieldToggle" checked>
+              <span class="slider"></span>
+            </label>
+          </label>
+
+          <button id="btnSaveRiskConfig" class="btn btn-primary" style="font-size: 11px;">
+            💾 Guardar Reglas
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Template Selector Banner -->
+      <div style="background: linear-gradient(135deg, rgba(37,99,235,0.08), rgba(30,41,59,0.4)); border: 1px solid rgba(59,130,246,0.25); border-radius: 12px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 20px;">⚡</span>
+          <div>
+            <div style="font-size: 12px; font-weight: 800; color: white;">Plantilla de Reglas de Firma</div>
+            <div style="font-size: 11px; color: #94a3b8;">Carga automáticamente las reglas oficiales de tu empresa de evaluación</div>
+          </div>
+        </div>
+        <select id="riskTemplateSelect" class="multiplier-select" style="padding: 6px 12px; font-size: 12px;">
+          <option value="custom">⚙️ Personalizado</option>
+          <option value="apex-50k">Apex 50K (Max 10 lotes, $1,250 Pérdida, EOD 22:50)</option>
+          <option value="apex-100k">Apex 100K (Max 14 lotes, $2,000 Pérdida, EOD 22:50)</option>
+          <option value="topstep-50k" selected>Topstep 50K (Max 5 lotes, $1,000 Pérdida, EOD 22:10)</option>
+          <option value="topstep-100k">Topstep 100K (Max 10 lotes, $2,000 Pérdida, EOD 22:10)</option>
+          <option value="ftmo-50k">FTMO 50K (Max 5 lotes, $2,500 Pérdida)</option>
+        </select>
+      </div>
+
+      <!-- 4 Core Risk Rule Cards -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px;">
+        <!-- Card 1: Daily Loss Limit -->
+        <div class="panel" style="gap: 10px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="font-size: 12px; font-weight: 800; color: #fb7185; display: flex; align-items: center; gap: 6px;">
+              <span>🚨</span>
+              <span>Límite de Pérdida Diaria</span>
+            </div>
+            <span style="font-size: 10px; background: rgba(251,113,133,0.1); color: #fb7185; padding: 2px 6px; border-radius: 4px; font-weight: 800;">CRÍTICO</span>
+          </div>
+          <p style="font-size: 11px; color: var(--text-dim); line-height: 1.4;">
+            Si la pérdida acumulada del día alcanza este monto, se ejecutan las medidas de protección.
+          </p>
+          <div style="display: flex; gap: 8px; align-items: center; margin-top: auto;">
+            <span style="font-size: 14px; font-weight: 800; color: var(--text-muted);">$</span>
+            <input type="number" id="riskDailyLossAmount" class="form-input" value="1000" style="padding: 8px 10px; font-family: 'JetBrains Mono', monospace; font-weight: 800; flex: 1;">
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 4px;">
+            <span class="control-label">Acción al alcanzar límite:</span>
+            <select id="riskDailyLossAction" class="multiplier-select" style="width: 100%; padding: 6px 8px;">
+              <option value="liquidate">⚡ Aplanar Todo y Bloquear (Recomendado)</option>
+              <option value="notify">⚠️ Solo Alerta Sonora / Notificar</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Card 2: Daily Profit Lock -->
+        <div class="panel" style="gap: 10px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="font-size: 12px; font-weight: 800; color: #34d399; display: flex; align-items: center; gap: 6px;">
+              <span>🎯</span>
+              <span>Bloqueo de Ganancias (Target)</span>
+            </div>
+            <span style="font-size: 10px; background: rgba(52,211,153,0.1); color: #34d399; padding: 2px 6px; border-radius: 4px; font-weight: 800;">PROFIT</span>
+          </div>
+          <p style="font-size: 11px; color: var(--text-dim); line-height: 1.4;">
+            Bloquea las ganancias del día para evitar sobreoperar y devolver el dinero al mercado.
+          </p>
+          <div style="display: flex; gap: 8px; align-items: center; margin-top: auto;">
+            <span style="font-size: 14px; font-weight: 800; color: var(--text-muted);">$</span>
+            <input type="number" id="riskProfitLockAmount" class="form-input" value="1500" placeholder="Opcional" style="padding: 8px 10px; font-family: 'JetBrains Mono', monospace; font-weight: 800; flex: 1;">
+          </div>
+          <span style="font-size: 10px; color: var(--text-dim);">Al alcanzar esta meta se aplanan posiciones y se pausa la réplica hasta mañana.</span>
+        </div>
+
+        <!-- Card 3: Max Contracts Guard -->
+        <div class="panel" style="gap: 10px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="font-size: 12px; font-weight: 800; color: #60a5fa; display: flex; align-items: center; gap: 6px;">
+              <span>🛡️</span>
+              <span>Tope Máximo de Contratos</span>
+            </div>
+            <span style="font-size: 10px; background: rgba(59,130,246,0.1); color: #60a5fa; padding: 2px 6px; border-radius: 4px; font-weight: 800;">LAPSOS</span>
+          </div>
+          <p style="font-size: 11px; color: var(--text-dim); line-height: 1.4;">
+            Evita que se envíen órdenes con más contratos de los permitidos por las reglas de tu cuenta.
+          </p>
+          <div style="display: flex; gap: 8px; align-items: center; margin-top: auto;">
+            <input type="number" id="riskMaxContracts" class="form-input" value="5" min="1" max="50" style="padding: 8px 10px; font-family: 'JetBrains Mono', monospace; font-weight: 800; flex: 1;">
+            <span style="font-size: 12px; font-weight: 700; color: var(--text-dim);">Lotes</span>
+          </div>
+          <span style="font-size: 10px; color: var(--text-dim);">Las órdenes que superen este número serán bloqueadas automáticamente.</span>
+        </div>
+
+        <!-- Card 4: Auto EOD Close -->
+        <div class="panel" style="gap: 10px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="font-size: 12px; font-weight: 800; color: #fbbf24; display: flex; align-items: center; gap: 6px;">
+              <span>⏰</span>
+              <span>Cierre Automático Fin de Día</span>
+            </div>
+            <span style="font-size: 10px; background: rgba(251,191,36,0.1); color: #fbbf24; padding: 2px 6px; border-radius: 4px; font-weight: 800;">HORARIO</span>
+          </div>
+          <p style="font-size: 11px; color: var(--text-dim); line-height: 1.4;">
+            Cierra forzosamente toda posición abierta antes del corte diario obligatorio de la firma.
+          </p>
+          <div style="display: flex; gap: 8px; align-items: center; margin-top: auto;">
+            <input type="time" id="riskEodTime" class="form-input" value="22:10" style="padding: 8px 10px; font-family: 'JetBrains Mono', monospace; font-weight: 800; flex: 1;">
+            <span style="font-size: 12px; font-weight: 700; color: var(--text-dim);">CET</span>
+          </div>
+          <span style="font-size: 10px; color: var(--text-dim);">Topstep exige cerrar antes de las 22:10 CET (15:10 CT); Apex antes de las 22:59 CET.</span>
+        </div>
+      </div>
+
+      <!-- Live Guard Status Log Box -->
+      <div style="background: #060911; border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #94a3b8; display: flex; flex-direction: column; gap: 6px;">
+        <div style="font-weight: 800; color: white; display: flex; align-items: center; gap: 6px;">
+          <span>⚡ Estado del Guardián en Tiempo Real</span>
+        </div>
+        <div id="riskConsoleStatus" style="line-height: 1.5; color: #34d399;">
+          [Activo] Escudo de riesgo monitoreando operaciones locales de Tradovate.
         </div>
       </div>
     </div>

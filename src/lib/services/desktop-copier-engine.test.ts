@@ -159,5 +159,48 @@ describe('Desktop Copier Engine & Symbol Converter', () => {
 
       expect(sentWsMessages).toHaveLength(0);
     });
+
+    it('blocks orders exceeding maxContracts when Risk Shield is active', async () => {
+      engine.updateRiskConfig({
+        isActive: true,
+        maxContracts: 3,
+      });
+
+      await engine.handleTradovateOrder({
+        id: 99995,
+        accountId: 1001, // Master
+        action: 'Buy',
+        symbol: 'NQ',
+        orderQty: 4, // Exceeds limit of 3
+        ordStatus: 'Filled',
+      });
+
+      // Order blocked by Risk Guardian
+      expect(sentWsMessages).toHaveLength(0);
+    });
+
+    it('allows orders within maxContracts when Risk Shield is active', async () => {
+      engine.updateRiskConfig({
+        isActive: true,
+        maxContracts: 5,
+      });
+
+      await engine.handleTradovateOrder({
+        id: 99996,
+        accountId: 1001,
+        action: 'Buy',
+        symbol: 'NQ',
+        orderQty: 2, // Within limit of 5
+        ordStatus: 'Filled',
+      });
+
+      expect(sentWsMessages).toHaveLength(2);
+    });
+
+    it('liquidateAllAccounts sends order/liquidateposition for master and all slaves', () => {
+      engine.liquidateAllAccounts();
+      expect(sentWsMessages.length).toBeGreaterThanOrEqual(3);
+      expect(sentWsMessages.every((m) => m.endpoint === 'order/liquidateposition')).toBe(true);
+    });
   });
 });

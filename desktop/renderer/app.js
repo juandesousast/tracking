@@ -13,14 +13,67 @@ const btnLogout = document.getElementById('btnLogout');
 
 // Navigation Tabs & Views
 const navTabCopier = document.getElementById('navTabCopier');
+const navTabRisk = document.getElementById('navTabRisk');
 const navTabAccounts = document.getElementById('navTabAccounts');
 const navTabCalendar = document.getElementById('navTabCalendar');
 const navTabLogs = document.getElementById('navTabLogs');
 
 const viewCopier = document.getElementById('viewCopier');
+const viewRisk = document.getElementById('viewRisk');
 const viewAccounts = document.getElementById('viewAccounts');
 const viewCalendar = document.getElementById('viewCalendar');
 const viewLogs = document.getElementById('viewLogs');
+
+// Risk Shield Elements
+const riskShieldToggle = document.getElementById('riskShieldToggle');
+const riskShieldStatusBadge = document.getElementById('riskShieldStatusBadge');
+const riskShieldStatusText = document.getElementById('riskShieldStatusText');
+const riskTemplateSelect = document.getElementById('riskTemplateSelect');
+const riskDailyLossAmount = document.getElementById('riskDailyLossAmount');
+const riskDailyLossAction = document.getElementById('riskDailyLossAction');
+const riskProfitLockAmount = document.getElementById('riskProfitLockAmount');
+const riskMaxContracts = document.getElementById('riskMaxContracts');
+const riskEodTime = document.getElementById('riskEodTime');
+const btnSaveRiskConfig = document.getElementById('btnSaveRiskConfig');
+const riskConsoleStatus = document.getElementById('riskConsoleStatus');
+
+const RISK_PRESETS = {
+  'apex-50k': {
+    dailyLossLimit: 1250,
+    dailyLossAction: 'liquidate',
+    dailyProfitLock: 1500,
+    maxContracts: 10,
+    eodCloseTime: '22:50',
+  },
+  'apex-100k': {
+    dailyLossLimit: 2000,
+    dailyLossAction: 'liquidate',
+    dailyProfitLock: 2500,
+    maxContracts: 14,
+    eodCloseTime: '22:50',
+  },
+  'topstep-50k': {
+    dailyLossLimit: 1000,
+    dailyLossAction: 'liquidate',
+    dailyProfitLock: 1500,
+    maxContracts: 5,
+    eodCloseTime: '22:10',
+  },
+  'topstep-100k': {
+    dailyLossLimit: 2000,
+    dailyLossAction: 'liquidate',
+    dailyProfitLock: 2500,
+    maxContracts: 10,
+    eodCloseTime: '22:10',
+  },
+  'ftmo-50k': {
+    dailyLossLimit: 2500,
+    dailyLossAction: 'liquidate',
+    dailyProfitLock: 2500,
+    maxContracts: 5,
+    eodCloseTime: '23:50',
+  },
+};
 
 // Copier Controls
 const statMasterName = document.getElementById('statMasterName');
@@ -68,12 +121,14 @@ function appendLog(time, message) {
 function switchTab(tab) {
   const tabs = [
     { btn: navTabCopier, view: viewCopier, name: 'copier' },
+    { btn: navTabRisk, view: viewRisk, name: 'risk' },
     { btn: navTabAccounts, view: viewAccounts, name: 'accounts' },
     { btn: navTabCalendar, view: viewCalendar, name: 'calendar' },
     { btn: navTabLogs, view: viewLogs, name: 'logs' },
   ];
 
   tabs.forEach((t) => {
+    if (!t.btn || !t.view) return;
     if (t.name === tab) {
       t.btn.classList.add('active');
       t.view.classList.add('active');
@@ -83,12 +138,14 @@ function switchTab(tab) {
     }
   });
 
+  if (tab === 'risk') loadRiskConfig();
   if (tab === 'accounts') loadCloudAccounts();
   if (tab === 'calendar') loadEconomicNews();
   if (tab === 'logs') loadCloudLogs();
 }
 
 if (navTabCopier) navTabCopier.addEventListener('click', () => switchTab('copier'));
+if (navTabRisk) navTabRisk.addEventListener('click', () => switchTab('risk'));
 if (navTabAccounts) navTabAccounts.addEventListener('click', () => switchTab('accounts'));
 if (navTabCalendar) navTabCalendar.addEventListener('click', () => switchTab('calendar'));
 if (navTabLogs) navTabLogs.addEventListener('click', () => switchTab('logs'));
@@ -96,6 +153,101 @@ if (navTabLogs) navTabLogs.addEventListener('click', () => switchTab('logs'));
 if (btnRefreshAccounts) btnRefreshAccounts.addEventListener('click', loadCloudAccounts);
 if (btnRefreshNews) btnRefreshNews.addEventListener('click', loadEconomicNews);
 if (btnRefreshLogs) btnRefreshLogs.addEventListener('click', loadCloudLogs);
+
+// --- Risk Guardian Controllers ---
+if (riskTemplateSelect) {
+  riskTemplateSelect.addEventListener('change', () => {
+    const preset = RISK_PRESETS[riskTemplateSelect.value];
+    if (preset) {
+      if (riskDailyLossAmount) riskDailyLossAmount.value = preset.dailyLossLimit;
+      if (riskDailyLossAction) riskDailyLossAction.value = preset.dailyLossAction;
+      if (riskProfitLockAmount) riskProfitLockAmount.value = preset.dailyProfitLock;
+      if (riskMaxContracts) riskMaxContracts.value = preset.maxContracts;
+      if (riskEodTime) riskEodTime.value = preset.eodCloseTime;
+      appendLog(
+        new Date().toLocaleTimeString(),
+        `Plantilla aplicada: <strong>${riskTemplateSelect.options[riskTemplateSelect.selectedIndex].text}</strong>`
+      );
+    }
+  });
+}
+
+if (riskShieldToggle) {
+  riskShieldToggle.addEventListener('change', () => {
+    const active = riskShieldToggle.checked;
+    if (active) {
+      if (riskShieldStatusBadge) riskShieldStatusBadge.className = 'pill-badge pill-green';
+      if (riskShieldStatusText) riskShieldStatusText.textContent = 'Escudo Activo';
+      if (riskConsoleStatus) {
+        riskConsoleStatus.innerHTML =
+          '<span style="color: #34d399;">[Activo] Escudo de riesgo monitoreando operaciones locales de Tradovate.</span>';
+      }
+    } else {
+      if (riskShieldStatusBadge) riskShieldStatusBadge.className = 'pill-badge pill-yellow';
+      if (riskShieldStatusText) riskShieldStatusText.textContent = 'Escudo Pausado';
+      if (riskConsoleStatus) {
+        riskConsoleStatus.innerHTML =
+          '<span style="color: #fbbf24;">[Pausado] Protección de riesgo temporalmente desactivada.</span>';
+      }
+    }
+  });
+}
+
+async function loadRiskConfig() {
+  if (!window.electronAPI || typeof window.electronAPI.getRiskConfig !== 'function') return;
+  try {
+    const cfg = await window.electronAPI.getRiskConfig();
+    if (cfg) {
+      if (riskShieldToggle && typeof cfg.isActive === 'boolean') {
+        riskShieldToggle.checked = cfg.isActive;
+        riskShieldToggle.dispatchEvent(new Event('change'));
+      }
+      if (riskTemplateSelect && cfg.templateId) riskTemplateSelect.value = cfg.templateId;
+      if (riskDailyLossAmount && cfg.dailyLossLimit) riskDailyLossAmount.value = cfg.dailyLossLimit;
+      if (riskDailyLossAction && cfg.dailyLossAction) riskDailyLossAction.value = cfg.dailyLossAction;
+      if (riskProfitLockAmount && cfg.dailyProfitLock) riskProfitLockAmount.value = cfg.dailyProfitLock;
+      if (riskMaxContracts && cfg.maxContracts) riskMaxContracts.value = cfg.maxContracts;
+      if (riskEodTime && cfg.eodCloseTime) riskEodTime.value = cfg.eodCloseTime;
+    }
+  } catch (e) {
+    console.error('Error loading risk config:', e);
+  }
+}
+
+if (btnSaveRiskConfig) {
+  btnSaveRiskConfig.addEventListener('click', async () => {
+    btnSaveRiskConfig.disabled = true;
+    btnSaveRiskConfig.textContent = 'Guardando...';
+
+    const riskCfg = {
+      isActive: riskShieldToggle ? riskShieldToggle.checked : true,
+      templateId: riskTemplateSelect ? riskTemplateSelect.value : 'custom',
+      dailyLossLimit: riskDailyLossAmount ? Number(riskDailyLossAmount.value) || 1000 : 1000,
+      dailyLossAction: riskDailyLossAction ? riskDailyLossAction.value : 'liquidate',
+      dailyProfitLock: riskProfitLockAmount ? Number(riskProfitLockAmount.value) || null : null,
+      maxContracts: riskMaxContracts ? Number(riskMaxContracts.value) || 5 : 5,
+      eodCloseTime: riskEodTime ? riskEodTime.value || '22:10' : '22:10',
+    };
+
+    try {
+      if (window.electronAPI && typeof window.electronAPI.saveRiskConfig === 'function') {
+        await window.electronAPI.saveRiskConfig(riskCfg);
+      }
+      btnSaveRiskConfig.textContent = '✅ Guardado';
+      appendLog(
+        new Date().toLocaleTimeString(),
+        `Reglas del Escudo de Riesgo guardadas: Máx ${riskCfg.maxContracts} lotes | Límite -$${riskCfg.dailyLossLimit} | EOD ${riskCfg.eodCloseTime}`
+      );
+    } catch (err) {
+      alert(`Error al guardar reglas de riesgo: ${err.message}`);
+    } finally {
+      setTimeout(() => {
+        btnSaveRiskConfig.disabled = false;
+        btnSaveRiskConfig.textContent = '💾 Guardar Reglas';
+      }, 1200);
+    }
+  });
+}
 
 // --- Auth Handling ---
 async function checkAuthSession() {
