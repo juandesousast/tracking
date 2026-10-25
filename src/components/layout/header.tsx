@@ -10,6 +10,7 @@ import {
   Bell,
   LogOut,
   ChevronRight,
+  Search,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -139,6 +140,22 @@ export function Header() {
           <ChevronRight className="h-3.5 w-3.5 text-slate-300 dark:text-slate-600" />
           <span className="text-slate-700 dark:text-slate-300 font-semibold">{getPageTitle()}</span>
         </div>
+
+        {/* Quick Search / Command Palette Trigger */}
+        <button
+          type="button"
+          onClick={() => {
+            window.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true }));
+          }}
+          className="hidden md:flex items-center gap-2.5 px-3 py-1.5 rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-slate-50/80 dark:bg-white/[0.04] text-xs text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/[0.07] transition-all cursor-pointer shadow-2xs"
+          title="Abrir paleta de comandos (⌘K)"
+        >
+          <Search className="h-3.5 w-3.5 text-slate-400" />
+          <span className="font-medium">Buscar o comando...</span>
+          <kbd className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md border border-slate-200 dark:border-white/10 bg-white dark:bg-white/10 text-[10px] font-mono text-slate-500 dark:text-slate-400 font-bold">
+            ⌘K
+          </kbd>
+        </button>
 
         {/* User Profile & Controls */}
         <div className="flex items-center gap-2">

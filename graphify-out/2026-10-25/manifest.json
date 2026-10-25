@@ -145,8 +145,8 @@
     "semantic_hash": ""
   },
   "src/components/layout/header.tsx": {
-    "mtime": 1792930948.2168927,
-    "ast_hash": "34a6b7f26254576fefb215a9cdbaa6ba",
+    "mtime": 1792932067.5597036,
+    "ast_hash": "1c02c5af18e9874cf80e218406a5ac1d",
     "semantic_hash": ""
   },
   "src/components/layout/mobile-nav.tsx": {
@@ -155,8 +155,8 @@
     "semantic_hash": ""
   },
   "src/components/layout/sidebar.tsx": {
-    "mtime": 1792930911.7163854,
-    "ast_hash": "3cdac2faa1bb84f694fbde7a35863f83",
+    "mtime": 1792931676.5608659,
+    "ast_hash": "b57cca4bcf61b5efa81930bba52524d2",
     "semantic_hash": ""
   },
   "src/components/ui/avatar.tsx": {
@@ -190,8 +190,8 @@
     "semantic_hash": ""
   },
   "src/components/dashboard/transaction-table.tsx": {
-    "mtime": 1786272843.726097,
-    "ast_hash": "847e3f04de4df7d42874c180c2d58c25",
+    "mtime": 1792932042.2522526,
+    "ast_hash": "2ce704390788d055da6a086d5edb1884",
     "semantic_hash": ""
   },
   "src/components/modals/add-account-modal.tsx": {
@@ -240,8 +240,8 @@
     "semantic_hash": ""
   },
   "src/components/ui/select.tsx": {
-    "mtime": 1792607745.4527795,
-    "ast_hash": "eb5443140a48233fa2a3d8d7261b126c",
+    "mtime": 1792931869.4988184,
+    "ast_hash": "afa00bd281e4d8afe0d03fc5cde93d2e",
     "semantic_hash": ""
   },
   "src/components/ui/table.tsx": {
@@ -350,23 +350,23 @@
     "semantic_hash": ""
   },
   "src/app/cuentas/page.tsx": {
-    "mtime": 1792931066.2166781,
-    "ast_hash": "f2c256f2845aa0909fc8b8a6668a715f",
+    "mtime": 1792931946.2353992,
+    "ast_hash": "39f4380e4adb6ffa23b71914453af407",
     "semantic_hash": ""
   },
   "src/app/gastos/page.tsx": {
-    "mtime": 1792931053.839236,
-    "ast_hash": "e2f83839e1664da3ef32d72a2f2bf723",
+    "mtime": 1792931970.9210043,
+    "ast_hash": "305b0d2565a5cdc9997c83f9ca865b9c",
     "semantic_hash": ""
   },
   "src/app/retiros/page.tsx": {
-    "mtime": 1792931038.4444723,
-    "ast_hash": "098bd56aa4cdc71f5bdeff2a94235656",
+    "mtime": 1792931958.947321,
+    "ast_hash": "6afc5d4ac03160fea0ac161fdc90e5a9",
     "semantic_hash": ""
   },
   "src/components/dashboard/dashboard-filters.tsx": {
-    "mtime": 1786300480.623178,
-    "ast_hash": "a22d6f5a48df0a3fb382770d302d713b",
+    "mtime": 1792931931.9571936,
+    "ast_hash": "f1dbcb7d6052f69c61f148e62549c1c1",
     "semantic_hash": ""
   },
   "src/lib/validations/schemas.test.ts": {
@@ -510,8 +510,8 @@
     "semantic_hash": ""
   },
   "src/app/calendario/page.tsx": {
-    "mtime": 1792930150.4121559,
-    "ast_hash": "ba8f3b21bf7033dd3109c6ed0e1e7100",
+    "mtime": 1792931992.3324943,
+    "ast_hash": "f585fe8a7337472414a2c050872bd16d",
     "semantic_hash": ""
   },
   "src/app/portfolio/page.tsx": {
@@ -540,13 +540,13 @@
     "semantic_hash": ""
   },
   "src/app/strategies/page.tsx": {
-    "mtime": 1792931103.4912138,
-    "ast_hash": "0f656e7fb737c94b4932ddabd2751172",
+    "mtime": 1792931907.9686387,
+    "ast_hash": "cf9622b9c3500a2df5cfe9da8be19dbd",
     "semantic_hash": ""
   },
   "src/app/tools/page.tsx": {
-    "mtime": 1792930218.8823779,
-    "ast_hash": "23a4dd0ff6ab827e68d89c93dfea61bc",
+    "mtime": 1792931980.4929829,
+    "ast_hash": "d08e8531feb6ff625fc1143385e43ea3",
     "semantic_hash": ""
   },
   "src/app/trades/page.tsx": {

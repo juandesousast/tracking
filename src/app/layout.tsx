@@ -4,6 +4,8 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import DashboardLayout from "./dashboard-layout";
 import { TopNavLoader } from "@/components/ui/top-nav-loader";
+import { ToastContainer } from "@/components/ui/toast-container";
+import { CommandPalette } from "@/components/layout/command-palette";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -54,6 +56,8 @@ export default function RootLayout({
           <TopNavLoader />
         </Suspense>
         <DashboardLayout>{children}</DashboardLayout>
+        <ToastContainer />
+        <CommandPalette />
       </body>
     </html>
   );

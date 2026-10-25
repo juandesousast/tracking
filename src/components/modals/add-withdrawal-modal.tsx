@@ -17,6 +17,8 @@ interface AddWithdrawalModalProps {
   onOpenChange: (open: boolean) => void;
   firms: PropFirm[];
   accounts: Account[];
+  initialFirmId?: string;
+  initialAccountId?: string;
   onFirmAdded?: (firm: PropFirm) => void;
   onQuickCreateAccount?: (firm: PropFirm) => void;
   onSubmit: (withdrawal: {
@@ -34,13 +36,15 @@ export function AddWithdrawalModal({
   onOpenChange,
   firms,
   accounts,
+  initialFirmId,
+  initialAccountId,
   onFirmAdded,
   onQuickCreateAccount,
   onSubmit,
 }: AddWithdrawalModalProps) {
   const today = new Date().toISOString().split("T")[0];
-  const [firmId, setFirmId] = useState(firms[0]?.id || "");
-  const [accountId, setAccountId] = useState("");
+  const [firmId, setFirmId] = useState(initialFirmId || firms[0]?.id || "");
+  const [accountId, setAccountId] = useState(initialAccountId || "");
   const [grossAmount, setGrossAmount] = useState("");
   const [feeAmount, setFeeAmount] = useState("0");
   const [status, setStatus] = useState("Completed");
@@ -52,6 +56,13 @@ export function AddWithdrawalModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const filteredAccounts = accounts.filter((acc) => acc.firm_id === firmId);
+
+  useEffect(() => {
+    if (open) {
+      if (initialFirmId) setFirmId(initialFirmId);
+      if (initialAccountId) setAccountId(initialAccountId);
+    }
+  }, [open, initialFirmId, initialAccountId]);
 
   useEffect(() => {
     if (firms.length > 0 && !firmId) {

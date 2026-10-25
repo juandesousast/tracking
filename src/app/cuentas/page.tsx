@@ -2,22 +2,26 @@
 
 import { useState, useEffect, useMemo, useCallback } from "react";
 import Link from "next/link";
-import { PropFirm, Account } from "@/types/database";
+import { PropFirm, Account, Expense, Withdrawal } from "@/types/database";
 import { formatCurrency } from "@/lib/formatters";
 import {
   getFirms,
   getAccounts,
+  getExpenses,
+  getWithdrawals,
   addAccount,
   updateAccount,
   deleteAccount,
+  addWithdrawal,
 } from "@/lib/actions/actions";
 
 import { DashboardFilters } from "@/components/dashboard/dashboard-filters";
 import { AddAccountModal } from "@/components/modals/add-account-modal";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
-
-
 import { EditAccountModal } from "@/components/modals/edit-account-modal";
+import { AccountDetailDrawer } from "@/components/accounts/account-detail-drawer";
+import { AddWithdrawalModal } from "@/components/modals/add-withdrawal-modal";
+import { toast } from "@/lib/services/toast";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -50,6 +54,7 @@ import {
   Clock,
   PauseCircle,
   Calendar,
+  Eye,
 } from "lucide-react";
 import { getPropFirmLogo } from "@/lib/constants/prop-firms";
 import { PropFirmLogo } from "@/components/ui/prop-firm-logo";
@@ -58,25 +63,34 @@ export default function CuentasPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [firms, setFirms] = useState<PropFirm[]>([]);
   const [accounts, setAccounts] = useState<Account[]>([]);
+  const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([]);
 
   // Filters
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [firmFilter, setFirmFilter] = useState<string>("all");
 
-  // Modals
+  // Modals & Drawer
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [editingAccount, setEditingAccount] = useState<Account | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [selectedAccountForDrawer, setSelectedAccountForDrawer] = useState<Account | null>(null);
+  const [isAddWithdrawalOpen, setIsAddWithdrawalOpen] = useState(false);
+  const [accountForNewWithdrawal, setAccountForNewWithdrawal] = useState<Account | null>(null);
 
   const loadData = useCallback(async () => {
     setIsLoading(true);
     try {
-      const [fetchedFirms, fetchedAccounts] = await Promise.all([
+      const [fetchedFirms, fetchedAccounts, fetchedExpenses, fetchedWithdrawals] = await Promise.all([
         getFirms(),
         getAccounts(),
+        getExpenses(),
+        getWithdrawals(),
       ]);
       setFirms(fetchedFirms);
       setAccounts(fetchedAccounts);
+      setExpenses(fetchedExpenses);
+      setWithdrawals(fetchedWithdrawals);
     } catch (err) {
       console.error("Error loading accounts page:", err);
     } finally {
@@ -128,8 +142,52 @@ export default function CuentasPage() {
     try {
       await deleteAccount(id);
       setAccounts((prev) => prev.filter((a) => a.id !== id));
+      if (selectedAccountForDrawer && selectedAccountForDrawer.id === id) {
+        setSelectedAccountForDrawer(null);
+      }
     } catch (err) {
       console.error("Error deleting account:", err);
+    }
+  };
+
+  const handleFastStatusChange = async (id: string, nextStatus: string) => {
+    try {
+      const target = accounts.find((a) => a.id === id);
+      if (!target) return;
+      const updated = await updateAccount(id, {
+        firm_id: target.firm_id,
+        account_size: target.account_size,
+        account_type: target.account_type,
+        status: nextStatus,
+        account_number: target.account_number,
+        alias: target.alias,
+      });
+      setAccounts((prev) => prev.map((a) => (a.id === id ? updated : a)));
+      if (selectedAccountForDrawer && selectedAccountForDrawer.id === id) {
+        setSelectedAccountForDrawer(updated);
+      }
+      toast.success("Estado actualizado", `La cuenta ahora está marcada como ${nextStatus}`);
+    } catch (err) {
+      console.error("Error updating account status:", err);
+      toast.error("Error al actualizar", "No se pudo cambiar el estado de la cuenta");
+    }
+  };
+
+  const handleAddWithdrawalFromDrawer = async (withdrawalData: {
+    firm_id: string | null;
+    account_id: string | null;
+    gross_amount: number;
+    fee_amount: number;
+    status: string;
+    date: string;
+  }) => {
+    try {
+      await addWithdrawal(withdrawalData);
+      await loadData();
+      setIsAddWithdrawalOpen(false);
+      setAccountForNewWithdrawal(null);
+    } catch (err) {
+      console.error("Error adding withdrawal from drawer:", err);
     }
   };
 
@@ -454,16 +512,22 @@ export default function CuentasPage() {
                     )}
 
                     <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setSelectedAccountForDrawer(acc)}
+                        className="h-8 px-2 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-950/40 gap-1.5 cursor-pointer"
+                      >
+                        <Eye className="h-3.5 w-3.5" />
+                        <span>Detalle & Métricas</span>
+                      </Button>
                       <Link
                         href={`/calendario?account=${acc.id}`}
-                        className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1.5"
+                        className="text-xs font-medium text-slate-500 hover:text-slate-900 dark:hover:text-white flex items-center gap-1 transition-colors"
                       >
                         <Calendar className="h-3.5 w-3.5" />
-                        Ver PnL de Cuenta
+                        <span>Calendario</span>
                       </Link>
-                      <span className="text-[10px] text-slate-400 font-medium">
-                        Auditoría
-                      </span>
                     </div>
                   </CardContent>
                 </Card>
@@ -514,6 +578,38 @@ export default function CuentasPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      {/* Account Deep-Dive Drawer */}
+      <AccountDetailDrawer
+        account={selectedAccountForDrawer}
+        firm={firms.find((f) => f.id === selectedAccountForDrawer?.firm_id)}
+        expenses={expenses}
+        withdrawals={withdrawals}
+        isOpen={Boolean(selectedAccountForDrawer)}
+        onClose={() => setSelectedAccountForDrawer(null)}
+        onEdit={(acc) => {
+          setSelectedAccountForDrawer(null);
+          setEditingAccount(acc);
+        }}
+        onStatusChange={handleFastStatusChange}
+        onAddWithdrawal={(acc) => {
+          setAccountForNewWithdrawal(acc);
+          setIsAddWithdrawalOpen(true);
+        }}
+      />
+
+      {/* Add Withdrawal Modal triggered from Drawer */}
+      <AddWithdrawalModal
+        open={isAddWithdrawalOpen}
+        onOpenChange={(open) => {
+          setIsAddWithdrawalOpen(open);
+          if (!open) setAccountForNewWithdrawal(null);
+        }}
+        firms={firms}
+        accounts={accounts}
+        initialFirmId={accountForNewWithdrawal?.firm_id}
+        initialAccountId={accountForNewWithdrawal?.id}
+        onSubmit={handleAddWithdrawalFromDrawer}
+      />
     </>
   );
 }

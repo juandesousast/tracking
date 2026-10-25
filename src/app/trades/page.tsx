@@ -14,6 +14,11 @@ import {
 } from "@/lib/actions/actions";
 import { formatCurrency } from "@/lib/formatters";
 import { getPropFirmLogo } from "@/lib/constants/prop-firms";
+import {
+  exportTransactionsToCSV,
+  exportTaxSummaryToCSV,
+} from "@/lib/services/csv-export";
+import { toast } from "@/lib/services/toast";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -45,6 +50,8 @@ import {
   Trash2,
   RefreshCw,
   Wallet,
+  Download,
+  FileSpreadsheet,
 } from "lucide-react";
 import { EditExpenseModal } from "@/components/modals/edit-expense-modal";
 import { EditWithdrawalModal } from "@/components/modals/edit-withdrawal-modal";
@@ -249,15 +256,53 @@ function TradesPageContent() {
             Registro unificado de cobros de beneficios, evaluaciones y comisiones institucionales.
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2">
           <Button
             variant="outline"
             size="sm"
             onClick={loadData}
-            className="rounded-xl border-slate-200 dark:border-slate-800 text-xs font-medium"
+            className="rounded-xl border-slate-200 dark:border-slate-800 text-xs font-semibold bg-white dark:bg-slate-900 shadow-2xs hover:bg-slate-50 dark:hover:bg-slate-800"
           >
             <RefreshCw className="h-3.5 w-3.5 mr-1.5" />
             Actualizar
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              toast.info("Descarga iniciada", "Exportando transacciones a CSV");
+              exportTransactionsToCSV(
+                filteredTrades.map((t) => ({
+                  id: t.id,
+                  type: t.type,
+                  date: t.date,
+                  firmName: t.firmName,
+                  accountLabel: t.accountLabel,
+                  category: t.category,
+                  netAmount: t.netAmount,
+                  status: t.status,
+                  notes: t.description,
+                }))
+              );
+            }}
+            className="rounded-xl border-slate-200 dark:border-slate-800 text-xs font-semibold bg-white dark:bg-slate-900 shadow-2xs hover:bg-slate-50 dark:hover:bg-slate-800 gap-1.5"
+            title="Exportar todos los movimientos filtrados a CSV"
+          >
+            <Download className="h-3.5 w-3.5 text-slate-500" />
+            <span>Exportar CSV</span>
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              toast.info("Descarga iniciada", "Generando resumen fiscal del año en curso");
+              exportTaxSummaryToCSV(expenses, withdrawals);
+            }}
+            className="rounded-xl border-slate-200 dark:border-slate-800 text-xs font-semibold bg-white dark:bg-slate-900 shadow-2xs hover:bg-slate-50 dark:hover:bg-slate-800 gap-1.5 text-blue-600 dark:text-blue-400"
+            title="Descargar informe fiscal de cobros y gastos deducibles"
+          >
+            <FileSpreadsheet className="h-3.5 w-3.5" />
+            <span>Resumen Fiscal</span>
           </Button>
         </div>
       </div>

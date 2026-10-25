@@ -4,6 +4,8 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import { PropFirm, Account, Expense } from "@/types/database";
 import { formatCurrency } from "@/lib/formatters";
 import { calculateTotalExpenses } from "@/lib/financials";
+import { exportExpensesToCSV } from "@/lib/services/csv-export";
+import { toast } from "@/lib/services/toast";
 import {
   getFirms,
   getAccounts,
@@ -45,6 +47,7 @@ import {
   Search,
   Building2,
   Trash2,
+  Download,
 } from "lucide-react";
 import { getPropFirmLogo } from "@/lib/constants/prop-firms";
 import { PropFirmLogo } from "@/components/ui/prop-firm-logo";
@@ -192,10 +195,23 @@ export default function GastosPage() {
               variant="outline"
               size="sm"
               onClick={loadData}
-              className="text-xs font-semibold gap-1.5 bg-white dark:bg-slate-900"
+              className="text-xs font-semibold gap-1.5 bg-white dark:bg-slate-900 shadow-2xs hover:bg-slate-50 dark:hover:bg-slate-800"
             >
               <RefreshCw className="h-3.5 w-3.5" />
               Actualizar
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                toast.info("Descarga iniciada", "Exportando gastos a CSV compatible con Excel");
+                exportExpensesToCSV(filteredExpenses, accounts, firms);
+              }}
+              className="text-xs font-semibold gap-1.5 bg-white dark:bg-slate-900 shadow-2xs hover:bg-slate-50 dark:hover:bg-slate-800"
+              title="Exportar gastos a CSV compatible con Excel"
+            >
+              <Download className="h-3.5 w-3.5 text-slate-500" />
+              <span>Exportar CSV</span>
             </Button>
             <Button
               size="sm"

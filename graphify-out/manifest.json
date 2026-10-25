@@ -45,8 +45,8 @@
     "semantic_hash": ""
   },
   "src/app/layout.tsx": {
-    "mtime": 1792609381.86635,
-    "ast_hash": "80277bab6d06aa1cb8bc0d88de6c36ea",
+    "mtime": 1792934928.9126453,
+    "ast_hash": "103513b7e70d0cec28b799c51e157643",
     "semantic_hash": ""
   },
   "src/app/page.tsx": {
@@ -145,8 +145,8 @@
     "semantic_hash": ""
   },
   "src/components/layout/header.tsx": {
-    "mtime": 1792932067.5597036,
-    "ast_hash": "1c02c5af18e9874cf80e218406a5ac1d",
+    "mtime": 1792934951.72337,
+    "ast_hash": "056c5efb8d409baa1a23ac5933a52175",
     "semantic_hash": ""
   },
   "src/components/layout/mobile-nav.tsx": {
@@ -210,8 +210,8 @@
     "semantic_hash": ""
   },
   "src/components/modals/add-withdrawal-modal.tsx": {
-    "mtime": 1786300462.2684329,
-    "ast_hash": "37a18a825fc5cd6331ea3967ee82d382",
+    "mtime": 1792934725.0895472,
+    "ast_hash": "d470b317f335bf3ea8773bb429ea54ed",
     "semantic_hash": ""
   },
   "src/components/modals/responsive-modal.tsx": {
@@ -350,18 +350,18 @@
     "semantic_hash": ""
   },
   "src/app/cuentas/page.tsx": {
-    "mtime": 1792931946.2353992,
-    "ast_hash": "39f4380e4adb6ffa23b71914453af407",
+    "mtime": 1792935146.4032357,
+    "ast_hash": "6866aeca2027027fa46b74b88d73253f",
     "semantic_hash": ""
   },
   "src/app/gastos/page.tsx": {
-    "mtime": 1792931970.9210043,
-    "ast_hash": "305b0d2565a5cdc9997c83f9ca865b9c",
+    "mtime": 1792934865.9889228,
+    "ast_hash": "95c8a99a0ed68a9db7e61675da531772",
     "semantic_hash": ""
   },
   "src/app/retiros/page.tsx": {
-    "mtime": 1792931958.947321,
-    "ast_hash": "6afc5d4ac03160fea0ac161fdc90e5a9",
+    "mtime": 1792934857.730176,
+    "ast_hash": "1a742864e5b19046466510f9bab8972d",
     "semantic_hash": ""
   },
   "src/components/dashboard/dashboard-filters.tsx": {
@@ -550,8 +550,8 @@
     "semantic_hash": ""
   },
   "src/app/trades/page.tsx": {
-    "mtime": 1792435435.5694818,
-    "ast_hash": "03998f248a290e6b2a079f1f4a2d9f6e",
+    "mtime": 1792934878.0764093,
+    "ast_hash": "d52087ebe86109d481fe388f7a9938f6",
     "semantic_hash": ""
   },
   "src/components/modals/create-simulator-session-modal.tsx": {
@@ -712,6 +712,36 @@
   "src/components/brand-logo.tsx": {
     "mtime": 1792930879.5364115,
     "ast_hash": "cfbaa9b1ce6ec0870a362a6515122a73",
+    "semantic_hash": ""
+  },
+  "src/components/accounts/account-detail-drawer.tsx": {
+    "mtime": 1792935133.9016716,
+    "ast_hash": "8111be7e23a4cb0ce3a4ea89cfe73117",
+    "semantic_hash": ""
+  },
+  "src/components/layout/command-palette.tsx": {
+    "mtime": 1792934914.9628255,
+    "ast_hash": "e19dec208071da19cb73d19885136e35",
+    "semantic_hash": ""
+  },
+  "src/components/ui/toast-container.tsx": {
+    "mtime": 1792934824.3797443,
+    "ast_hash": "9e972446c52c7af066cb401512f09320",
+    "semantic_hash": ""
+  },
+  "src/lib/services/csv-export.test.ts": {
+    "mtime": 1792935160.426488,
+    "ast_hash": "cf56afcab7ef0d1d22346c207b7e023d",
+    "semantic_hash": ""
+  },
+  "src/lib/services/csv-export.ts": {
+    "mtime": 1792935103.5634787,
+    "ast_hash": "46fd7303721060058bac637a1bd3717d",
+    "semantic_hash": ""
+  },
+  "src/lib/services/toast.ts": {
+    "mtime": 1792935079.393209,
+    "ast_hash": "f32ef6bbd91fd469d12f3a6435bc2dde",
     "semantic_hash": ""
   }
 }
