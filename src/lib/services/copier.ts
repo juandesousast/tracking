@@ -29,7 +29,7 @@ export async function saveTradovateCredential(credData: {
   account_environment: 'demo' | 'live'
   username_encrypted: string
   password_encrypted?: string | null
-  app_id: string
+  app_id?: string
   access_token_encrypted?: string | null
   is_connected?: boolean
 }): Promise<TradovateCredential> {
@@ -43,7 +43,7 @@ export async function saveTradovateCredential(credData: {
     account_environment: credData.account_environment,
     username_encrypted: credData.username_encrypted,
     password_encrypted: credData.password_encrypted || null,
-    app_id: credData.app_id,
+    app_id: credData.app_id || 'TradovateWeb',
     access_token_encrypted: credData.access_token_encrypted || null,
     is_connected: credData.is_connected ?? true,
   }

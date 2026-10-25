@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
   TradovateCredential,
   CopierRule,
@@ -20,6 +20,8 @@ import {
   executeKillSwitch,
 } from "@/lib/services/copier";
 import { getAccounts, getFirms } from "@/lib/actions/actions";
+import { TradovateClient, TradovateAccount, ConnectionStatus } from "@/lib/tradovate/tradovate-client";
+import { CopyEngine } from "@/lib/tradovate/copy-engine";
 
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -52,6 +54,9 @@ import {
   ArrowRight,
   Key,
   Building2,
+  Wifi,
+  WifiOff,
+  Sparkles,
 } from "lucide-react";
 
 export default function CopierPage() {
@@ -61,6 +66,13 @@ export default function CopierPage() {
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [firms, setFirms] = useState<PropFirm[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Live WebSocket Engine State
+  const [wsStatus, setWsStatus] = useState<ConnectionStatus>("disconnected");
+  const [wsLatency, setWsLatency] = useState<number>(0);
+  const [liveAccounts, setLiveAccounts] = useState<TradovateAccount[]>([]);
+  const clientRef = useRef<TradovateClient | null>(null);
+  const engineRef = useRef<CopyEngine | null>(null);
 
   // Global copier toggle state
   const [isCopierEnabled, setIsCopierEnabled] = useState(true);
@@ -103,13 +115,81 @@ export default function CopierPage() {
     loadAllData();
   }, [loadAllData]);
 
+  // Start WebSocket Replicator Client from User Browser (Residential IP)
+  useEffect(() => {
+    const activeCred = credentialsList.find((c) => c.is_connected && c.access_token_encrypted);
+    if (!activeCred || !activeCred.access_token_encrypted) {
+      if (clientRef.current) {
+        clientRef.current.disconnect();
+        clientRef.current = null;
+        setWsStatus("disconnected");
+      }
+      return;
+    }
+
+    const client = new TradovateClient({
+      token: activeCred.access_token_encrypted,
+      environment: activeCred.account_environment || "demo",
+      onStatusChange: (status, latency) => {
+        setWsStatus(status);
+        setWsLatency(latency);
+      },
+      onAccounts: (accs) => {
+        setLiveAccounts(accs);
+      },
+      onOrder: (order) => {
+        engineRef.current?.handleMasterOrder(order);
+      },
+      onError: (err) => {
+        console.error("Tradovate live error:", err);
+      },
+    });
+
+    const engine = new CopyEngine(
+      client,
+      rules,
+      isCopierEnabled,
+      (res) => {
+        const newLog: CopierLog = {
+          id: `live-${Date.now()}-${Math.random().toString(36).substring(7)}`,
+          user_id: activeCred.user_id,
+          master_order_id: res.slaveAccountId,
+          symbol: res.symbol,
+          action: res.action === "Buy" ? "BUY" : "SELL",
+          quantity: res.copiedQty,
+          slaves_count: 1,
+          latency_ms: res.latencyMs,
+          status: res.success ? "SUCCESS" : "FAILED",
+          created_at: new Date().toISOString(),
+        };
+        setLogs((prev) => [newLog, ...prev]);
+      }
+    );
+
+    clientRef.current = client;
+    engineRef.current = engine;
+    client.connect();
+
+    return () => {
+      client.disconnect();
+      clientRef.current = null;
+    };
+  }, [credentialsList]);
+
+  // Keep engine rules & enabled flag updated
+  useEffect(() => {
+    engineRef.current?.updateRules(rules);
+    engineRef.current?.setEnabled(isCopierEnabled);
+  }, [rules, isCopierEnabled]);
+
   // Handle Save / Update Connection
   const handleSaveConnection = async (data: {
     id?: string;
     connection_name: string;
     username_encrypted: string;
     password_encrypted?: string | null;
-    app_id: string;
+    app_id?: string;
+    access_token_encrypted?: string | null;
     account_environment: "demo" | "live";
   }) => {
     try {
@@ -222,11 +302,20 @@ export default function CopierPage() {
           <div className="flex flex-wrap items-center gap-4">
             {/* Connection Status Summary Badge */}
             <div className="flex items-center gap-2">
-              <span className="text-xs text-slate-500 font-medium">Estado API:</span>
-              {activeConnectionsCount > 0 ? (
-                <Badge className="bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800 gap-1.5 py-1 px-2.5 text-xs">
+              <span className="text-xs text-slate-500 font-medium">Replicador IP Local:</span>
+              {wsStatus === "connected" ? (
+                <Badge className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 gap-1.5 py-1 px-2.5 text-xs font-semibold">
                   <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                  {activeConnectionsCount} {activeConnectionsCount === 1 ? "Conexión Activa" : "Conexiones Activas"}
+                  Conectado en Vivo ({wsLatency} ms)
+                </Badge>
+              ) : wsStatus === "connecting" ? (
+                <Badge className="bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20 gap-1.5 py-1 px-2.5 text-xs font-semibold">
+                  <span className="h-2 w-2 rounded-full bg-amber-500 animate-pulse" />
+                  Conectando WebSocket...
+                </Badge>
+              ) : activeConnectionsCount > 0 ? (
+                <Badge className="bg-blue-50 text-blue-700 dark:bg-blue-950/50 dark:text-blue-400 border-blue-200 dark:border-blue-800 gap-1.5 py-1 px-2.5 text-xs">
+                  {activeConnectionsCount} {activeConnectionsCount === 1 ? "Conexión Guardada" : "Conexiones Guardadas"}
                 </Badge>
               ) : (
                 <Badge className="bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border-slate-200 dark:border-slate-700 gap-1.5 py-1 px-2.5 text-xs">
@@ -323,9 +412,14 @@ export default function CopierPage() {
                           {conn.connection_name}
                         </h3>
                         <div className="flex items-center gap-1.5">
-                          {conn.is_connected ? (
+                          {conn.is_connected && wsStatus === "connected" ? (
+                            <Badge className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 text-[10px] py-0.5 gap-1">
+                              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                              En Vivo ({wsLatency}ms)
+                            </Badge>
+                          ) : conn.is_connected ? (
                             <Badge className="bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800 text-[10px] py-0.5">
-                              Conectado
+                              Guardado
                             </Badge>
                           ) : (
                             <Badge className="bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border-slate-200 dark:border-slate-700 text-[10px] py-0.5">
@@ -338,19 +432,26 @@ export default function CopierPage() {
                         </div>
                       </div>
 
-                      <div className="space-y-1 text-xs text-slate-600 dark:text-slate-400 font-mono">
+                      <div className="space-y-1.5 text-xs text-slate-600 dark:text-slate-400 font-mono">
                         <div className="flex justify-between">
                           <span className="text-slate-400 font-sans">Usuario:</span>
                           <span className="font-semibold text-slate-800 dark:text-slate-200">{conn.username_encrypted}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-slate-400 font-sans">App ID:</span>
-                          <span>{conn.app_id}</span>
+                          <span className="text-slate-400 font-sans">Modo:</span>
+                          <span className="text-slate-800 dark:text-slate-200 font-sans font-medium text-[11px]">
+                            {conn.access_token_encrypted ? "Sesión Web (0 € - IP Local)" : "API Tradovate"}
+                          </span>
                         </div>
-                        {conn.password_encrypted && (
-                          <div className="flex justify-between">
-                            <span className="text-slate-400 font-sans">Password:</span>
-                            <span>••••••••</span>
+                        {liveAccounts.length > 0 && conn.is_connected && (
+                          <div className="pt-2 border-t border-slate-200/60 dark:border-slate-800 mt-2">
+                            <span className="text-[10px] text-slate-400 font-sans block mb-1">Cuentas Sincronizadas:</span>
+                            {liveAccounts.map((acc) => (
+                              <div key={acc.id} className="flex justify-between items-center text-[11px] bg-slate-100 dark:bg-slate-850 p-1.5 rounded-lg mb-1 border border-slate-200/40 dark:border-slate-800">
+                                <span className="font-bold text-slate-900 dark:text-white">{acc.name}</span>
+                                <span className="text-emerald-600 dark:text-emerald-400 font-mono font-bold">${acc.balance?.toLocaleString()}</span>
+                              </div>
+                            ))}
                           </div>
                         )}
                       </div>
