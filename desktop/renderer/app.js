@@ -86,6 +86,14 @@ authForm.addEventListener('submit', async (e) => {
 btnLogout.addEventListener('click', async () => {
   if (confirm('¿Cerrar sesión en EdgeFlow?')) {
     await window.electronAPI.logout();
+    availableAccounts = [];
+    currentConfig.masterAccountId = null;
+    currentConfig.masterAccountName = '';
+    currentConfig.slaves = [];
+    statMasterName.textContent = 'Sin Seleccionar';
+    statSlavesCount.textContent = '0';
+    renderMasterSelector();
+    renderSlavesList();
     authView.style.display = 'flex';
     loginPassword.value = '';
   }
@@ -344,6 +352,8 @@ if (window.electronAPI) {
       wsStatusBadge.className = 'pill-badge pill-green';
       const envLabel = data.environment ? ` [${data.environment.toUpperCase()}]` : '';
       wsStatusText.textContent = `Tradovate: En Vivo${envLabel} (${data.latency || 12} ms)`;
+      btnConnectTradovate.innerHTML = '<span>🟢 Tradovate Conectado</span>';
+      btnConnectTradovate.className = 'btn btn-outline';
       appendLog(new Date().toLocaleTimeString(), `Conexión WebSocket establecida con Tradovate${envLabel}`);
     } else if (data.status === 'connecting') {
       wsStatusBadge.className = 'pill-badge pill-yellow';
@@ -351,6 +361,8 @@ if (window.electronAPI) {
     } else {
       wsStatusBadge.className = 'pill-badge pill-red';
       wsStatusText.textContent = 'Tradovate: Desconectado';
+      btnConnectTradovate.innerHTML = '<span>🔑 Conectar Cuenta Tradovate (0 €)</span>';
+      btnConnectTradovate.className = 'btn btn-primary';
     }
   });
 

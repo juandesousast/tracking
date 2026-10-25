@@ -80,7 +80,7 @@ async function fetchTradovateAccountsRest(token, environment = 'demo') {
             Accept: 'application/json',
           },
         }),
-        fetch(`${baseUrl}/cashBalance/getcashbalances`, {
+        fetch(`${baseUrl}/cashBalance/list`, {
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: 'application/json',
@@ -324,11 +324,18 @@ ipcMain.handle('auth:get-session', async () => {
 
 ipcMain.handle('auth:logout', async () => {
   await copierEngine.logout();
-  saveConfig({ authSession: null, tradovateToken: null });
+  saveConfig({
+    authSession: null,
+    tradovateToken: null,
+    masterAccountId: null,
+    masterAccountName: '',
+    slaves: [],
+  });
   activeToken = null;
   activeAccounts = [];
   if (activeWs) {
     try {
+      activeWs.removeAllListeners();
       activeWs.close();
     } catch (e) {}
     activeWs = null;
