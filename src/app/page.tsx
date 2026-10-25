@@ -380,20 +380,20 @@ function HomePageContent() {
           <Button
             size="sm"
             onClick={() => setIsAddWithdrawalOpen(true)}
-            className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-xs"
+            className="gap-1.5"
           >
-            <ArrowDownToLine className="h-3.5 w-3.5 mr-1.5" />
-            + Registrar Retiro
+            <Plus className="h-4 w-4" />
+            <span>Registrar Retiro</span>
           </Button>
 
           <Button
             size="sm"
             variant="outline"
             onClick={() => setIsAddExpenseOpen(true)}
-            className="rounded-xl border-slate-200 dark:border-slate-800 text-xs font-semibold shadow-xs"
+            className="gap-1.5"
           >
-            <Receipt className="h-3.5 w-3.5 mr-1.5 text-slate-500" />
-            + Registrar Gasto
+            <Receipt className="h-4 w-4" />
+            <span>Registrar Gasto</span>
           </Button>
         </div>
       </div>
@@ -597,9 +597,10 @@ function HomePageContent() {
                   size="sm"
                   variant="outline"
                   onClick={() => setIsAddAccountOpen(true)}
-                  className="mt-3 text-xs rounded-xl"
+                  className="mt-3 gap-1.5"
                 >
-                  + Añadir Cuenta
+                  <Plus className="h-3.5 w-3.5" />
+                  <span>Añadir Cuenta</span>
                 </Button>
               </div>
             ) : (

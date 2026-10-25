@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { BrandLogo } from "@/components/brand-logo";
 import {
   LayoutDashboard,
   Calendar,
@@ -78,18 +79,8 @@ export function Sidebar() {
   return (
     <aside className="hidden md:flex flex-col w-64 border-r border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-[#090a0f] h-screen sticky top-0 z-30 shadow-xs">
       {/* Brand Header */}
-      <div className="flex items-center gap-3 px-6 h-16 shrink-0 border-b border-slate-200/80 dark:border-white/[0.08]">
-        <div className="h-9 w-9 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-xs">
-          <TrendingUp className="h-5 w-5" />
-        </div>
-        <div className="flex flex-col">
-          <span className="font-bold tracking-tight text-sm text-slate-900 dark:text-white">
-            PropFirm Tracker
-          </span>
-          <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium tracking-wide">
-            Suite Institucional Pro
-          </span>
-        </div>
+      <div className="flex items-center px-6 h-16 shrink-0 border-b border-slate-200/80 dark:border-white/[0.08]">
+        <BrandLogo size="md" />
       </div>
 
       {/* Navigation Sections */}

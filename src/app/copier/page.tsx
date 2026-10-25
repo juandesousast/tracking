@@ -280,10 +280,10 @@ export default function CopierPage() {
                 setEditingConnection(null);
                 setIsAddConnectionModalOpen(true);
               }}
-              className="text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white gap-1.5"
+              className="gap-2 font-semibold"
             >
               <Plus className="h-4 w-4" />
-              + Conectar Nueva Empresa
+              <span>Conectar Nueva Empresa</span>
             </Button>
           </CardHeader>
 

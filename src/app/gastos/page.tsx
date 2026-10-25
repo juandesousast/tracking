@@ -200,10 +200,10 @@ export default function GastosPage() {
             <Button
               size="sm"
               onClick={() => setIsAddOpen(true)}
-              className="gap-1.5 font-semibold bg-rose-600 hover:bg-rose-700 text-white shadow-xs"
+              className="gap-2 font-semibold"
             >
               <Plus className="h-4 w-4" />
-              Nuevo Gasto
+              <span>Nuevo Gasto</span>
             </Button>
           </div>
         </div>

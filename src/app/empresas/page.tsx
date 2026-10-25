@@ -266,10 +266,10 @@ export default function EmpresasPage() {
               <Button
                 size="sm"
                 onClick={() => setIsAddFirmOpen(true)}
-                className="h-9 gap-1.5 font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-xs rounded-xl text-xs"
+                className="gap-2 font-semibold"
               >
                 <Plus className="h-4 w-4" />
-                + Nueva Empresa
+                <span>Nueva Empresa</span>
               </Button>
             </div>
           </div>
@@ -501,11 +501,12 @@ export default function EmpresasPage() {
                       </div>
                       <Button
                         variant="ghost"
-                        size="sm"
+                        size="xs"
                         onClick={() => setQuickCreateAccountFirm(firm)}
-                        className="h-7 px-2 text-xs font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400"
+                        className="gap-1 text-xs font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400"
                       >
-                        + Vincular Cuenta
+                        <Plus className="h-3 w-3" />
+                        <span>Vincular Cuenta</span>
                       </Button>
                     </div>
                   </Card>

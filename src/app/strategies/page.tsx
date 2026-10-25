@@ -174,10 +174,10 @@ function StrategiesPageContent() {
         <Button
           onClick={() => setIsNewModalOpen(true)}
           size="sm"
-          className="rounded-xl bg-blue-600 hover:bg-blue-700 text-white shadow-xs self-start sm:self-auto"
+          className="gap-2 font-semibold self-start sm:self-auto"
         >
-          <Plus className="h-4 w-4 mr-1.5" />
-          + Nueva Estrategia
+          <Plus className="h-4 w-4" />
+          <span>Nueva Estrategia</span>
         </Button>
       </div>
 

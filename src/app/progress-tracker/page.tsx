@@ -39,6 +39,7 @@ import {
   Check,
   RefreshCw,
   Wallet,
+  Plus,
 } from "lucide-react";
 import { AddAccountModal } from "@/components/modals/add-account-modal";
 
@@ -238,9 +239,10 @@ function ProgressTrackerContent() {
           <Button
             onClick={() => setIsAddAccountOpen(true)}
             size="sm"
-            className="rounded-xl bg-blue-600 hover:bg-blue-700 text-white shadow-xs"
+            className="gap-2 font-semibold"
           >
-            + Nueva Cuenta
+            <Plus className="h-4 w-4" />
+            <span>Nueva Cuenta</span>
           </Button>
         </div>
       </div>
@@ -359,9 +361,10 @@ function ProgressTrackerContent() {
           <Button
             onClick={() => setIsAddAccountOpen(true)}
             size="sm"
-            className="rounded-xl bg-blue-600 text-white"
+            className="gap-2 font-semibold"
           >
-            + Registrar Cuenta de Evaluación
+            <Plus className="h-4 w-4" />
+            <span>Registrar Cuenta de Evaluación</span>
           </Button>
         </div>
       ) : (
@@ -640,9 +643,10 @@ function ProgressTrackerContent() {
                       onClick={() => handleMarkAsFunded(item)}
                       disabled={isUpdating === item.accountId}
                       size="sm"
-                      className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl shrink-0 shadow-xs"
+                      className="gap-1.5 shrink-0"
                     >
-                      {isUpdating === item.accountId ? "Guardando..." : "Marcar Fondeada"}
+                      <CheckCircle2 className="h-4 w-4" />
+                      <span>{isUpdating === item.accountId ? "Guardando..." : "Marcar Fondeada"}</span>
                     </Button>
                   )}
                 </div>

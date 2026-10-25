@@ -235,10 +235,10 @@ export default function CuentasPage() {
             <Button
               size="sm"
               onClick={() => setIsAddOpen(true)}
-              className="gap-1.5 font-semibold bg-blue-600 hover:bg-blue-700 text-white"
+              className="gap-2 font-semibold"
             >
               <Plus className="h-4 w-4" />
-              Nueva Cuenta
+              <span>Nueva Cuenta</span>
             </Button>
           </div>
         </div>

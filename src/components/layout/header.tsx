@@ -32,6 +32,7 @@ import { navSections } from "./sidebar";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { BrandLogo } from "@/components/brand-logo";
 
 export function Header() {
   const pathname = usePathname();
@@ -92,11 +93,8 @@ export function Header() {
             </SheetTrigger>
             <SheetContent side="left" className="w-72 p-0 bg-white dark:bg-slate-900 border-r border-slate-200/80 dark:border-slate-800">
               <SheetHeader className="p-5 border-b border-slate-200/80 dark:border-slate-800 text-left">
-                <SheetTitle className="flex items-center gap-3">
-                  <div className="h-9 w-9 rounded-xl bg-blue-600 flex items-center justify-center text-white">
-                    <TrendingUp className="h-5 w-5" />
-                  </div>
-                  <span className="font-bold text-base text-slate-900 dark:text-white">PropFirm Tracker</span>
+                <SheetTitle>
+                  <BrandLogo size="md" />
                 </SheetTitle>
               </SheetHeader>
               <div className="px-3 py-4 space-y-6 overflow-y-auto max-h-[calc(100vh-5rem)]">
@@ -132,10 +130,7 @@ export function Header() {
             </SheetContent>
           </Sheet>
 
-          <span className="font-semibold text-base tracking-tight flex items-center gap-2 text-slate-900 dark:text-white">
-            <TrendingUp className="h-4 w-4 text-blue-600" />
-            PropFirm Tracker
-          </span>
+          <BrandLogo size="sm" showSubtitle={false} />
         </div>
 
         {/* Desktop Breadcrumbs */}
