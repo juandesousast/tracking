@@ -163,7 +163,7 @@ export function DesktopDownloadBanner({ className }: { className?: string }) {
               </a>
             ) : (
               <a
-                href="/api/download?os=win"
+                href="/downloads/EdgeFlow-Copier-Setup-1.0.0.exe"
                 download="EdgeFlow-Copier-Setup-1.0.0.exe"
                 className="inline-flex items-center justify-center bg-blue-600 hover:bg-blue-500 text-white font-bold gap-2 text-xs sm:text-sm h-11 px-6 rounded-xl shadow-lg shadow-blue-600/30 flex-1 sm:flex-none cursor-pointer transition-colors"
               >

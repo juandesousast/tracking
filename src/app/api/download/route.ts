@@ -43,14 +43,17 @@ export async function GET(req: NextRequest) {
   if (os === 'win') {
     const publicExe = path.join(process.cwd(), 'public', 'downloads', 'EdgeFlow-Copier-Setup-1.0.0.exe');
     const distExe = path.join(process.cwd(), 'desktop', 'dist', 'EdgeFlow-Copier-Setup-1.0.0.exe');
+    const distExeAlt = path.join(process.cwd(), 'desktop', 'dist', 'EdgeFlow Copier Setup 1.0.0.exe');
 
     if (fs.existsSync(publicExe)) {
       return NextResponse.redirect(new URL('/downloads/EdgeFlow-Copier-Setup-1.0.0.exe', req.url));
     }
 
-    if (fs.existsSync(distExe)) {
-      const stat = fs.statSync(distExe);
-      const nodeStream = fs.createReadStream(distExe);
+    const fallbackDist = fs.existsSync(distExe) ? distExe : fs.existsSync(distExeAlt) ? distExeAlt : null;
+
+    if (fallbackDist) {
+      const stat = fs.statSync(fallbackDist);
+      const nodeStream = fs.createReadStream(fallbackDist);
       const stream = new ReadableStream({
         start(controller) {
           nodeStream.on('data', (chunk) => controller.enqueue(chunk));
