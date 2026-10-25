@@ -11,7 +11,6 @@ import {
   Receipt,
   Calendar,
   Globe,
-  BookOpen,
   Calculator,
   Play,
   Repeat,
@@ -208,15 +207,6 @@ export function CommandPalette() {
         icon: ShieldAlert,
         action: () => navigateTo("/risk-config"),
         keywords: ["riesgo", "stop", "drawdown", "reglas"],
-      },
-      {
-        id: "nav-strategies",
-        category: "Navegación",
-        title: "Playbook de Estrategias",
-        subtitle: "Setups (ICT/SMC, Momentum, Price Action)",
-        icon: BookOpen,
-        action: () => navigateTo("/strategies"),
-        keywords: ["playbook", "estrategias", "setups", "reglas"],
       },
       {
         id: "nav-tools",
