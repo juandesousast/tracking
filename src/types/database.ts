@@ -84,6 +84,7 @@ export interface TradovateCredential {
 export interface CopierRule {
   id: string;
   user_id: string;
+  group_name?: string | null;
   master_account_id: string;
   master_account_name: string;
   slave_account_id: string;
@@ -92,6 +93,30 @@ export interface CopierRule {
   convert_mini_to_micro: boolean;
   max_daily_loss?: number | null;
   is_active: boolean;
+  created_at: string;
+}
+
+export interface CopierSlave {
+  id: string;
+  account_id: string;
+  account_name: string;
+  firm_name?: string;
+  multiplier: number;
+  convert_mini_to_micro: boolean;
+  max_daily_loss?: number | null;
+  is_active: boolean;
+  floating_pnl?: number;
+}
+
+export interface CopierGroup {
+  id: string;
+  user_id?: string;
+  name: string;
+  master_account_id: string;
+  master_account_name: string;
+  master_firm_name?: string;
+  is_active: boolean;
+  slaves: CopierSlave[];
   created_at: string;
 }
 

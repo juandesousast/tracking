@@ -236,6 +236,125 @@ export async function deleteCopierRule(id: string): Promise<boolean> {
   return true
 }
 
+export function groupRulesIntoCopierGroups(rules: CopierRule[]): import('@/types/database').CopierGroup[] {
+  const groupMap = new Map<string, import('@/types/database').CopierGroup>();
+
+  for (const r of rules) {
+    const key = r.master_account_id || r.master_account_name;
+    const groupName = r.group_name || `Grupo: Master ${r.master_account_name}`;
+
+    if (!groupMap.has(key)) {
+      groupMap.set(key, {
+        id: `group-${key}`,
+        user_id: r.user_id,
+        name: groupName,
+        master_account_id: r.master_account_id,
+        master_account_name: r.master_account_name,
+        is_active: r.is_active,
+        slaves: [],
+        created_at: r.created_at,
+      });
+    }
+
+    const group = groupMap.get(key)!;
+    if (r.is_active) {
+      group.is_active = true;
+    }
+
+    group.slaves.push({
+      id: r.id,
+      account_id: r.slave_account_id,
+      account_name: r.slave_account_name,
+      multiplier: Number(r.multiplier) || 1,
+      convert_mini_to_micro: r.convert_mini_to_micro,
+      max_daily_loss: r.max_daily_loss !== null && r.max_daily_loss !== undefined ? Number(r.max_daily_loss) : null,
+      is_active: r.is_active,
+    });
+  }
+
+  return Array.from(groupMap.values());
+}
+
+export async function saveCopierGroup(groupData: {
+  name: string;
+  master_account_id: string;
+  master_account_name: string;
+  is_active?: boolean;
+  slaves: Array<{
+    id?: string;
+    account_id: string;
+    account_name: string;
+    multiplier: number;
+    convert_mini_to_micro: boolean;
+    max_daily_loss?: number | null;
+    is_active?: boolean;
+  }>;
+}): Promise<boolean> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('Usuario no autenticado');
+
+  for (const slave of groupData.slaves) {
+    const payload = {
+      user_id: user.id,
+      group_name: groupData.name,
+      master_account_id: groupData.master_account_id,
+      master_account_name: groupData.master_account_name,
+      slave_account_id: slave.account_id,
+      slave_account_name: slave.account_name,
+      multiplier: slave.multiplier,
+      convert_mini_to_micro: slave.convert_mini_to_micro,
+      max_daily_loss: slave.max_daily_loss || null,
+      is_active: slave.is_active ?? groupData.is_active ?? true,
+    };
+
+    if (slave.id) {
+      await supabase
+        .from('copier_rules')
+        .update(payload)
+        .eq('id', slave.id)
+        .eq('user_id', user.id);
+    } else {
+      await supabase
+        .from('copier_rules')
+        .insert(payload);
+    }
+  }
+
+  revalidatePath('/copier');
+  return true;
+}
+
+export async function toggleCopierGroup(masterAccountId: string, isActive: boolean): Promise<boolean> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('Usuario no autenticado');
+
+  await supabase
+    .from('copier_rules')
+    .update({ is_active: isActive })
+    .eq('master_account_id', masterAccountId)
+    .eq('user_id', user.id);
+
+  revalidatePath('/copier');
+  return true;
+}
+
+export async function deleteCopierGroup(masterAccountId: string): Promise<boolean> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('Usuario no autenticado');
+
+  await supabase
+    .from('copier_rules')
+    .delete()
+    .eq('master_account_id', masterAccountId)
+    .eq('user_id', user.id);
+
+  revalidatePath('/copier');
+  return true;
+}
+
 export async function getCopierLogs(): Promise<CopierLog[]> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
