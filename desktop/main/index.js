@@ -580,23 +580,26 @@ ipcMain.handle('risk:save-config', async (event, riskCfg) => {
   // Sync to Supabase account_risk_configs if user is authenticated
   if (copierEngine.currentUser) {
     try {
-      await copierEngine.supabase.from('account_risk_configs').upsert(
-        {
-          user_id: copierEngine.currentUser.id,
-          account_id: copierEngine.masterAccountId
-            ? String(copierEngine.masterAccountId)
-            : 'default-master',
-          template_id: riskCfg.templateId || null,
-          daily_loss_limit_amount: riskCfg.dailyLossLimit || 1000,
-          daily_loss_limit_action: riskCfg.dailyLossAction || 'liquidate',
-          daily_profit_target_amount: riskCfg.dailyProfitLock || null,
-          max_contracts_limit: riskCfg.maxContracts || 5,
-          auto_eod_close_time: riskCfg.eodCloseTime || null,
-          is_active: riskCfg.isActive !== false,
-          updated_at: new Date().toISOString(),
-        },
-        { onConflict: 'account_id' }
-      );
+      const cloudAccounts = await copierEngine.getCloudAccounts();
+      if (cloudAccounts && cloudAccounts.length > 0) {
+        for (const acc of cloudAccounts) {
+          await copierEngine.supabase.from('account_risk_configs').upsert(
+            {
+              user_id: copierEngine.currentUser.id,
+              account_id: acc.id,
+              template_id: riskCfg.templateId || null,
+              daily_loss_limit_amount: riskCfg.dailyLossLimit || 1000,
+              daily_loss_limit_action: riskCfg.dailyLossAction || 'liquidate',
+              daily_profit_target_amount: riskCfg.dailyProfitLock || null,
+              max_contracts_limit: riskCfg.maxContracts || 5,
+              auto_eod_close_time: riskCfg.eodCloseTime || null,
+              is_active: riskCfg.isActive !== false,
+              updated_at: new Date().toISOString(),
+            },
+            { onConflict: 'account_id' }
+          );
+        }
+      }
     } catch (e) {
       console.warn('[CopierEngine] Non-critical error syncing risk config to cloud:', e.message);
     }

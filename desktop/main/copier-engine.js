@@ -137,7 +137,7 @@ class DesktopCopierEngine {
   async logout() {
     this.currentUser = null;
     try {
-      await this.supabase.auth.signOut();
+      await this.supabase.auth.signOut({ scope: 'local' });
     } catch (e) {}
     this.onLog(new Date().toLocaleTimeString(), 'Sesión de EdgeFlow cerrada.');
     return { success: true };

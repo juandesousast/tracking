@@ -173,7 +173,7 @@ if (riskTemplateSelect) {
 }
 
 if (riskShieldToggle) {
-  riskShieldToggle.addEventListener('change', () => {
+  riskShieldToggle.addEventListener('change', async () => {
     const active = riskShieldToggle.checked;
     if (active) {
       if (riskShieldStatusBadge) riskShieldStatusBadge.className = 'pill-badge pill-green';
@@ -188,6 +188,19 @@ if (riskShieldToggle) {
       if (riskConsoleStatus) {
         riskConsoleStatus.innerHTML =
           '<span style="color: #fbbf24;">[Pausado] Protección de riesgo temporalmente desactivada.</span>';
+      }
+    }
+
+    // Auto-save toggle to local engine and cloud Supabase
+    if (window.electronAPI && typeof window.electronAPI.saveRiskConfig === 'function') {
+      try {
+        const currentCfg = (await window.electronAPI.getRiskConfig()) || {};
+        await window.electronAPI.saveRiskConfig({
+          ...currentCfg,
+          isActive: active,
+        });
+      } catch (err) {
+        console.warn('Error syncing risk shield toggle:', err);
       }
     }
   });

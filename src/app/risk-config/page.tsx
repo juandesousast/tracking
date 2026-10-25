@@ -63,6 +63,8 @@ export default function RiskConfigPage() {
           const initialAcc = accs.find((a) => a.id === lastAccId) || accs[0];
           setSelectedAccountId(initialAcc.id);
           await loadConfig(initialAcc.id);
+        } else {
+          await loadConfig('');
         }
       } catch (e) {
         console.warn('Error loading accounts for risk config:', e);
@@ -72,6 +74,21 @@ export default function RiskConfigPage() {
     }
     init();
   }, []);
+
+  // Listen to window focus and periodic refresh to keep in sync with Desktop Copier
+  useEffect(() => {
+    const handleFocus = () => {
+      loadConfig(selectedAccountId);
+    };
+    window.addEventListener('focus', handleFocus);
+    const interval = setInterval(() => {
+      loadConfig(selectedAccountId);
+    }, 10000);
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+      clearInterval(interval);
+    };
+  }, [selectedAccountId]);
 
   const loadConfig = async (accId: string) => {
     const config = await getAccountRiskConfig(accId);
@@ -130,6 +147,40 @@ export default function RiskConfigPage() {
       }
     }
     toast.success('Plantilla de Referencia Seleccionada', `${template.label} cargada en el pre-configurador.`);
+  };
+
+  const handleToggleRiskShield = async () => {
+    const nextState = !isActive;
+    setIsActive(nextState);
+
+    const targetId = selectedAccountId || (accounts[0] ? accounts[0].id : '');
+    if (targetId) {
+      const config: AccountRiskConfig = {
+        account_id: targetId,
+        template_id: selectedTemplateId || null,
+        daily_loss_limit_amount: dailyLossLimit > 0 ? dailyLossLimit : null,
+        daily_loss_limit_action: dailyLossAction,
+        daily_profit_target_amount:
+          typeof dailyProfitLock === 'number' && dailyProfitLock > 0 ? dailyProfitLock : null,
+        max_contracts_limit: maxContracts > 0 ? maxContracts : null,
+        consistency_percentage_limit: consistencyPercent > 0 ? consistencyPercent : null,
+        auto_eod_close_time: eodCloseTime || null,
+        trailing_drawdown_limit: null,
+        is_active: nextState,
+      };
+
+      try {
+        await saveAccountRiskConfig(config);
+        toast.success(
+          nextState ? 'Escudo Activado' : 'Escudo Pausado',
+          nextState
+            ? 'Reglas de seguridad activadas y sincronizadas con la App de Escritorio.'
+            : 'Supervisión de riesgo pausada y sincronizada con la App de Escritorio.'
+        );
+      } catch (err) {
+        console.warn('Error saving risk shield toggle:', err);
+      }
+    }
   };
 
   const handleSaveToCloud = async (e: React.FormEvent) => {
@@ -221,19 +272,63 @@ export default function RiskConfigPage() {
             </p>
           </div>
 
-          {/* Quick CTA to Desktop */}
+          {/* Quick Status & Toggle Card */}
           <div className="flex flex-col gap-3 w-full sm:w-auto shrink-0">
-            <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800/80 flex flex-col gap-2 min-w-[220px]">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                Vigilancia Local
-              </span>
-              <div className="flex items-center gap-2 text-emerald-400 font-bold text-sm">
-                <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-                Escudo Activo en Desktop
+            <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800/80 flex flex-col gap-2.5 min-w-[240px]">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                  Vigilancia Local
+                </span>
+                <span
+                  className={cn(
+                    'text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full border',
+                    isActive
+                      ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
+                      : 'bg-amber-500/20 text-amber-300 border-amber-500/30'
+                  )}
+                >
+                  {isActive ? 'Activo' : 'Pausado'}
+                </span>
               </div>
-              <span className="text-[11px] text-slate-400">
-                Pestaña <strong>🛡️ Riesgo</strong> en tu app de escritorio.
-              </span>
+
+              <div
+                className={cn(
+                  'flex items-center gap-2 font-bold text-sm',
+                  isActive ? 'text-emerald-400' : 'text-amber-400'
+                )}
+              >
+                <span
+                  className={cn(
+                    'h-2.5 w-2.5 rounded-full',
+                    isActive ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'
+                  )}
+                />
+                {isActive ? 'Escudo Activo en Desktop' : 'Escudo Pausado en Desktop'}
+              </div>
+
+              <div className="flex items-center justify-between pt-1 border-t border-slate-800/80">
+                <span className="text-[11px] text-slate-400">
+                  {isActive ? 'Vigilando en tiempo real' : 'Supervisión en pausa'}
+                </span>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={isActive}
+                  aria-label="Alternar Escudo de Riesgo"
+                  onClick={handleToggleRiskShield}
+                  className={cn(
+                    'relative inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-pointer',
+                    isActive ? 'bg-emerald-500' : 'bg-slate-700'
+                  )}
+                >
+                  <span
+                    className={cn(
+                      'inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform',
+                      isActive ? 'translate-x-4' : 'translate-x-1'
+                    )}
+                  />
+                </button>
+              </div>
             </div>
           </div>
         </div>

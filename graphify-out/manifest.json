@@ -145,8 +145,8 @@
     "semantic_hash": ""
   },
   "src/components/layout/header.tsx": {
-    "mtime": 1792944923.7564585,
-    "ast_hash": "531951f271c453fb4eaccf4ddc78e3d8",
+    "mtime": 1792961749.7959416,
+    "ast_hash": "af8b998190681456d94a36d4457806d5",
     "semantic_hash": ""
   },
   "src/components/layout/mobile-nav.tsx": {
@@ -525,8 +525,8 @@
     "semantic_hash": ""
   },
   "src/app/risk-config/page.tsx": {
-    "mtime": 1792960880.3873441,
-    "ast_hash": "3b830e1f7879e18ee96656e19945ad2b",
+    "mtime": 1792961879.303891,
+    "ast_hash": "8769acdc1132edf611973e70051d9fae",
     "semantic_hash": ""
   },
   "src/app/simulador/[id]/page.tsx": {
@@ -635,8 +635,8 @@
     "semantic_hash": ""
   },
   "src/lib/services/risk-config-actions.ts": {
-    "mtime": 1792605278.5395353,
-    "ast_hash": "e9673f68a0fc2c1e26a8ce538e035c91",
+    "mtime": 1792961818.357499,
+    "ast_hash": "731d68cd85c86a744367f3f81765c6c3",
     "semantic_hash": ""
   },
   "src/lib/services/simulator-engine.test.ts": {
@@ -745,13 +745,13 @@
     "semantic_hash": ""
   },
   "desktop/main/copier-engine.js": {
-    "mtime": 1792961185.4224427,
-    "ast_hash": "8bc0202a4cdcbdeaa86601cf992c6bca",
+    "mtime": 1792961745.2446034,
+    "ast_hash": "ab84e8837dff291ea01c6ad979438954",
     "semantic_hash": ""
   },
   "desktop/main/index.js": {
-    "mtime": 1792961130.3446627,
-    "ast_hash": "ca067441b0b19524e5a514dc035670e7",
+    "mtime": 1792961831.4758854,
+    "ast_hash": "c0b6121275bd7b41a2729eb5b77da11a",
     "semantic_hash": ""
   },
   "desktop/main/preload.js": {
@@ -770,8 +770,8 @@
     "semantic_hash": ""
   },
   "desktop/renderer/app.js": {
-    "mtime": 1792960424.9379861,
-    "ast_hash": "ea720e674e8240abefc7940b9910b7e5",
+    "mtime": 1792961765.860339,
+    "ast_hash": "a77db0d74c75f96a9cdcf3ce82d140c0",
     "semantic_hash": ""
   },
   "src/app/api/copier/sync-trade/route.ts": {

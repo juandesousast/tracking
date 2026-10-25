@@ -15,33 +15,34 @@ export async function getAccountRiskConfig(
 
     if (!user) return null;
 
-    const { data, error } = await supabase
-      .from('account_risk_configs')
-      .select('*')
-      .eq('account_id', accountId)
-      .eq('user_id', user.id)
-      .maybeSingle();
+    // First try exact account_id match
+    if (accountId) {
+      const { data, error } = await supabase
+        .from('account_risk_configs')
+        .select('*')
+        .eq('account_id', accountId)
+        .eq('user_id', user.id)
+        .maybeSingle();
 
-    if (error || !data) {
-      return null;
+      if (!error && data) {
+        return data as AccountRiskConfig;
+      }
     }
 
-    return {
-      ...data,
-      daily_loss_limit_amount: data.daily_loss_limit_amount
-        ? Number(data.daily_loss_limit_amount)
-        : null,
-      daily_profit_target_amount: data.daily_profit_target_amount
-        ? Number(data.daily_profit_target_amount)
-        : null,
-      max_contracts_limit: data.max_contracts_limit ? Number(data.max_contracts_limit) : null,
-      trailing_drawdown_limit: data.trailing_drawdown_limit
-        ? Number(data.trailing_drawdown_limit)
-        : null,
-      consistency_percentage_limit: data.consistency_percentage_limit
-        ? Number(data.consistency_percentage_limit)
-        : null,
-    } as AccountRiskConfig;
+    // Fallback: retrieve the most recently updated config for this user across accounts/desktop
+    const { data: fallbackData } = await supabase
+      .from('account_risk_configs')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('updated_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (fallbackData) {
+      return fallbackData as AccountRiskConfig;
+    }
+
+    return null;
   } catch (err) {
     return null;
   }
