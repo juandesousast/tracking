@@ -13,6 +13,7 @@ import {
 import { Account, AccountRiskConfig } from '@/types/database';
 import { formatCurrency } from '@/lib/formatters';
 import { Button } from '@/components/ui/button';
+import { toast } from '@/lib/services/toast';
 import { cn } from '@/lib/utils';
 import {
   ShieldAlert,
@@ -36,7 +37,15 @@ export default function RiskConfigPage() {
   const [saveSuccess, setSaveSuccess] = useState<boolean>(false);
 
   // Form State
-  const [isActive, setIsActive] = useState<boolean>(true);
+  const [isActive, setIsActive] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const globalPref = localStorage.getItem('global_risk_shield_active');
+      if (globalPref !== null) {
+        return globalPref === 'true';
+      }
+    }
+    return true;
+  });
   const [dailyLossLimit, setDailyLossLimit] = useState<number>(1000);
   const [dailyLossAction, setDailyLossAction] = useState<'liquidate' | 'notify'>('liquidate');
   const [dailyProfitLock, setDailyProfitLock] = useState<number | ''>(1500);
@@ -52,8 +61,11 @@ export default function RiskConfigPage() {
         const accs = await getAccounts();
         setAccounts(accs);
         if (accs.length > 0) {
-          setSelectedAccountId(accs[0].id);
-          await loadConfig(accs[0].id);
+          // If the user previously selected an account, reuse it, else first account
+          const lastAccId = localStorage.getItem('last_selected_risk_account_id');
+          const initialAcc = accs.find((a) => a.id === lastAccId) || accs[0];
+          setSelectedAccountId(initialAcc.id);
+          await loadConfig(initialAcc.id);
         }
       } catch (e) {
         console.warn('Error loading accounts for risk config:', e);
@@ -65,9 +77,11 @@ export default function RiskConfigPage() {
   }, []);
 
   const loadConfig = async (accId: string) => {
+    // 1. Try fetching from database service
     const config = await getAccountRiskConfig(accId);
-    if (config) {
+    if (config && typeof config.is_active === 'boolean') {
       setIsActive(config.is_active);
+      localStorage.setItem('global_risk_shield_active', String(config.is_active));
       setDailyLossLimit(config.daily_loss_limit_amount || 1000);
       setDailyLossAction(config.daily_loss_limit_action || 'liquidate');
       setDailyProfitLock(config.daily_profit_target_amount || '');
@@ -75,29 +89,41 @@ export default function RiskConfigPage() {
       setConsistencyPercent(config.consistency_percentage_limit || 30);
       setEodCloseTime(config.auto_eod_close_time || '22:50');
       setSelectedTemplateId(config.template_id || '');
-    } else {
-      // Default to Topstep/Apex standard
-      const local = localStorage.getItem(`risk_config_${accId}`);
-      if (local) {
-        try {
-          const parsed = JSON.parse(local);
+      return;
+    }
+
+    // 2. Try fetching from account-specific localStorage
+    const local = localStorage.getItem(`risk_config_${accId}`);
+    if (local) {
+      try {
+        const parsed = JSON.parse(local);
+        if (typeof parsed.is_active === 'boolean') {
           setIsActive(parsed.is_active);
-          setDailyLossLimit(parsed.daily_loss_limit_amount || 1000);
-          setDailyLossAction(parsed.daily_loss_limit_action || 'liquidate');
-          setDailyProfitLock(parsed.daily_profit_target_amount || '');
-          setMaxContracts(parsed.max_contracts_limit || 5);
-          setConsistencyPercent(parsed.consistency_percentage_limit || 30);
-          setEodCloseTime(parsed.auto_eod_close_time || '22:50');
-          setSelectedTemplateId(parsed.template_id || '');
-        } catch (e) {
-          // Defaults
+          localStorage.setItem('global_risk_shield_active', String(parsed.is_active));
         }
+        setDailyLossLimit(parsed.daily_loss_limit_amount || 1000);
+        setDailyLossAction(parsed.daily_loss_limit_action || 'liquidate');
+        setDailyProfitLock(parsed.daily_profit_target_amount || '');
+        setMaxContracts(parsed.max_contracts_limit || 5);
+        setConsistencyPercent(parsed.consistency_percentage_limit || 30);
+        setEodCloseTime(parsed.auto_eod_close_time || '22:50');
+        setSelectedTemplateId(parsed.template_id || '');
+        return;
+      } catch (e) {
+        // Defaults
       }
+    }
+
+    // 3. Fallback to global shield preference if no account config exists
+    const globalPref = localStorage.getItem('global_risk_shield_active');
+    if (globalPref !== null) {
+      setIsActive(globalPref === 'true');
     }
   };
 
   const handleAccountChange = async (accId: string) => {
     setSelectedAccountId(accId);
+    localStorage.setItem('last_selected_risk_account_id', accId);
     await loadConfig(accId);
   };
 
@@ -108,6 +134,48 @@ export default function RiskConfigPage() {
     setConsistencyPercent(template.consistencyPercent);
     if (template.eodCloseRequired) {
       setEodCloseTime('22:50');
+    }
+  };
+
+  const handleToggleRiskShield = async () => {
+    const nextState = !isActive;
+    setIsActive(nextState);
+    localStorage.setItem('global_risk_shield_active', String(nextState));
+
+    if (selectedAccountId) {
+      const config: AccountRiskConfig = {
+        account_id: selectedAccountId,
+        template_id: selectedTemplateId || null,
+        daily_loss_limit_amount: dailyLossLimit > 0 ? dailyLossLimit : null,
+        daily_loss_limit_action: dailyLossAction,
+        daily_profit_target_amount:
+          typeof dailyProfitLock === 'number' && dailyProfitLock > 0 ? dailyProfitLock : null,
+        max_contracts_limit: maxContracts > 0 ? maxContracts : null,
+        consistency_percentage_limit: consistencyPercent > 0 ? consistencyPercent : null,
+        auto_eod_close_time: eodCloseTime || null,
+        trailing_drawdown_limit: null,
+        is_active: nextState,
+      };
+
+      localStorage.setItem(`risk_config_${selectedAccountId}`, JSON.stringify(config));
+
+      try {
+        await saveAccountRiskConfig(config);
+      } catch (err) {
+        console.warn('Risk shield saved locally:', err);
+      }
+    }
+
+    if (nextState) {
+      toast.success(
+        'Escudo de Riesgo Activado',
+        'Límites y reglas de seguridad activos y vigilando.'
+      );
+    } else {
+      toast.info(
+        'Escudo de Riesgo Desactivado',
+        'Has pausado la supervisión automática de límites.'
+      );
     }
   };
 
@@ -131,14 +199,17 @@ export default function RiskConfigPage() {
       is_active: isActive,
     };
 
+    localStorage.setItem(`risk_config_${selectedAccountId}`, JSON.stringify(config));
+    localStorage.setItem('global_risk_shield_active', String(isActive));
+
     try {
       await saveAccountRiskConfig(config);
-      localStorage.setItem(`risk_config_${selectedAccountId}`, JSON.stringify(config));
+      toast.success('Configuración Guardada', 'Reglas de riesgo aplicadas correctamente.');
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
     } catch (err) {
       console.warn('Saved locally:', err);
-      localStorage.setItem(`risk_config_${selectedAccountId}`, JSON.stringify(config));
+      toast.success('Guardado en Dispositivo', 'Configuración de riesgo almacenada en memoria local.');
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
     } finally {
@@ -181,7 +252,7 @@ export default function RiskConfigPage() {
             role="switch"
             aria-checked={isActive}
             aria-label="Toggle escudo de riesgo"
-            onClick={() => setIsActive(!isActive)}
+            onClick={handleToggleRiskShield}
             className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 ${
               isActive ? 'bg-emerald-500' : 'bg-slate-300 dark:bg-slate-700'
             }`}
