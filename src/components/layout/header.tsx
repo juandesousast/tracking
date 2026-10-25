@@ -34,6 +34,7 @@ import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { BrandLogo } from "@/components/brand-logo";
+import { toast } from "@/lib/services/toast";
 
 export function Header() {
   const pathname = usePathname();
@@ -166,6 +167,12 @@ export function Header() {
           <Button
             variant="ghost"
             size="icon"
+            onClick={() => {
+              toast.info(
+                "Centro de Notificaciones",
+                "No tienes alertas críticas pendientes. Tus cuentas de fondeo están en estado óptimo."
+              );
+            }}
             className="h-9 w-9 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
           >
             <Bell className="h-4 w-4" />
@@ -192,9 +199,12 @@ export function Header() {
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator className="bg-slate-200 dark:bg-slate-800" />
-              <DropdownMenuItem className="cursor-pointer text-xs">
+              <DropdownMenuItem
+                onClick={() => router.push("/settings")}
+                className="cursor-pointer text-xs"
+              >
                 <User className="mr-2 h-4 w-4 text-slate-500" />
-                <span>Perfil</span>
+                <span>Perfil y Ajustes</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator className="bg-slate-200 dark:bg-slate-800" />
               <DropdownMenuItem

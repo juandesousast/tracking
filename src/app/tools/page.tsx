@@ -70,6 +70,7 @@ export default function TradingToolsPage() {
   };
 
   // --- TAB 3: Drawdown Buffer State ---
+  const [ddInitialBalance, setDdInitialBalance] = useState(50000);
   const [ddCurrentBalance, setDdCurrentBalance] = useState(51200);
   const [ddHighWaterMark, setDdHighWaterMark] = useState(52500);
   const [ddLimit, setDdLimit] = useState(2500);
@@ -81,8 +82,10 @@ export default function TradingToolsPage() {
       highWaterMark: ddHighWaterMark,
       maxDrawdownLimit: ddLimit,
       isTrailing,
+      initialBalance: ddInitialBalance,
+      lockAtInitialBalance: true,
     });
-  }, [ddCurrentBalance, ddHighWaterMark, ddLimit, isTrailing]);
+  }, [ddInitialBalance, ddCurrentBalance, ddHighWaterMark, ddLimit, isTrailing]);
 
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
@@ -278,11 +281,28 @@ export default function TradingToolsPage() {
               </div>
             </div>
 
-            {positionResult.instrument.microSymbol && (
+            {positionResult.isRiskExceeded && (
+              <div className="p-3.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/40 text-xs text-rose-700 dark:text-rose-300 flex items-start gap-2.5">
+                <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5 text-rose-600 dark:text-rose-400" />
+                <div>
+                  <p className="font-bold">Riesgo excedido para 1 contrato</p>
+                  <p className="mt-0.5 text-rose-600/90 dark:text-rose-300/90">
+                    El riesgo por contrato ({formatCurrency(positionResult.perContractRisk, 'USD')}) supera tu objetivo ({formatCurrency(positionResult.riskDollars, 'USD')}).
+                  </p>
+                  {positionResult.instrument.microSymbol && positionResult.microContracts !== undefined && positionResult.microContracts > 0 && (
+                    <p className="mt-1 font-semibold text-rose-700 dark:text-rose-200">
+                      Recomendación: opera en {positionResult.instrument.microSymbol} con {positionResult.microContracts} {positionResult.microContracts === 1 ? 'contrato' : 'contratos'}.
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {!positionResult.isRiskExceeded && positionResult.instrument.microSymbol && (
               <div className="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/40 text-xs text-amber-800 dark:text-amber-300 flex items-start gap-2.5">
                 <HelpCircle className="h-4 w-4 shrink-0 mt-0.5" />
                 <span>
-                  <strong>Tip de Fondeo:</strong> Para mayor precisión de riesgo, puedes operar en Micro (<strong>{positionResult.instrument.microSymbol}</strong>) utilizando <strong>{positionResult.contracts * 10}</strong> contratos.
+                  <strong>Tip de Fondeo:</strong> Para mayor precisión de riesgo, puedes operar en Micro (<strong>{positionResult.instrument.microSymbol}</strong>) utilizando <strong>{positionResult.microContracts || positionResult.contracts * 10}</strong> contratos.
                 </span>
               </div>
             )}
@@ -456,10 +476,22 @@ export default function TradingToolsPage() {
               <span>Configuración del Drawdown de la Firma</span>
             </h2>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
                 <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-                  Balance Actual de la Cuenta ($)
+                  Balance Inicial ($)
+                </label>
+                <input
+                  type="number"
+                  value={ddInitialBalance}
+                  onChange={(e) => setDdInitialBalance(Number(e.target.value))}
+                  className="w-full px-3.5 py-2.5 text-sm font-mono rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                  Balance Actual ($)
                 </label>
                 <input
                   type="number"
@@ -471,7 +503,7 @@ export default function TradingToolsPage() {
 
               <div>
                 <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-                  Pico Máximo Alcanzado (High Water Mark) ($)
+                  Pico (High Water Mark) ($)
                 </label>
                 <input
                   type="number"
@@ -591,6 +623,15 @@ export default function TradingToolsPage() {
                 </span>
               </div>
             </div>
+
+            {drawdownResult.isLockedAtInitial && (
+              <div className="p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/40 text-xs text-emerald-800 dark:text-emerald-300 flex items-start gap-2.5">
+                <CheckCircle2 className="h-4 w-4 shrink-0 mt-0.5 text-emerald-600 dark:text-emerald-400" />
+                <span>
+                  <strong>Umbral Bloqueado:</strong> El trailing drawdown alcanzó el balance inicial ({formatCurrency(ddInitialBalance, 'USD')}) y no subirá más. Todo beneficio por encima queda protegido contra quiebre de drawdown trailing.
+                </span>
+              </div>
+            )}
           </div>
         </div>
       )}

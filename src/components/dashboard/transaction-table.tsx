@@ -3,6 +3,8 @@
 import { useState, useMemo } from "react";
 import { Expense, Withdrawal, PropFirm, Account } from "@/types/database";
 import { formatCurrency } from "@/lib/formatters";
+import { exportTransactionsToCSV } from "@/lib/services/csv-export";
+import { toast } from "@/lib/services/toast";
 import {
   Table,
   TableBody,
@@ -37,6 +39,7 @@ import {
   MoreHorizontal,
   Pencil,
   Trash2,
+  Download,
 } from "lucide-react";
 
 export interface TransactionTableProps {
@@ -181,7 +184,7 @@ export function TransactionTable({
         <div className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800">
           <div>
             <h3 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">
-              Recent Transactions
+              Transacciones Recientes
             </h3>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
               Registro unificado con buscador y filtros de gastos y retiros.
@@ -249,6 +252,33 @@ export function TransactionTable({
                 </option>
               ))}
             </select>
+
+            {/* Quick Export Button */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                toast.info("Descarga iniciada", "Exportando transacciones del dashboard a CSV");
+                exportTransactionsToCSV(
+                  filteredTransactions.map((tx) => ({
+                    id: tx.id,
+                    type: tx.type,
+                    date: tx.date,
+                    firmName: tx.firmName,
+                    accountLabel: tx.accountInfo,
+                    category: tx.categoryOrStatus,
+                    netAmount: tx.amount,
+                    status: tx.categoryOrStatus,
+                    notes: tx.description || "",
+                  }))
+                );
+              }}
+              className="h-8 px-2.5 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 shadow-2xs gap-1.5 cursor-pointer"
+              title="Descargar transacciones filtradas a CSV"
+            >
+              <Download className="h-3.5 w-3.5 text-slate-500" />
+              <span className="hidden sm:inline">Exportar</span>
+            </Button>
           </div>
         </div>
 

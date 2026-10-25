@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { TradovateCredential } from "@/types/database";
-import { Key, Loader2 } from "lucide-react";
+import { Key, Loader2, AlertCircle } from "lucide-react";
 
 interface AddTradovateConnectionModalProps {
   open: boolean;
@@ -41,8 +41,10 @@ export function AddTradovateConnectionModal({
   const [appId, setAppId] = useState("");
   const [environment, setEnvironment] = useState<"demo" | "live">("demo");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    setError(null);
     if (connection) {
       setConnectionName(connection.connection_name || "");
       setUsername(connection.username_encrypted || "");
@@ -60,21 +62,27 @@ export function AddTradovateConnectionModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!connectionName || !username || !appId) return;
+    setError(null);
+
+    if (!connectionName.trim() || !username.trim() || !appId.trim()) {
+      setError("Por favor completa los campos requeridos: Nombre de Conexión, Usuario y App ID.");
+      return;
+    }
 
     setIsSubmitting(true);
     try {
       await onSubmit({
         id: connection?.id,
-        connection_name: connectionName,
-        username_encrypted: username,
+        connection_name: connectionName.trim(),
+        username_encrypted: username.trim(),
         password_encrypted: password || null,
-        app_id: appId,
+        app_id: appId.trim(),
         account_environment: environment,
       });
       onOpenChange(false);
     } catch (err) {
       console.error("Error saving tradovate connection:", err);
+      setError("Ocurrió un error al guardar la conexión Tradovate.");
     } finally {
       setIsSubmitting(false);
     }
@@ -100,6 +108,12 @@ export function AddTradovateConnectionModal({
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4 py-2">
+          {error && (
+            <div className="flex items-center gap-2 p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 text-xs text-rose-700 dark:text-rose-300">
+              <AlertCircle className="h-4 w-4 shrink-0 text-rose-600 dark:text-rose-400" />
+              <span>{error}</span>
+            </div>
+          )}
           {/* Nombre Personalizado */}
           <div className="space-y-1.5">
             <Label htmlFor="conn-name" className="text-xs font-semibold">

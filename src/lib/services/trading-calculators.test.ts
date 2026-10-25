@@ -56,6 +56,39 @@ describe('Trading Calculators', () => {
       expect(res.riskDollars).toBe(500);
       expect(res.contracts).toBe(5);
     });
+
+    it('handles zero distance between entry and stop gracefully', () => {
+      const res = calculatePositionSize({
+        accountBalance: 50000,
+        riskAmount: 200,
+        entryPrice: 18000,
+        stopLossPrice: 18000,
+        symbol: 'MNQ',
+      });
+
+      expect(res.stopDistancePoints).toBe(0);
+      expect(res.contracts).toBe(0);
+      expect(res.actualRiskDollars).toBe(0);
+      expect(res.isRiskExceeded).toBe(false);
+    });
+
+    it('identifies when risk is exceeded for even 1 contract and suggests micro contracts', () => {
+      // NQ: 10 points = 40 ticks = $200 risk per contract.
+      // Target risk = $100 => 1 contract of NQ is $200 (exceeds $100)
+      const res = calculatePositionSize({
+        accountBalance: 50000,
+        riskAmount: 100,
+        entryPrice: 20000,
+        stopLossPrice: 19990,
+        symbol: 'NQ',
+      });
+
+      expect(res.perContractRisk).toBe(200);
+      expect(res.contracts).toBe(0);
+      expect(res.isRiskExceeded).toBe(true);
+      // For MNQ (Micro), 10 pts = $20 per contract. $100 / $20 = 5 contracts
+      expect(res.microContracts).toBe(5);
+    });
   });
 
   describe('calculateConsistencyRule', () => {
@@ -77,6 +110,16 @@ describe('Trading Calculators', () => {
       expect(res.isEligible).toBe(false);
       expect(res.neededTotalProfit).toBe(4000);
       expect(res.neededAdditionalProfit).toBe(2000);
+    });
+
+    it('marks accounts with zero or negative total profit as ineligible', () => {
+      const zeroProfitRes = calculateConsistencyRule([0, 0, 0], 30);
+      expect(zeroProfitRes.totalProfit).toBe(0);
+      expect(zeroProfitRes.isEligible).toBe(false);
+
+      const negativeProfitRes = calculateConsistencyRule([-200, -500], 30);
+      expect(negativeProfitRes.totalProfit).toBe(0);
+      expect(negativeProfitRes.isEligible).toBe(false);
     });
   });
 
@@ -107,6 +150,40 @@ describe('Trading Calculators', () => {
 
       expect(res.isBreached).toBe(true);
       expect(res.remainingBuffer).toBeLessThan(0);
+    });
+
+    it('locks trailing liquidation threshold at initialBalance when peak exceeds buffer threshold', () => {
+      // 50k account, 2500 max DD.
+      // High water mark reaches 54000. Trailing threshold would normally be 54000 - 2500 = 51500.
+      // But with lockAtInitialBalance (default with initialBalance: 50000), it locks at 50000!
+      const res = calculateDrawdownBuffer({
+        currentBalance: 53000,
+        highWaterMark: 54000,
+        maxDrawdownLimit: 2500,
+        isTrailing: true,
+        initialBalance: 50000,
+        lockAtInitialBalance: true,
+      });
+
+      expect(res.isLockedAtInitial).toBe(true);
+      expect(res.liquidationThreshold).toBe(50000);
+      expect(res.remainingBuffer).toBe(3000); // 53000 - 50000
+    });
+
+    it('locks at initialBalance + lockBufferDollars (e.g. Apex +$100)', () => {
+      const res = calculateDrawdownBuffer({
+        currentBalance: 53500,
+        highWaterMark: 54000,
+        maxDrawdownLimit: 2500,
+        isTrailing: true,
+        initialBalance: 50000,
+        lockAtInitialBalance: true,
+        lockBufferDollars: 100,
+      });
+
+      expect(res.isLockedAtInitial).toBe(true);
+      expect(res.liquidationThreshold).toBe(50100);
+      expect(res.remainingBuffer).toBe(3400); // 53500 - 50100
     });
   });
 });

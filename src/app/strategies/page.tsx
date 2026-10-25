@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, Suspense } from "react";
+import { useState, useEffect, useMemo, Suspense } from "react";
 import {
   DEFAULT_PLAYBOOK_STRATEGIES,
   StrategySetup,
@@ -27,6 +27,7 @@ import {
   Sparkles,
   BarChart2,
   ListChecks,
+  Trash2,
 } from "lucide-react";
 import { ResponsiveModal } from "@/components/modals/responsive-modal";
 
@@ -36,6 +37,21 @@ function StrategiesPageContent() {
   );
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [search, setSearch] = useState("");
+
+  // Load custom strategies from localStorage on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("playbook_user_strategies");
+      if (saved) {
+        const parsed: StrategySetup[] = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setStrategies([...parsed, ...DEFAULT_PLAYBOOK_STRATEGIES]);
+        }
+      }
+    } catch (e) {
+      console.error("Error loading playbook strategies from localStorage", e);
+    }
+  }, []);
 
   // Modal State
   const [isNewModalOpen, setIsNewModalOpen] = useState(false);
@@ -87,12 +103,35 @@ function StrategiesPageContent() {
       worstTrade: 0,
     };
 
-    setStrategies((prev) => [newStrat, ...prev]);
+    setStrategies((prev) => {
+      const updated = [newStrat, ...prev];
+      try {
+        const userStrategies = updated.filter((s) => s.id.startsWith("strat-"));
+        localStorage.setItem("playbook_user_strategies", JSON.stringify(userStrategies));
+      } catch (e) {
+        console.error("Error saving user strategies", e);
+      }
+      return updated;
+    });
+
     setIsNewModalOpen(false);
     // Reset form
     setNewName("");
     setNewDescription("");
     setNewRules([]);
+  };
+
+  const handleDeleteStrategy = (strategyId: string) => {
+    setStrategies((prev) => {
+      const updated = prev.filter((s) => s.id !== strategyId);
+      try {
+        const userStrategies = updated.filter((s) => s.id.startsWith("strat-"));
+        localStorage.setItem("playbook_user_strategies", JSON.stringify(userStrategies));
+      } catch (e) {
+        console.error("Error saving user strategies", e);
+      }
+      return updated;
+    });
   };
 
   // Filtered strategies
@@ -314,14 +353,27 @@ function StrategiesPageContent() {
                     </div>
                   </div>
 
-                  <span
-                    className={`font-bold text-base tabular-nums ${
-                      strat.totalPnL >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600"
-                    }`}
-                  >
-                    {strat.totalPnL >= 0 ? "+" : ""}
-                    {formatCurrency(strat.totalPnL)}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`font-bold text-base tabular-nums ${
+                        strat.totalPnL >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600"
+                      }`}
+                    >
+                      {strat.totalPnL >= 0 ? "+" : ""}
+                      {formatCurrency(strat.totalPnL)}
+                    </span>
+                    {strat.id.startsWith("strat-") && (
+                      <Button
+                        variant="ghost"
+                        size="icon-xs"
+                        onClick={() => handleDeleteStrategy(strat.id)}
+                        className="text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40"
+                        title="Eliminar setup personalizado"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
+                    )}
+                  </div>
                 </div>
 
                 {/* Description */}

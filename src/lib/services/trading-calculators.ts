@@ -127,6 +127,8 @@ export interface PositionSizeResult {
   stopDistanceTicks: number;
   perContractRisk: number;
   instrument: InstrumentSpec;
+  isRiskExceeded?: boolean;
+  microContracts?: number;
 }
 
 export function calculatePositionSize(params: {
@@ -149,12 +151,57 @@ export function calculatePositionSize(params: {
       : 100;
 
   const points = Math.abs(params.entryPrice - params.stopLossPrice);
+  if (points <= 0) {
+    return {
+      contracts: 0,
+      exactContracts: 0,
+      riskDollars: Number(targetRisk.toFixed(2)),
+      actualRiskDollars: 0,
+      stopDistancePoints: 0,
+      stopDistanceTicks: 0,
+      perContractRisk: 0,
+      instrument: spec,
+      isRiskExceeded: false,
+      microContracts: 0,
+    };
+  }
+
   const ticks = Math.round(points / spec.tickSize);
   const perContractRisk = ticks * spec.tickValue;
 
-  const exactContracts = perContractRisk > 0 ? targetRisk / perContractRisk : 0;
-  const contracts = Math.max(1, Math.floor(exactContracts));
+  if (perContractRisk <= 0) {
+    return {
+      contracts: 0,
+      exactContracts: 0,
+      riskDollars: Number(targetRisk.toFixed(2)),
+      actualRiskDollars: 0,
+      stopDistancePoints: Number(points.toFixed(spec.tickSize < 0.1 ? 4 : 2)),
+      stopDistanceTicks: ticks,
+      perContractRisk: 0,
+      instrument: spec,
+      isRiskExceeded: false,
+      microContracts: 0,
+    };
+  }
+
+  const exactContracts = targetRisk / perContractRisk;
+  const isRiskExceeded = exactContracts < 1;
+  const contracts = isRiskExceeded ? 0 : Math.floor(exactContracts);
   const actualRisk = contracts * perContractRisk;
+
+  // Calculate micro equivalent contracts if available
+  let microContracts: number | undefined;
+  if (spec.microSymbol) {
+    const microSpec = INSTRUMENT_SPECS.find((s) => s.symbol.toUpperCase() === spec.microSymbol?.toUpperCase());
+    if (microSpec) {
+      const microRiskPerContract = ticks * microSpec.tickValue;
+      if (microRiskPerContract > 0) {
+        microContracts = Math.floor(targetRisk / microRiskPerContract);
+      }
+    } else {
+      microContracts = Math.floor(exactContracts * 10);
+    }
+  }
 
   return {
     contracts,
@@ -165,6 +212,8 @@ export function calculatePositionSize(params: {
     stopDistanceTicks: ticks,
     perContractRisk: Number(perContractRisk.toFixed(2)),
     instrument: spec,
+    isRiskExceeded,
+    microContracts,
   };
 }
 
@@ -173,7 +222,8 @@ export interface ConsistencyResult {
   bestDayProfit: number;
   bestDayPercent: number;
   rulePercent: number;
-  isEligible: number | boolean;
+  isEligible: boolean;
+  reason?: string;
   excessProfit: number;
   neededTotalProfit: number;
   neededAdditionalProfit: number;
@@ -195,12 +245,18 @@ export function calculateConsistencyRule(
   const bestDayPercent =
     totalProfit > 0 ? Number(((bestDayProfit / totalProfit) * 100).toFixed(1)) : 0;
 
-  const isEligible = bestDayPercent <= rulePercent;
+  const isEligible = totalProfit > 0 && bestDayPercent <= rulePercent;
+  const reason =
+    totalProfit <= 0
+      ? 'Se requiere beneficio neto positivo para evaluar consistencia'
+      : isEligible
+      ? 'Cumple con el límite de consistencia'
+      : `El mejor día supera el límite permitido (${rulePercent}%)`;
 
   // If best day > rulePercent, total profit needed for best day to equal rulePercent:
   // bestDayProfit / (totalProfit + X) = rulePercent / 100 => totalNeeded = bestDayProfit / (rulePercent / 100)
   const neededTotalProfit =
-    rulePercent > 0 ? Math.round(bestDayProfit / (rulePercent / 100)) : 0;
+    rulePercent > 0 && bestDayProfit > 0 ? Math.round(bestDayProfit / (rulePercent / 100)) : 0;
 
   const neededAdditionalProfit = Math.max(0, neededTotalProfit - totalProfit);
   const excessProfit = Math.max(0, bestDayProfit - (totalProfit * rulePercent) / 100);
@@ -218,6 +274,7 @@ export function calculateConsistencyRule(
     bestDayPercent,
     rulePercent,
     isEligible,
+    reason,
     excessProfit: Number(excessProfit.toFixed(2)),
     neededTotalProfit,
     neededAdditionalProfit: Number(neededAdditionalProfit.toFixed(2)),
@@ -233,6 +290,7 @@ export interface DrawdownBufferResult {
   remainingBuffer: number;
   bufferPercent: number;
   isBreached: boolean;
+  isLockedAtInitial?: boolean;
 }
 
 export function calculateDrawdownBuffer(params: {
@@ -240,11 +298,23 @@ export function calculateDrawdownBuffer(params: {
   highWaterMark: number;
   maxDrawdownLimit: number; // e.g. 2500 for a 50k account
   isTrailing?: boolean;
+  initialBalance?: number;
+  lockAtInitialBalance?: boolean;
+  lockBufferDollars?: number;
 }): DrawdownBufferResult {
   const peak = Math.max(params.currentBalance, params.highWaterMark);
-  const liquidationThreshold = params.isTrailing
+  let liquidationThreshold = params.isTrailing
     ? peak - params.maxDrawdownLimit
     : params.highWaterMark - params.maxDrawdownLimit;
+
+  let isLockedAtInitial = false;
+  if (params.isTrailing && params.initialBalance !== undefined && params.lockAtInitialBalance !== false) {
+    const lockLevel = params.initialBalance + (params.lockBufferDollars ?? 0);
+    if (liquidationThreshold >= lockLevel) {
+      liquidationThreshold = lockLevel;
+      isLockedAtInitial = true;
+    }
+  }
 
   const remainingBuffer = params.currentBalance - liquidationThreshold;
   const bufferPercent =
@@ -260,5 +330,6 @@ export function calculateDrawdownBuffer(params: {
     remainingBuffer: Number(remainingBuffer.toFixed(2)),
     bufferPercent,
     isBreached: remainingBuffer <= 0,
+    isLockedAtInitial,
   };
 }

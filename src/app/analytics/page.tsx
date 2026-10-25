@@ -355,7 +355,7 @@ function AnalyticsPageContent() {
                   <XAxis dataKey="date" tick={{ fontSize: 10, fill: "#94a3b8" }} />
                   <YAxis
                     tick={{ fontSize: 10, fill: "#94a3b8" }}
-                    tickFormatter={(val) => `${val >= 0 ? "+" : ""}${val}€`}
+                    tickFormatter={(val) => `${val >= 0 ? "+" : ""}$${Math.abs(val)}`}
                   />
                   <Tooltip
                     formatter={(val: any) => [formatCurrency(Number(val)), "PnL Diario"]}
