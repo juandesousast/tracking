@@ -12,6 +12,7 @@ const { DesktopCopierEngine } = require('./copier-engine');
 let mainWindow = null;
 let activeWs = null;
 let activeToken = null;
+let activeEnvironment = 'demo';
 let activeAccounts = [];
 let reqId = 1;
 
@@ -63,6 +64,62 @@ function sendToRenderer(channel, data) {
   }
 }
 
+async function fetchTradovateAccountsRest(token, environment = 'demo') {
+  const baseUrl =
+    environment === 'live'
+      ? 'https://live.tradovateapi.com/v1'
+      : 'https://demo.tradovateapi.com/v1';
+
+  try {
+    console.log(`[TradovateREST] Requesting accounts from ${baseUrl}...`);
+    const [accRes, cashRes] = await Promise.all([
+      fetch(`${baseUrl}/account/list`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json',
+        },
+      }),
+      fetch(`${baseUrl}/cashBalance/getcashbalances`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json',
+        },
+      }),
+    ]);
+
+    if (accRes.ok) {
+      const accounts = await accRes.json();
+      let cashBalances = [];
+      if (cashRes.ok) {
+        try {
+          cashBalances = await cashRes.json();
+        } catch (e) {}
+      }
+
+      console.log(`[TradovateREST] Successfully fetched ${accounts.length} accounts!`);
+      return accounts.map((a) => {
+        const cash = (cashBalances || []).find((c) => c.accountId === a.id);
+        return {
+          id: a.id,
+          name: a.name,
+          accountType: a.accountType || 'Customer',
+          balance: cash?.amount ?? 0,
+        };
+      });
+    } else {
+      console.warn(`[TradovateREST] /account/list returned HTTP ${accRes.status}`);
+      // If 401 on demo, maybe token was for live
+      if (accRes.status === 401 && environment === 'demo') {
+        console.log('[TradovateREST] Testing live endpoint as fallback...');
+        return fetchTradovateAccountsRest(token, 'live');
+      }
+    }
+  } catch (err) {
+    console.error('[TradovateREST] Network error:', err.message);
+  }
+  return null;
+}
+
 function sendTradovateWsMessage(endpoint, body) {
   if (!activeWs || activeWs.readyState !== WebSocket.OPEN) {
     console.warn('[DesktopWS] Cannot send message, WebSocket is not open');
@@ -84,11 +141,11 @@ const copierEngine = new DesktopCopierEngine({
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 1060,
-    height: 780,
-    minWidth: 900,
-    minHeight: 640,
-    title: 'EdgeFlow Futures Copier Pro',
+    width: 1100,
+    height: 800,
+    minWidth: 920,
+    minHeight: 660,
+    title: 'PropFirm Tracker Copier Pro',
     backgroundColor: '#090d16',
     titleBarStyle: 'hiddenInset',
     webPreferences: {
@@ -110,8 +167,12 @@ function createWindow() {
 }
 
 function connectTradovateWs(token, environment = 'demo') {
+  activeToken = token;
+  activeEnvironment = environment;
+
   if (activeWs) {
     try {
+      activeWs.removeAllListeners();
       activeWs.close();
     } catch (e) {}
     activeWs = null;
@@ -152,22 +213,30 @@ function connectTradovateWs(token, environment = 'demo') {
         for (const msg of msgs) {
           if (msg.s === 200 && msg.i === 1) {
             console.log('[DesktopWS] Authorized successfully!');
-            sendToRenderer('ws:status', { status: 'connected', latency: 12 });
-            // Request user sync
+            sendToRenderer('ws:status', { status: 'connected', latency: 12, environment });
+
+            // Request user sync and accounts list
             const syncId = reqId++;
             activeWs.send(`user/syncrequest\n${syncId}\n\n{}`);
+
+            const accListId = reqId++;
+            activeWs.send(`account/list\n${accListId}\n\n{}`);
           }
 
-          if (msg.d && msg.d.accounts) {
-            activeAccounts = msg.d.accounts.map((a) => {
-              const cash = (msg.d.cashBalances || []).find((c) => c.accountId === a.id);
-              return {
-                id: a.id,
-                name: a.name,
-                balance: cash?.amount ?? 0,
-              };
-            });
-            sendToRenderer('tradovate:accounts', activeAccounts);
+          if (msg.d && (msg.d.accounts || Array.isArray(msg.d))) {
+            const rawAccounts = msg.d.accounts || (Array.isArray(msg.d) ? msg.d : []);
+            if (rawAccounts.length > 0) {
+              const balances = msg.d.cashBalances || [];
+              activeAccounts = rawAccounts.map((a) => {
+                const cash = balances.find((c) => c.accountId === a.id);
+                return {
+                  id: a.id,
+                  name: a.name,
+                  balance: cash?.amount ?? 0,
+                };
+              });
+              sendToRenderer('tradovate:accounts', activeAccounts);
+            }
           }
 
           // Order events
@@ -238,20 +307,41 @@ ipcMain.handle('copier:set-paused', (event, isPaused) => {
 // IPC Handlers - Tradovate
 ipcMain.handle('tradovate:open-login', () => {
   return new Promise((resolve) => {
-    openTradovateLoginWindow(mainWindow, (token) => {
+    openTradovateLoginWindow(mainWindow, async ({ token, environment }) => {
       activeToken = token;
-      const cfg = loadStoredConfig();
-      saveConfig({ tradovateToken: token });
-      connectTradovateWs(token, cfg.environment || 'demo');
-      resolve({ success: true, token });
+      activeEnvironment = environment || 'demo';
+      saveConfig({ tradovateToken: token, environment: activeEnvironment });
+
+      // 1. Immediately fetch accounts via REST API for instant reliable loading
+      const restAccounts = await fetchTradovateAccountsRest(token, activeEnvironment);
+      if (restAccounts && restAccounts.length > 0) {
+        activeAccounts = restAccounts;
+        sendToRenderer('tradovate:accounts', activeAccounts);
+        sendToRenderer('app:log', {
+          time: new Date().toLocaleTimeString(),
+          msg: `✅ Detectadas <strong>${restAccounts.length} cuenta(s)</strong> en Tradovate (${activeEnvironment.toUpperCase()}).`,
+        });
+      }
+
+      // 2. Connect WebSocket for live order execution
+      connectTradovateWs(token, activeEnvironment);
+      resolve({ success: true, token, environment: activeEnvironment });
     });
   });
 });
 
-ipcMain.handle('tradovate:connect-token', (event, { token, environment }) => {
+ipcMain.handle('tradovate:connect-token', async (event, { token, environment }) => {
   activeToken = token;
-  saveConfig({ tradovateToken: token, environment });
-  connectTradovateWs(token, environment || 'demo');
+  activeEnvironment = environment || 'demo';
+  saveConfig({ tradovateToken: token, environment: activeEnvironment });
+
+  const restAccounts = await fetchTradovateAccountsRest(token, activeEnvironment);
+  if (restAccounts && restAccounts.length > 0) {
+    activeAccounts = restAccounts;
+    sendToRenderer('tradovate:accounts', activeAccounts);
+  }
+
+  connectTradovateWs(token, activeEnvironment);
   return { success: true };
 });
 
@@ -259,7 +349,9 @@ ipcMain.handle('tradovate:liquidate-all', () => {
   if (!activeWs || activeWs.readyState !== WebSocket.OPEN) return false;
   for (const acc of activeAccounts) {
     const id = reqId++;
-    activeWs.send(`order/liquidateposition\n${id}\n\n${JSON.stringify({ accountId: acc.id, admin: true })}`);
+    activeWs.send(
+      `order/liquidateposition\n${id}\n\n${JSON.stringify({ accountId: acc.id, admin: true })}`
+    );
   }
   return true;
 });
@@ -280,7 +372,17 @@ app.whenReady().then(async () => {
   // Auto-connect Tradovate if token was saved
   if (cfg.tradovateToken) {
     activeToken = cfg.tradovateToken;
-    connectTradovateWs(cfg.tradovateToken, cfg.environment || 'demo');
+    activeEnvironment = cfg.environment || 'demo';
+
+    // Fetch accounts via REST first
+    fetchTradovateAccountsRest(cfg.tradovateToken, activeEnvironment).then((accs) => {
+      if (accs && accs.length > 0) {
+        activeAccounts = accs;
+        sendToRenderer('tradovate:accounts', activeAccounts);
+      }
+    });
+
+    connectTradovateWs(cfg.tradovateToken, activeEnvironment);
   }
 
   app.on('activate', () => {

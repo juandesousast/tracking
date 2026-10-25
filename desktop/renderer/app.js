@@ -324,8 +324,9 @@ if (window.electronAPI) {
   window.electronAPI.onWsStatus((data) => {
     if (data.status === 'connected') {
       wsStatusBadge.className = 'pill-badge pill-green';
-      wsStatusText.textContent = `Tradovate: En Vivo (${data.latency || 12} ms)`;
-      appendLog(new Date().toLocaleTimeString(), 'Conexión WebSocket establecida con Tradovate');
+      const envLabel = data.environment ? ` [${data.environment.toUpperCase()}]` : '';
+      wsStatusText.textContent = `Tradovate: En Vivo${envLabel} (${data.latency || 12} ms)`;
+      appendLog(new Date().toLocaleTimeString(), `Conexión WebSocket establecida con Tradovate${envLabel}`);
     } else if (data.status === 'connecting') {
       wsStatusBadge.className = 'pill-badge pill-yellow';
       wsStatusText.textContent = 'Tradovate: Conectando...';
@@ -333,6 +334,12 @@ if (window.electronAPI) {
       wsStatusBadge.className = 'pill-badge pill-red';
       wsStatusText.textContent = 'Tradovate: Desconectado';
     }
+  });
+
+  envSelect.addEventListener('change', () => {
+    currentConfig.environment = envSelect.value;
+    saveAndSyncConfig();
+    appendLog(new Date().toLocaleTimeString(), `Entorno seleccionado: ${envSelect.value.toUpperCase()}`);
   });
 
   // Accounts list
