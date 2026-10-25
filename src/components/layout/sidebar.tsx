@@ -23,6 +23,7 @@ import {
   ShieldAlert,
   Target,
   PieChart,
+  FileSpreadsheet,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -33,21 +34,21 @@ export const navSections = [
       { name: "Dashboard", href: "/", icon: LayoutDashboard },
       { name: "Calendario PnL", href: "/calendario", icon: Calendar },
       { name: "Calendario Económico", href: "/calendario-economico", icon: CalendarDays },
-      { name: "Simulador de Mercado", href: "/simulador", icon: Activity },
-      { name: "Calculadoras & Fondeo", href: "/tools", icon: Calculator },
-      { name: "Historial de Trades", href: "/trades", icon: ListOrdered },
       { name: "Analítica & Equity", href: "/analytics", icon: BarChart3 },
+      { name: "Calculadoras & Fondeo", href: "/tools", icon: Calculator },
+      { name: "Simulador de Mercado", href: "/simulador", icon: Activity },
     ],
   },
   {
     title: "PROP FIRMS & CAPITAL",
     items: [
-      { name: "Radar de Portafolio", href: "/portfolio", icon: PieChart },
-      { name: "Progreso a Fondeo", href: "/progress-tracker", icon: Target },
       { name: "Cuentas de Fondeo", href: "/cuentas", icon: Wallet },
+      { name: "Progreso a Fondeo", href: "/progress-tracker", icon: Target },
       { name: "Exámenes & Gastos", href: "/gastos", icon: Receipt },
       { name: "Retiros & Cobros", href: "/retiros", icon: ArrowDownToLine },
-      { name: "Empresas & Logos", href: "/empresas", icon: Building2 },
+      { name: "Libro Mayor & Transacciones", href: "/trades", icon: FileSpreadsheet },
+      { name: "Empresas & Ranking ROI", href: "/empresas", icon: Building2 },
+      { name: "Radar de Portafolio", href: "/portfolio", icon: PieChart },
     ],
   },
   {

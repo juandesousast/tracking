@@ -68,14 +68,14 @@ export function Header() {
     if (pathname === "/simulador" || pathname.startsWith("/simulador/")) return "Simulador de Mercado";
     if (pathname === "/strategies") return "Playbook de Estrategias";
     if (pathname === "/tools") return "Calculadoras & Fondeo";
-    if (pathname === "/trades") return "Historial de Trades";
+    if (pathname === "/trades") return "Libro Mayor & Transacciones";
     if (pathname === "/analytics") return "Analítica & Equity";
     if (pathname === "/portfolio") return "Radar de Portafolio";
     if (pathname === "/progress-tracker") return "Progreso a Fondeo";
     if (pathname === "/cuentas") return "Cuentas de Fondeo";
     if (pathname === "/gastos") return "Exámenes & Gastos";
     if (pathname === "/retiros") return "Retiros & Cobros";
-    if (pathname === "/empresas") return "Empresas & Logos";
+    if (pathname === "/empresas") return "Empresas & Ranking ROI";
     if (pathname === "/copier") return "Copiador de Operaciones";
     if (pathname === "/risk-config") return "Gestión de Riesgo";
     if (pathname === "/settings") return "Ajustes";

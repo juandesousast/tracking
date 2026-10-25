@@ -238,20 +238,20 @@ export function CommandPalette() {
       {
         id: "nav-trades",
         category: "Navegación",
-        title: "Historial de Trades & Movimientos",
-        subtitle: "Libro mayor y exportación a CSV",
+        title: "Libro Mayor & Transacciones",
+        subtitle: "Registro unificado de cobros, facturas y exportación CSV",
         icon: History,
         action: () => navigateTo("/trades"),
-        keywords: ["trades", "operaciones", "libro", "csv"],
+        keywords: ["libro mayor", "transacciones", "movimientos", "csv"],
       },
       {
         id: "nav-firms",
         category: "Navegación",
-        title: "Empresas & Logos",
-        subtitle: "Directorio de firmas de fondeo",
+        title: "Empresas & Ranking ROI",
+        subtitle: "Rentabilidad por firma, cobros netos y catálogo",
         icon: Building2,
         action: () => navigateTo("/empresas"),
-        keywords: ["firmas", "prop firms", "logos"],
+        keywords: ["firmas", "prop firms", "ranking", "roi", "empresas"],
       },
       // Theme
       {

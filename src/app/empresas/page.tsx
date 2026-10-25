@@ -246,7 +246,7 @@ export default function EmpresasPage() {
                 </span>
               </div>
               <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white mt-1">
-                Empresas de Fondeo & Ranking
+                Empresas & Ranking ROI
               </h1>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                 Catálogo institucional de firmas registradas con cálculo de ROI, exámenes pagados y cobros netos.

@@ -250,10 +250,10 @@ function TradesPageContent() {
             </span>
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white mt-1">
-            Historial de Trades & Movimientos
+            Libro Mayor & Transacciones
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            Registro unificado de cobros de beneficios, evaluaciones y comisiones institucionales.
+            Registro unificado y exportable en CSV de cobros de beneficios, evaluaciones y comisiones institucionales.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
