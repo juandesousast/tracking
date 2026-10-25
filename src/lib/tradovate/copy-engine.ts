@@ -1,5 +1,44 @@
 import { TradovateClient, TradovateOrder } from './tradovate-client';
-import { CopierRule } from '@/types/database';
+import { CopierRule, CopierGroup } from '@/types/database';
+
+export function groupRulesIntoCopierGroups(rules: CopierRule[]): CopierGroup[] {
+  const groupMap = new Map<string, CopierGroup>();
+
+  for (const r of rules) {
+    const key = r.master_account_id || r.master_account_name;
+    const groupName = r.group_name || `Grupo: Master ${r.master_account_name}`;
+
+    if (!groupMap.has(key)) {
+      groupMap.set(key, {
+        id: `group-${key}`,
+        user_id: r.user_id,
+        name: groupName,
+        master_account_id: r.master_account_id,
+        master_account_name: r.master_account_name,
+        is_active: r.is_active,
+        slaves: [],
+        created_at: r.created_at,
+      });
+    }
+
+    const group = groupMap.get(key)!;
+    if (r.is_active) {
+      group.is_active = true;
+    }
+
+    group.slaves.push({
+      id: r.id,
+      account_id: r.slave_account_id,
+      account_name: r.slave_account_name,
+      multiplier: Number(r.multiplier) || 1,
+      convert_mini_to_micro: r.convert_mini_to_micro,
+      max_daily_loss: r.max_daily_loss !== null && r.max_daily_loss !== undefined ? Number(r.max_daily_loss) : null,
+      is_active: r.is_active,
+    });
+  }
+
+  return Array.from(groupMap.values());
+}
 
 export interface CopyExecutionResult {
   ruleId: string;

@@ -20,14 +20,13 @@ import {
   deleteCopierRule,
   getCopierLogs,
   executeKillSwitch,
-  groupRulesIntoCopierGroups,
   saveCopierGroup,
   toggleCopierGroup,
   deleteCopierGroup,
 } from "@/lib/services/copier";
 import { getAccounts, getFirms } from "@/lib/actions/actions";
 import { TradovateClient, TradovateAccount, ConnectionStatus } from "@/lib/tradovate/tradovate-client";
-import { CopyEngine } from "@/lib/tradovate/copy-engine";
+import { CopyEngine, groupRulesIntoCopierGroups } from "@/lib/tradovate/copy-engine";
 
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
