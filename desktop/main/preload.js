@@ -17,6 +17,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
   connectToken: (token, environment) =>
     ipcRenderer.invoke('tradovate:connect-token', { token, environment }),
   liquidateAll: () => ipcRenderer.invoke('tradovate:liquidate-all'),
+  disconnectTradovate: () => ipcRenderer.invoke('tradovate:disconnect'),
+
+  // Cloud Services (Strictly User-Scoped)
+  getCloudAccounts: () => ipcRenderer.invoke('cloud:get-accounts'),
+  getCloudLogs: () => ipcRenderer.invoke('cloud:get-logs'),
+  getEconomicNews: () => ipcRenderer.invoke('cloud:get-news'),
 
   // Event Listeners
   onWsStatus: (callback) => {

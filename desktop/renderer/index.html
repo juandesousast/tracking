@@ -184,7 +184,7 @@
     header {
       background: #0b0f19;
       border-bottom: 1px solid var(--border-color);
-      padding: 12px 20px 12px 82px; /* Extra left padding for Mac traffic lights */
+      padding: 10px 20px 10px 82px; /* Extra left padding for Mac traffic lights */
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -213,6 +213,40 @@
       font-family: 'JetBrains Mono', monospace;
       font-weight: 700;
       margin-left: 6px;
+    }
+
+    /* Nav Tabs in Header */
+    .nav-tabs {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: #060911;
+      border: 1px solid var(--border-color);
+      padding: 3px 4px;
+      border-radius: 10px;
+      -webkit-app-region: no-drag;
+    }
+
+    .nav-tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 7px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+
+    .nav-tab-btn:hover { color: white; background: rgba(255, 255, 255, 0.05); }
+    .nav-tab-btn.active {
+      background: #1e293b;
+      color: white;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
     }
 
     .header-actions {
@@ -267,7 +301,7 @@
     .stats-ribbon {
       background: #080c15;
       border-bottom: 1px solid var(--border-color);
-      padding: 12px 20px;
+      padding: 10px 20px;
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 16px;
@@ -276,19 +310,26 @@
     .stat-item {
       display: flex;
       flex-direction: column;
-      gap: 3px;
+      gap: 2px;
     }
     .stat-label { font-size: 10px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.6px; }
-    .stat-val { font-size: 15px; font-weight: 900; font-family: 'JetBrains Mono', monospace; }
+    .stat-val { font-size: 14px; font-weight: 900; font-family: 'JetBrains Mono', monospace; }
 
-    /* Main Workspace */
-    .workspace {
+    /* Main Workspace Views */
+    .view-container {
       flex: 1;
       padding: 16px 20px;
+      overflow-y: auto;
+      display: none;
+    }
+    .view-container.active { display: flex; flex-direction: column; gap: 16px; }
+
+    /* View 1: Copier Workspace Grid */
+    .copier-grid {
       display: grid;
       grid-template-columns: 380px 1fr;
       gap: 16px;
-      overflow-y: auto;
+      flex: 1;
     }
 
     .panel {
@@ -479,14 +520,13 @@
 
     /* Bottom Console */
     .console-panel {
-      grid-column: 1 / -1;
       background: #05070c;
       border: 1px solid var(--border-color);
       border-radius: 12px;
       padding: 12px 14px;
       font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
-      height: 160px;
+      height: 140px;
       overflow-y: auto;
       color: #94a3b8;
       display: flex;
@@ -498,6 +538,46 @@
     .console-time { color: #475569; }
     .console-buy { color: #34d399; font-weight: 800; }
     .console-sell { color: #fb7185; font-weight: 800; }
+
+    /* Grid for Prop Firm Accounts View */
+    .accounts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 14px;
+    }
+
+    .prop-account-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: all 0.15s;
+    }
+    .prop-account-card:hover { border-color: rgba(59, 130, 246, 0.4); }
+
+    /* Economic Calendar List */
+    .news-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    .news-table th {
+      text-align: left;
+      padding: 10px 12px;
+      color: var(--text-dim);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .news-table td {
+      padding: 11px 12px;
+      border-bottom: 1px solid #131b2c;
+    }
+    .news-table tr:hover { background: rgba(255, 255, 255, 0.02); }
   </style>
 </head>
 <body>
@@ -506,7 +586,7 @@
   <div id="authView">
     <div class="auth-card">
       <div class="auth-header">
-        <!-- Official PropFirm Tracker Geometric Apex Emblem -->
+        <!-- SVG Brand Symbol in Auth View -->
         <svg width="48" height="48" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <linearGradient id="pft-auth-grad-primary" x1="4" y1="4" x2="28" y2="28" gradientUnits="userSpaceOnUse">
@@ -568,7 +648,7 @@
     </div>
   </div>
 
-  <!-- 2. Main Copier Dashboard -->
+  <!-- 2. Main Application Shell -->
   <div id="appView">
     <header>
       <div class="brand-section">
@@ -601,15 +681,22 @@
 
         <div class="brand-text-block">
           <div style="display: flex; align-items: center;">
-            <div class="brand-wordmark" style="font-size: 15px;">
+            <div class="brand-wordmark" style="font-size: 14px;">
               <span class="wordmark-white">PropFirm</span>
               <span class="wordmark-gradient">Tracker</span>
             </div>
-            <span class="brand-version-badge">COPIER PRO</span>
+            <span class="brand-version-badge">PRO</span>
           </div>
-          <div class="brand-sub" style="font-size: 8px;">SUITE INSTITUCIONAL PRO</div>
         </div>
       </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="nav-tabs">
+        <button id="navTabCopier" class="nav-tab-btn active">⚡ Copiador</button>
+        <button id="navTabAccounts" class="nav-tab-btn">🛡️ Cuentas de Fondeo</button>
+        <button id="navTabCalendar" class="nav-tab-btn">📰 Calendario Económico</button>
+        <button id="navTabLogs" class="nav-tab-btn">📜 Historial Nube</button>
+      </nav>
 
       <div class="header-actions">
         <div class="pill-badge pill-green" title="Tus órdenes salen directamente desde tu conexión a internet">
@@ -629,96 +716,200 @@
       </div>
     </header>
 
-    <!-- Stats Ribbon -->
-    <div class="stats-ribbon">
-      <div class="stat-item">
-        <span class="stat-label">Cuenta Master</span>
-        <span class="stat-val" id="statMasterName" style="color: #60a5fa;">Sin Seleccionar</span>
+    <!-- Tab 1: Copier Terminal View -->
+    <div id="viewCopier" class="view-container active">
+      <!-- Stats Ribbon -->
+      <div class="stats-ribbon" style="border-radius: 12px; border: 1px solid var(--border-color);">
+        <div class="stat-item">
+          <span class="stat-label">Cuenta Master</span>
+          <span class="stat-val" id="statMasterName" style="color: #60a5fa;">Sin Seleccionar</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Cuentas Esclavas Activas</span>
+          <span class="stat-val" id="statSlavesCount" style="color: #34d399;">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Órdenes Replicadas Hoy</span>
+          <span class="stat-val" id="statReplicatedToday">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Latencia de Ejecución Local</span>
+          <span class="stat-val" id="statLatency" style="color: #38bdf8;">&lt; 3 ms</span>
+        </div>
       </div>
-      <div class="stat-item">
-        <span class="stat-label">Cuentas Esclavas Activas</span>
-        <span class="stat-val" id="statSlavesCount" style="color: #34d399;">0</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-label">Órdenes Replicadas Hoy</span>
-        <span class="stat-val" id="statReplicatedToday">0</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-label">Latencia de Ejecución Local</span>
-        <span class="stat-val" id="statLatency" style="color: #38bdf8;">&lt; 3 ms</span>
-      </div>
-    </div>
 
-    <!-- Main Content Area -->
-    <div class="workspace">
-      
-      <!-- Left Panel: Connection & Master Selection -->
-      <div class="panel">
-        <div class="panel-header">
-          <div class="panel-title">
-            <span>Tradovate Local (0 €)</span>
+      <!-- Copier Grid -->
+      <div class="copier-grid">
+        <!-- Left Panel: Connection & Master Selection -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span>Tradovate Local (0 €)</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <select id="envSelect" class="multiplier-select" style="padding: 2px 6px;">
+                <option value="demo">Demo</option>
+                <option value="live">Live (Real)</option>
+              </select>
+            </div>
           </div>
-          <div style="display: flex; align-items: center; gap: 6px;">
-            <select id="envSelect" class="multiplier-select" style="padding: 2px 6px;">
-              <option value="demo">Demo</option>
-              <option value="live">Live (Real)</option>
-            </select>
+
+          <div style="display: flex; gap: 6px; width: 100%;">
+            <button id="btnConnectTradovate" class="btn btn-primary" style="flex: 1;">
+              🔑 Conectar Cuenta Tradovate (0 €)
+            </button>
+            <button id="btnDisconnectTradovate" class="btn btn-outline" style="display: none; padding: 10px 12px; font-size: 11px;" title="Desconectar y cambiar cuenta de Tradovate">
+              Desconectar
+            </button>
           </div>
-        </div>
 
-        <button id="btnConnectTradovate" class="btn btn-primary" style="width: 100%;">
-          🔑 Conectar Cuenta Tradovate (0 €)
-        </button>
-
-        <div class="panel-title" style="margin-top: 6px;">
-          <span>Selecciona Tu Cuenta Master</span>
-        </div>
-        <p style="font-size: 11px; color: var(--text-dim); line-height: 1.4;">
-          Elige la cuenta principal donde realizas tu operativa (Apex, Topstep o Personal):
-        </p>
-
-        <div id="masterAccountsList" class="master-selector" style="max-height: 180px; overflow-y: auto;">
-          <div style="font-size: 11px; color: var(--text-dim); padding: 8px;">
-            Inicia sesión en Tradovate arriba para cargar tus cuentas.
+          <div class="panel-title" style="margin-top: 6px;">
+            <span>Selecciona Tu Cuenta Master</span>
           </div>
-        </div>
+          <p style="font-size: 11px; color: var(--text-dim); line-height: 1.4;">
+            Elige la cuenta principal donde realizas tu operativa (Apex, Topstep o Personal):
+          </p>
 
-        <div style="margin-top: auto; display: flex; flex-direction: column; gap: 8px;">
-          <button id="btnTogglePause" class="btn btn-outline" style="width: 100%;">
-            ⏸️ Pausar Replicación Global
-          </button>
-          <button id="btnPanicLiquidate" class="btn btn-danger" style="width: 100%;">
-            ⚡ Aplanar Todo (Flatten All Accounts)
-          </button>
-        </div>
-      </div>
-
-      <!-- Right Panel: Slaves Replication Matrix -->
-      <div class="panel">
-        <div class="panel-header">
-          <div class="panel-title">
-            <span>Cuentas Esclavas (Slaves)</span>
+          <div id="masterAccountsList" class="master-selector" style="max-height: 180px; overflow-y: auto;">
+            <div style="font-size: 11px; color: var(--text-dim); padding: 8px;">
+              Inicia sesión en Tradovate arriba para cargar tus cuentas.
+            </div>
           </div>
-          <span style="font-size: 11px; color: var(--text-dim);">
-            Replicación simultánea en tu ordenador
-          </span>
-        </div>
 
-        <div id="slavesList" class="slaves-container">
-          <div style="font-size: 12px; color: var(--text-dim); padding: 16px; text-align: center;">
-            No se han detectado cuentas secundarias para replicar. Conecta Tradovate en la columna izquierda.
+          <div style="margin-top: auto; display: flex; flex-direction: column; gap: 8px;">
+            <button id="btnTogglePause" class="btn btn-outline" style="width: 100%;">
+              ⏸️ Pausar Replicación Global
+            </button>
+            <button id="btnPanicLiquidate" class="btn btn-danger" style="width: 100%;">
+              ⚡ Aplanar Todo (Flatten All Accounts)
+            </button>
           </div>
         </div>
+
+        <!-- Right Panel: Slaves Replication Matrix -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span>Cuentas Esclavas (Slaves)</span>
+            </div>
+            <span style="font-size: 11px; color: var(--text-dim);">
+              Replicación simultánea en tu ordenador
+            </span>
+          </div>
+
+          <div id="slavesList" class="slaves-container">
+            <div style="font-size: 12px; color: var(--text-dim); padding: 16px; text-align: center;">
+              No se han detectado cuentas secundarias para replicar. Conecta Tradovate en la columna izquierda.
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- Bottom Panel: Execution Console -->
+      <!-- Execution Console -->
       <div class="console-panel" id="consoleBox">
         <div class="console-entry">
           <span class="console-time">[Sistema]</span> Motor local de réplica inicializado con éxito.
         </div>
       </div>
-
     </div>
+
+    <!-- Tab 2: Prop Firm Accounts & Radar View -->
+    <div id="viewAccounts" class="view-container">
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div>
+          <h2 style="font-size: 16px; font-weight: 800;">Mis Cuentas de Fondeo Registradas</h2>
+          <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+            Sincronizadas directamente con tu espacio de trabajo en la nube de PropFirm Tracker.
+          </p>
+        </div>
+        <button id="btnRefreshAccounts" class="btn btn-outline" style="font-size: 11px;">
+          🔄 Actualizar Cuentas
+        </button>
+      </div>
+
+      <div id="cloudAccountsGrid" class="accounts-grid" style="margin-top: 8px;">
+        <div style="font-size: 12px; color: var(--text-dim); padding: 24px; text-align: center; grid-column: 1 / -1;">
+          Cargando cuentas registradas en la nube...
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 3: Economic Calendar View -->
+    <div id="viewCalendar" class="view-container">
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div>
+          <h2 style="font-size: 16px; font-weight: 800;">Calendario Macroeconómico de Futuros</h2>
+          <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+            Noticias de impacto en USD (CPI, NFP, FOMC) de hoy y próximos días para evitar drawdowns y rupturas de reglas.
+          </p>
+        </div>
+        <button id="btnRefreshNews" class="btn btn-outline" style="font-size: 11px;">
+          🔄 Actualizar Noticias
+        </button>
+      </div>
+
+      <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 14px; overflow: hidden; margin-top: 8px;">
+        <table class="news-table">
+          <thead>
+            <tr>
+              <th style="width: 80px;">Impacto</th>
+              <th style="width: 100px;">Fecha / Hora</th>
+              <th style="width: 80px;">Moneda</th>
+              <th>Evento Macroeconómico</th>
+              <th style="width: 100px;">Previo</th>
+              <th style="width: 100px;">Previsión</th>
+              <th style="width: 100px;">Publicado</th>
+            </tr>
+          </thead>
+          <tbody id="newsTableBody">
+            <tr>
+              <td colspan="7" style="text-align: center; padding: 24px; color: var(--text-dim);">
+                Consultando calendario económico en tiempo real...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Tab 4: Cloud Replicated History View -->
+    <div id="viewLogs" class="view-container">
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div>
+          <h2 style="font-size: 16px; font-weight: 800;">Historial de Órdenes Replicadas</h2>
+          <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+            Registro inmutable de ejecuciones sincronizadas en tu base de datos cloud de PropFirm Tracker.
+          </p>
+        </div>
+        <button id="btnRefreshLogs" class="btn btn-outline" style="font-size: 11px;">
+          🔄 Actualizar Historial
+        </button>
+      </div>
+
+      <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 14px; overflow: hidden; margin-top: 8px;">
+        <table class="news-table">
+          <thead>
+            <tr>
+              <th style="width: 140px;">Fecha / Hora</th>
+              <th style="width: 90px;">Símbolo</th>
+              <th style="width: 90px;">Acción</th>
+              <th style="width: 80px;">Lotes</th>
+              <th style="width: 120px;">Esclavas</th>
+              <th style="width: 100px;">Latencia</th>
+              <th style="width: 100px;">Estado</th>
+            </tr>
+          </thead>
+          <tbody id="logsTableBody">
+            <tr>
+              <td colspan="7" style="text-align: center; padding: 24px; color: var(--text-dim);">
+                No hay registros de réplica recientes.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
   </div>
 
   <script src="app.js"></script>

@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, session } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const WebSocket = require('ws');
@@ -533,6 +533,42 @@ ipcMain.handle('tradovate:liquidate-all', () => {
     );
   }
   return true;
+});
+
+ipcMain.handle('tradovate:disconnect', async () => {
+  activeToken = null;
+  activeAccounts = [];
+  if (activeWs) {
+    try {
+      activeWs.removeAllListeners();
+      activeWs.close();
+    } catch (e) {}
+    activeWs = null;
+  }
+  if (currentUserId) {
+    saveUserConfig(currentUserId, { tradovateToken: null });
+    try {
+      const safeId = currentUserId.replace(/[^a-zA-Z0-9_\-]/g, '_');
+      const authSession = session.fromPartition(`persist:tradovate-user-${safeId}`);
+      await authSession.clearStorageData();
+    } catch (e) {}
+  }
+  sendToRenderer('tradovate:accounts', []);
+  sendToRenderer('ws:status', { status: 'disconnected', latency: 0 });
+  return { success: true };
+});
+
+// Cloud & Auxiliary Handlers (Strictly Scoped by Authenticated User)
+ipcMain.handle('cloud:get-accounts', async () => {
+  return await copierEngine.getCloudAccounts();
+});
+
+ipcMain.handle('cloud:get-logs', async () => {
+  return await copierEngine.getCloudCopierLogs();
+});
+
+ipcMain.handle('cloud:get-news', async () => {
+  return await copierEngine.getEconomicNews();
 });
 
 app.whenReady().then(async () => {

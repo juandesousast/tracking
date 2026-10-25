@@ -277,6 +277,93 @@ class DesktopCopierEngine {
     });
   }
 
+  // --- Cloud Sync & Auxiliary Services ---
+
+  async getCloudAccounts() {
+    if (!this.currentUser) return [];
+    try {
+      const { data, error } = await this.supabase
+        .from('accounts')
+        .select(`
+          id,
+          account_size,
+          account_type,
+          status,
+          account_number,
+          alias,
+          firm_id,
+          prop_firms (
+            name,
+            logo_url
+          )
+        `)
+        .eq('user_id', this.currentUser.id);
+
+      if (error) {
+        console.error('[CopierEngine] Error fetching cloud accounts:', error.message);
+        return [];
+      }
+      return data || [];
+    } catch (e) {
+      console.error('[CopierEngine] getCloudAccounts error:', e.message);
+      return [];
+    }
+  }
+
+  async getCloudCopierLogs() {
+    if (!this.currentUser) return [];
+    try {
+      const { data, error } = await this.supabase
+        .from('copier_logs')
+        .select('*')
+        .eq('user_id', this.currentUser.id)
+        .order('created_at', { ascending: false })
+        .limit(30);
+
+      if (error) {
+        console.error('[CopierEngine] Error fetching cloud logs:', error.message);
+        return [];
+      }
+      return data || [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  async getEconomicNews() {
+    try {
+      const from = new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString();
+      const to = new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString();
+      const url = `https://chartevents-reuters.tradingview.com/events?from=${encodeURIComponent(
+        from
+      )}&to=${encodeURIComponent(to)}`;
+
+      const res = await fetch(url);
+      if (!res.ok) return [];
+      const json = await res.json();
+      const rawEvents = Array.isArray(json.result) ? json.result : [];
+
+      return rawEvents
+        .filter((ev) => ev.currency === 'USD' || ev.currency === 'EUR')
+        .map((ev) => ({
+          id: String(ev.id || Math.random()),
+          title: ev.title || ev.indicator || 'Evento Económico',
+          currency: ev.currency || 'USD',
+          date: ev.date || new Date().toISOString(),
+          importance: ev.importance >= 1 ? 3 : (ev.importance === 0 ? 2 : 1),
+          actual: ev.actual ?? null,
+          forecast: ev.forecast ?? null,
+          previous: ev.previous ?? null,
+          unit: ev.unit || '',
+        }))
+        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+        .slice(0, 20);
+    } catch (e) {
+      console.error('[CopierEngine] Error fetching news:', e.message);
+      return [];
+    }
+  }
+
   /**
    * Syncs trade to Supabase `copier_logs` table so user sees it in their web dashboard.
    */

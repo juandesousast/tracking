@@ -70,7 +70,12 @@ function openTradovateLoginWindow(
 
   authSession.webRequest.onBeforeSendHeaders(filter, headerListener);
 
-  authWin.loadURL('https://trader.tradovate.com');
+  // Clear existing storage to force clean credentials prompt and prevent cross-account leakage
+  authSession.clearStorageData().catch(() => {}).finally(() => {
+    if (!authWin.isDestroyed()) {
+      authWin.loadURL('https://trader.tradovate.com');
+    }
+  });
 
   authWin.on('closed', () => {
     try {
