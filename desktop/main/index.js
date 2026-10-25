@@ -1,12 +1,11 @@
-const { app, BrowserWindow, ipcMain, Tray, Menu } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const WebSocket = require('ws');
 const { openTradovateLoginWindow } = require('./tradovate-auth');
-const { createClient } = require('@supabase/supabase-js');
+const { DesktopCopierEngine } = require('./copier-engine');
 
 let mainWindow = null;
-let tray = null;
 let activeWs = null;
 let activeToken = null;
 let activeAccounts = [];
@@ -23,7 +22,15 @@ function loadStoredConfig() {
   } catch (e) {
     console.error('Error loading config:', e);
   }
-  return { token: null, environment: 'demo', mode: 'master', channelId: 'default' };
+  return {
+    token: null,
+    environment: 'demo',
+    mode: 'local',
+    channelId: 'room-default',
+    masterAccountId: null,
+    masterAccountName: '',
+    slaves: [],
+  };
 }
 
 function saveConfig(data) {
@@ -31,17 +38,44 @@ function saveConfig(data) {
     const current = loadStoredConfig();
     const updated = { ...current, ...data };
     fs.writeFileSync(configPath, JSON.stringify(updated, null, 2), 'utf8');
+    return updated;
   } catch (e) {
     console.error('Error saving config:', e);
+    return null;
   }
 }
 
+function sendToRenderer(channel, data) {
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.webContents.send(channel, data);
+  }
+}
+
+function sendTradovateWsMessage(endpoint, body) {
+  if (!activeWs || activeWs.readyState !== WebSocket.OPEN) {
+    console.warn('[DesktopWS] Cannot send message, WebSocket is not open');
+    return false;
+  }
+  const id = reqId++;
+  const payload = typeof body === 'string' ? body : JSON.stringify(body);
+  const frame = `${endpoint}\n${id}\n\n${payload}`;
+  activeWs.send(frame);
+  return true;
+}
+
+// Instantiate Copier Engine
+const copierEngine = new DesktopCopierEngine({
+  sendWsMessage: sendTradovateWsMessage,
+  onLog: (time, msg) => sendToRenderer('app:log', { time, msg }),
+  onStatusChange: (status) => sendToRenderer('app:status', status),
+});
+
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 900,
-    height: 700,
-    minWidth: 800,
-    minHeight: 600,
+    width: 980,
+    height: 740,
+    minWidth: 840,
+    minHeight: 620,
     title: 'EdgeFlow Copier Desktop',
     backgroundColor: '#090d16',
     webPreferences: {
@@ -70,9 +104,10 @@ function connectTradovateWs(token, environment = 'demo') {
     activeWs = null;
   }
 
-  const wsUrl = environment === 'live'
-    ? 'wss://live.tradovateapi.com/v1/websocket'
-    : 'wss://demo.tradovateapi.com/v1/websocket';
+  const wsUrl =
+    environment === 'live'
+      ? 'wss://live.tradovateapi.com/v1/websocket'
+      : 'wss://demo.tradovateapi.com/v1/websocket';
 
   console.log(`[DesktopWS] Connecting to ${wsUrl} from local residential IP...`);
   sendToRenderer('ws:status', { status: 'connecting', latency: 0 });
@@ -104,7 +139,7 @@ function connectTradovateWs(token, environment = 'demo') {
         for (const msg of msgs) {
           if (msg.s === 200 && msg.i === 1) {
             console.log('[DesktopWS] Authorized successfully!');
-            sendToRenderer('ws:status', { status: 'connected', latency: 15 });
+            sendToRenderer('ws:status', { status: 'connected', latency: 12 });
             // Request user sync
             const syncId = reqId++;
             activeWs.send(`user/syncrequest\n${syncId}\n\n{}`);
@@ -126,6 +161,7 @@ function connectTradovateWs(token, environment = 'demo') {
           if (msg.e === 'props' && msg.d?.entityType === 'order') {
             const order = msg.d.entity;
             sendToRenderer('tradovate:order', order);
+            copierEngine.handleTradovateOrder(order);
           }
         }
       } catch (e) {
@@ -145,14 +181,18 @@ function connectTradovateWs(token, environment = 'demo') {
   });
 }
 
-function sendToRenderer(channel, data) {
-  if (mainWindow && !mainWindow.isDestroyed()) {
-    mainWindow.webContents.send(channel, data);
-  }
-}
-
 // IPC Handlers
 ipcMain.handle('app:get-config', () => loadStoredConfig());
+
+ipcMain.handle('copier:update-config', (event, cfg) => {
+  const updated = saveConfig(cfg);
+  copierEngine.updateConfig(cfg);
+  return { success: true, config: updated };
+});
+
+ipcMain.handle('copier:test-signal', async (event, signal) => {
+  return await copierEngine.broadcastSignal(signal);
+});
 
 ipcMain.handle('tradovate:open-login', () => {
   return new Promise((resolve) => {
@@ -184,8 +224,10 @@ ipcMain.handle('tradovate:liquidate-all', () => {
 app.whenReady().then(() => {
   createWindow();
 
-  // Auto-connect with stored token if available
+  // Load stored config and initialize copier
   const cfg = loadStoredConfig();
+  copierEngine.updateConfig(cfg);
+
   if (cfg.token) {
     activeToken = cfg.token;
     connectTradovateWs(cfg.token, cfg.environment || 'demo');
@@ -202,6 +244,7 @@ app.whenReady().then(() => {
 
 app.on('before-quit', () => {
   app.isQuitting = true;
+  copierEngine.cleanup();
 });
 
 app.on('window-all-closed', () => {

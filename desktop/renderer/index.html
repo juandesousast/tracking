@@ -6,11 +6,11 @@
   <title>EdgeFlow Copier Desktop</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'Inter', -apple-system, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background: #090d16;
       color: #f1f5f9;
       height: 100vh;
@@ -22,7 +22,7 @@
     header {
       background: #0f172a;
       border-bottom: 1px solid #1e293b;
-      padding: 14px 20px;
+      padding: 12px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -48,6 +48,12 @@
       color: white;
       font-size: 13px;
     }
+    .header-badges {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      -webkit-app-region: no-drag;
+    }
     .badge {
       display: inline-flex;
       align-items: center;
@@ -61,37 +67,42 @@
     .badge-green { background: rgba(16, 185, 129, 0.12); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.25); }
     .badge-yellow { background: rgba(245, 158, 11, 0.12); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.25); }
     .badge-red { background: rgba(244, 63, 94, 0.12); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.25); }
+    .badge-blue { background: rgba(59, 130, 246, 0.12); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.25); }
     .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
     .content {
       flex: 1;
-      padding: 20px;
+      padding: 16px 20px;
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1.15fr;
       gap: 16px;
       overflow-y: auto;
     }
     .card {
       background: #0f172a;
       border: 1px solid #1e293b;
-      border-radius: 14px;
+      border-radius: 12px;
       padding: 16px;
       display: flex;
       flex-direction: column;
       gap: 12px;
     }
     .card-title {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 700;
       color: #94a3b8;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
     .btn {
       background: #2563eb;
       color: white;
       border: none;
-      padding: 9px 14px;
-      border-radius: 9px;
+      padding: 8px 12px;
+      border-radius: 8px;
       font-size: 12px;
       font-weight: 600;
       cursor: pointer;
@@ -99,34 +110,56 @@
       align-items: center;
       justify-content: center;
       gap: 6px;
-      transition: background 0.15s;
+      transition: all 0.15s;
     }
     .btn:hover { background: #1d4ed8; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
     .btn-danger { background: #e11d48; }
     .btn-danger:hover { background: #be123c; }
     .btn-outline { background: transparent; border: 1px solid #334155; color: #cbd5e1; }
-    .btn-outline:hover { background: #1e293b; color: white; }
+    .btn-outline:hover { background: #1e293b; color: white; border-color: #475569; }
+    .btn-outline.active { background: #2563eb; color: white; border-color: #2563eb; }
+    .btn-sm { padding: 4px 8px; font-size: 11px; }
+
+    .input-group {
+      display: flex;
+      gap: 8px;
+    }
+    .input-text {
+      flex: 1;
+      background: #020617;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 12px;
+      color: white;
+      font-family: 'JetBrains Mono', monospace;
+      outline: none;
+    }
+    .input-text:focus { border-color: #3b82f6; }
+
     .account-item {
       background: #1e293b;
       border: 1px solid #334155;
-      padding: 10px 12px;
-      border-radius: 9px;
+      padding: 8px 12px;
+      border-radius: 8px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       font-size: 12px;
     }
-    .account-name { font-weight: 700; color: white; }
+    .account-name { font-weight: 700; color: white; display: flex; align-items: center; gap: 8px; }
     .account-balance { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: #34d399; }
+
     .console-box {
       grid-column: 1 / -1;
       background: #020617;
       border: 1px solid #1e293b;
-      border-radius: 12px;
+      border-radius: 10px;
       padding: 12px;
       font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
-      height: 180px;
+      height: 170px;
       overflow-y: auto;
       color: #94a3b8;
     }
@@ -134,6 +167,46 @@
     .console-time { color: #64748b; }
     .console-buy { color: #34d399; font-weight: 700; }
     .console-sell { color: #fb7185; font-weight: 700; }
+
+    .mode-selector {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 6px;
+    }
+    .mode-btn {
+      padding: 8px 6px;
+      text-align: center;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      border: 1px solid #334155;
+      background: #020617;
+      color: #94a3b8;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .mode-btn:hover { border-color: #475569; color: white; }
+    .mode-btn.active { background: #2563eb; color: white; border-color: #2563eb; }
+
+    .slave-config-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 10px;
+      background: #020617;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      font-size: 11px;
+    }
+    .select-sm {
+      background: #1e293b;
+      color: white;
+      border: 1px solid #334155;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      outline: none;
+    }
   </style>
 </head>
 <body>
@@ -142,43 +215,46 @@
       <div class="brand-icon">⚡</div>
       <span>EdgeFlow Copier Desktop</span>
     </div>
-    <div id="statusBadge" class="badge badge-yellow">
-      <span class="badge-dot"></span>
-      <span id="statusText">Conectando...</span>
+    <div class="header-badges">
+      <div id="relayBadge" class="badge badge-blue">
+        <span class="badge-dot"></span>
+        <span id="relayText">Relay: Listo</span>
+      </div>
+      <div id="statusBadge" class="badge badge-yellow">
+        <span class="badge-dot"></span>
+        <span id="statusText">Conectando...</span>
+      </div>
     </div>
   </header>
 
   <div class="content">
-    <!-- Card 1: Tradovate Connection -->
+    <!-- Left Column: Tradovate Connection & Accounts -->
     <div class="card">
-      <div class="card-title">Conexión Tradovate Local (IP Casa)</div>
-      <p style="font-size: 12px; color: #94a3b8; line-height: 1.4;">
-        Inicia sesión directamente en Tradovate sin pagar add-ons de API ni copiar códigos.
+      <div class="card-title">
+        <span>Conexión Tradovate Local</span>
+        <span style="font-size: 10px; color: #10b981; font-weight: 600;">🛡️ IP Residencial Directa</span>
+      </div>
+      <p style="font-size: 11px; color: #94a3b8; line-height: 1.4;">
+        Captura de sesión nativa sin costo de API (0 €/mes). Sin intermediarios de datacenter ni riesgo de baneo por IP.
       </p>
-      <button id="btnLogin" class="btn">
-        🔑 Iniciar Sesión en Tradovate (0 €)
-      </button>
 
-      <div style="margin-top: 8px;">
-        <span style="font-size: 11px; color: #64748b; text-transform: uppercase; font-weight: 700; display: block; margin-bottom: 6px;">
-          Cuentas Detectadas
-        </span>
-        <div id="accountsList" style="display: flex; flex-direction: column; gap: 6px;">
-          <div style="font-size: 12px; color: #64748b;">No hay sesión activa. Inicia sesión arriba.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Card 2: Replicación & Control -->
-    <div class="card">
-      <div class="card-title">Modo de Copia & Sincronización</div>
       <div style="display: flex; gap: 8px;">
-        <button id="btnModeMaster" class="btn btn-outline" style="flex: 1;">Modo Master (Tú)</button>
-        <button id="btnModeSlave" class="btn btn-outline" style="flex: 1;">Modo Slave (Amigo)</button>
+        <button id="btnLogin" class="btn" style="flex: 1;">
+          🔑 Iniciar Sesión en Tradovate (0 €)
+        </button>
+        <select id="envSelect" class="select-sm" style="padding: 0 8px; font-weight: 600;">
+          <option value="demo">Demo</option>
+          <option value="live">Live (Real)</option>
+        </select>
       </div>
 
-      <div style="margin-top: 10px; padding: 12px; background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.2); border-radius: 9px; font-size: 12px; color: #93c5fd;">
-        🛡️ <strong>IP 100% Protegida:</strong> Toda orden sale desde el adaptador de red de tu propio Mac/PC. Indistinguible de la operativa manual.
+      <div style="margin-top: 6px;">
+        <span style="font-size: 11px; color: #64748b; text-transform: uppercase; font-weight: 700; display: block; margin-bottom: 6px;">
+          Cuentas Detectadas en Tradovate
+        </span>
+        <div id="accountsList" style="display: flex; flex-direction: column; gap: 6px; max-height: 220px; overflow-y: auto;">
+          <div style="font-size: 12px; color: #64748b; padding: 8px;">No hay sesión activa. Inicia sesión arriba.</div>
+        </div>
       </div>
 
       <div style="margin-top: auto; padding-top: 8px;">
@@ -188,10 +264,50 @@
       </div>
     </div>
 
-    <!-- Card 3: Consola de Eventos -->
+    <!-- Right Column: Mode & Replication Engine -->
+    <div class="card">
+      <div class="card-title">
+        <span>Modo de Operación</span>
+        <span id="activeModeLabel" style="color: #60a5fa; font-size: 11px;">LOCAL</span>
+      </div>
+
+      <div class="mode-selector">
+        <button id="modeLocal" class="mode-btn active">💻 Local (Mismo PC)</button>
+        <button id="modeMaster" class="mode-btn">📡 Master (Tú)</button>
+        <button id="modeSlave" class="mode-btn">📥 Slave (Amigo)</button>
+      </div>
+
+      <!-- Room Code -->
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <span style="font-size: 11px; color: #94a3b8; font-weight: 600;">Canal de Replicación (Room ID):</span>
+        <div class="input-group">
+          <input type="text" id="channelInput" class="input-text" value="room-default" placeholder="ej: edgeflow-vip-room" />
+          <button id="btnSaveChannel" class="btn btn-outline btn-sm">Guardar</button>
+        </div>
+      </div>
+
+      <!-- Slave Configuration Section -->
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <span style="font-size: 11px; color: #64748b; text-transform: uppercase; font-weight: 700;">
+          Configuración de Cuentas Esclavas
+        </span>
+        <div id="slaveConfigList" style="display: flex; flex-direction: column; gap: 6px; max-height: 150px; overflow-y: auto;">
+          <div style="font-size: 11px; color: #64748b;">Selecciona cuentas en la columna izquierda para configurar réplica.</div>
+        </div>
+      </div>
+
+      <!-- Test Signal -->
+      <div style="margin-top: auto; display: flex; gap: 8px;">
+        <button id="btnTestSignal" class="btn btn-outline" style="flex: 1; font-size: 11px;">
+          🧪 Probar Señal Realtime (&lt;10ms)
+        </button>
+      </div>
+    </div>
+
+    <!-- Bottom: Live Console -->
     <div class="console-box" id="consoleBox">
       <div class="console-entry">
-        <span class="console-time">[Sistema]</span> Motor local inicializado. Esperando órdenes...
+        <span class="console-time">[Sistema]</span> Motor local de réplica EdgeFlow inicializado.
       </div>
     </div>
   </div>

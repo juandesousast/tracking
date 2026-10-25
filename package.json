@@ -7,7 +7,10 @@
     "build": "next build --webpack",
     "start": "next start",
     "lint": "next lint",
-    "test": "vitest run"
+    "test": "vitest run",
+    "desktop:start": "cd desktop && npm start",
+    "desktop:dist:mac": "cd desktop && npm run dist:mac",
+    "desktop:dist:win": "cd desktop && npm run dist:win"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
