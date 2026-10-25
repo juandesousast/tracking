@@ -1,7 +1,7 @@
 # Graph Report - tracking  (2026-10-25)
 
 ## Corpus Check
-- 158 files · ~103,369 words
+- 158 files · ~103,623 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `525780a7`
+- Built from commit: `836e4ddd`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -56,7 +56,7 @@
 - @supabase/ssr
 - @supabase/supabase-js
 - tailwind-merge
-- tw-animate-css
+- class-variance-authority
 
 ## God Nodes (most connected - your core abstractions)
 1. `cn()` - 118 edges
@@ -93,7 +93,7 @@ Nodes (3): Deploy on Vercel, Getting Started, Learn More
 
 ### Community 3 - "dependencies"
 Cohesion: 0.10
-Nodes (21): @base-ui/react, class-variance-authority, clsx, lightweight-charts, lucide-react, motion, dependencies, @base-ui/react (+13 more)
+Nodes (21): @base-ui/react, clsx, lightweight-charts, lucide-react, motion, dependencies, @base-ui/react, clsx (+13 more)
 
 ### Community 4 - "devDependencies"
 Cohesion: 0.08
@@ -207,7 +207,7 @@ Nodes (4): calculateStrategyMetrics(), DEFAULT_PLAYBOOK_STRATEGIES, StrategyPerf
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `dependencies` connect `dependencies` to `package.json`, `@google/generative-ai`, `next`, `@supabase/ssr`, `@supabase/supabase-js`, `tailwind-merge`, `tw-animate-css`, `drawer.tsx`?**
+- **Why does `dependencies` connect `dependencies` to `package.json`, `@google/generative-ai`, `next`, `@supabase/ssr`, `@supabase/supabase-js`, `tailwind-merge`, `class-variance-authority`, `drawer.tsx`?**
   _High betweenness centrality (0.102) - this node is a cross-community bridge._
 - **Why does `cn()` connect `cn` to `header.tsx`, `settings/page.tsx`, `copier/page.tsx`, `badge.tsx`, `app/page.tsx`, `page-skeleton.tsx`, `drawer.tsx`, `PropFirm`, `tools/page.tsx`, `retiros/page.tsx`?**
   _High betweenness centrality (0.099) - this node is a cross-community bridge._

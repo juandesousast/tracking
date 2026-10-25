@@ -745,23 +745,23 @@
     "semantic_hash": ""
   },
   "desktop/main/copier-engine.js": {
-    "mtime": 1792953895.7218258,
-    "ast_hash": "1b97ae0ff2d0daa7df532330e96e4231",
+    "mtime": 1792960339.3910668,
+    "ast_hash": "aa3a65c29364ec43ea4b975c01df28b2",
     "semantic_hash": ""
   },
   "desktop/main/index.js": {
-    "mtime": 1792956440.2575011,
-    "ast_hash": "7ec9e0cb69faa3815e573475c2fe287c",
+    "mtime": 1792960373.3233917,
+    "ast_hash": "d1e17be806eef436855c4aa6d5061b50",
     "semantic_hash": ""
   },
   "desktop/main/preload.js": {
-    "mtime": 1792955510.2312436,
-    "ast_hash": "58525ec2e12014ad603ff67328478112",
+    "mtime": 1792960282.1240904,
+    "ast_hash": "c04da2870ab652032254a8752a762d8c",
     "semantic_hash": ""
   },
   "desktop/main/tradovate-auth.js": {
-    "mtime": 1792956398.713806,
-    "ast_hash": "c770362831879b2ce9831ff4acd70059",
+    "mtime": 1792957244.2399333,
+    "ast_hash": "68c5e2069ead181ecd532555a50ff640",
     "semantic_hash": ""
   },
   "desktop/package.json": {
@@ -770,8 +770,8 @@
     "semantic_hash": ""
   },
   "desktop/renderer/app.js": {
-    "mtime": 1792956451.491359,
-    "ast_hash": "8ebd5217e7682da8630add9b378e4e31",
+    "mtime": 1792960424.9379861,
+    "ast_hash": "ea720e674e8240abefc7940b9910b7e5",
     "semantic_hash": ""
   },
   "src/app/api/copier/sync-trade/route.ts": {
@@ -810,8 +810,13 @@
     "semantic_hash": ""
   },
   "desktop/renderer/index.html": {
-    "mtime": 1792954528.4249723,
-    "ast_hash": "8bffba1ccd8bad92a2135b690f942881",
+    "mtime": 1792960271.1633387,
+    "ast_hash": "abf613ec1133e6c41a21cc7ea825b332",
+    "semantic_hash": ""
+  },
+  "src/lib/services/desktop-copier-engine.test.ts": {
+    "mtime": 1792960436.8144991,
+    "ast_hash": "a308cdc36d981bdc43f69c6d77433b74",
     "semantic_hash": ""
   }
 }

@@ -525,8 +525,8 @@
     "semantic_hash": ""
   },
   "src/app/risk-config/page.tsx": {
-    "mtime": 1792936864.4725525,
-    "ast_hash": "b8cd4a91e9b83c3779e458aa0ad955de",
+    "mtime": 1792960880.3873441,
+    "ast_hash": "3b830e1f7879e18ee96656e19945ad2b",
     "semantic_hash": ""
   },
   "src/app/simulador/[id]/page.tsx": {
