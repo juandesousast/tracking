@@ -154,7 +154,7 @@ export function DesktopDownloadBanner({ className }: { className?: string }) {
           <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
             {selectedOS === 'mac' ? (
               <a
-                href="/api/download?os=mac"
+                href="/downloads/EdgeFlow-Copier-1.0.0-arm64.dmg"
                 download="EdgeFlow-Copier-1.0.0-arm64.dmg"
                 className="inline-flex items-center justify-center bg-blue-600 hover:bg-blue-500 text-white font-bold gap-2 text-xs sm:text-sm h-11 px-6 rounded-xl shadow-lg shadow-blue-600/30 flex-1 sm:flex-none cursor-pointer transition-colors"
               >
