@@ -35,8 +35,8 @@
     "semantic_hash": ""
   },
   "package.json": {
-    "mtime": 1792600110.3781881,
-    "ast_hash": "61bfeb5ff0b52069e39f308ccc29492e",
+    "mtime": 1792929957.1117477,
+    "ast_hash": "bd1413e36fd448fe010e3e943f6ab319",
     "semantic_hash": ""
   },
   "postcss.config.mjs": {
@@ -50,8 +50,8 @@
     "semantic_hash": ""
   },
   "src/app/page.tsx": {
-    "mtime": 1792435367.3940132,
-    "ast_hash": "ca4bda8d7f6b46d1f0cbc78f0117612d",
+    "mtime": 1792930262.7016342,
+    "ast_hash": "a4a7bf77ecc6efdcf22ec91bc105d9cd",
     "semantic_hash": ""
   },
   "src/components/ui/button.tsx": {
@@ -155,8 +155,8 @@
     "semantic_hash": ""
   },
   "src/components/layout/sidebar.tsx": {
-    "mtime": 1792609355.2327232,
-    "ast_hash": "cbe5d37634465220a4cc526f4d2c86a7",
+    "mtime": 1792930103.2672887,
+    "ast_hash": "be5d8c89da91ee58d9c622210b59ded6",
     "semantic_hash": ""
   },
   "src/components/ui/avatar.tsx": {
@@ -510,8 +510,8 @@
     "semantic_hash": ""
   },
   "src/app/calendario/page.tsx": {
-    "mtime": 1792608591.332892,
-    "ast_hash": "2a0c5b82ed81f9aaf7771f17ccbc2a2d",
+    "mtime": 1792930150.4121559,
+    "ast_hash": "ba8f3b21bf7033dd3109c6ed0e1e7100",
     "semantic_hash": ""
   },
   "src/app/portfolio/page.tsx": {
@@ -520,8 +520,8 @@
     "semantic_hash": ""
   },
   "src/app/progress-tracker/page.tsx": {
-    "mtime": 1792608620.467791,
-    "ast_hash": "46f074674c2a29ecea215a13558dbb9b",
+    "mtime": 1792930178.5057857,
+    "ast_hash": "294818f024d6617e0880d94f7378fced",
     "semantic_hash": ""
   },
   "src/app/risk-config/page.tsx": {
@@ -545,8 +545,8 @@
     "semantic_hash": ""
   },
   "src/app/tools/page.tsx": {
-    "mtime": 1792608759.5194614,
-    "ast_hash": "d0f7e779ad3b3aa58cdab23052a34cf6",
+    "mtime": 1792930218.8823779,
+    "ast_hash": "23a4dd0ff6ab827e68d89c93dfea61bc",
     "semantic_hash": ""
   },
   "src/app/trades/page.tsx": {
@@ -697,6 +697,16 @@
   "src/components/ui/top-nav-loader.tsx": {
     "mtime": 1792609150.7276907,
     "ast_hash": "09dcc41811bde2cd098aad319b2f4761",
+    "semantic_hash": ""
+  },
+  "src/components/ui/animated-tabs.tsx": {
+    "mtime": 1792930067.7733264,
+    "ast_hash": "9716e0a220375591ca1bbc18b58aab25",
+    "semantic_hash": ""
+  },
+  "src/components/ui/stat-card.tsx": {
+    "mtime": 1792930078.4351594,
+    "ast_hash": "740ca4fda5d7f6d64dbf0b0b3519957a",
     "semantic_hash": ""
   }
 }
