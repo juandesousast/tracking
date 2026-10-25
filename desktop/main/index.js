@@ -6,6 +6,14 @@ if (typeof global.WebSocket === 'undefined') {
   global.WebSocket = WebSocket;
 }
 
+process.on('uncaughtException', (err) => {
+  if (err && err.message && err.message.includes('WebSocket was closed before')) {
+    // Harmless socket teardown race condition during reconnect
+    return;
+  }
+  console.error('[Main] Uncaught exception:', err);
+});
+
 const { openTradovateLoginWindow } = require('./tradovate-auth');
 const { DesktopCopierEngine } = require('./copier-engine');
 
@@ -230,15 +238,54 @@ function createWindow() {
   });
 }
 
+function safeCloseWebSocket(ws) {
+  if (!ws) return;
+  try {
+    ws.on('error', () => {}); // swallow close errors on pending sockets
+    if (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING) {
+      ws.close();
+    }
+    setTimeout(() => {
+      try {
+        ws.removeAllListeners();
+      } catch (e) {}
+    }, 50);
+  } catch (e) {}
+}
+
+let isRestoringSession = false;
+
+async function restoreUserTradovateSession(userCfg) {
+  if (!userCfg || !userCfg.tradovateToken) return;
+  if (isRestoringSession) return;
+  if (activeWs && (activeWs.readyState === WebSocket.OPEN || activeWs.readyState === WebSocket.CONNECTING)) {
+    return;
+  }
+  isRestoringSession = true;
+  activeToken = userCfg.tradovateToken;
+  activeEnvironment = userCfg.environment || 'demo';
+
+  try {
+    const result = await fetchTradovateAccountsRest(activeToken, activeEnvironment);
+    if (result && result.accounts && result.accounts.length > 0) {
+      activeAccounts = result.accounts;
+      activeEnvironment = result.env;
+      sendToRenderer('tradovate:accounts', activeAccounts);
+    }
+    connectTradovateWs(activeToken, activeEnvironment);
+  } catch (err) {
+    console.error('[TradovateREST] Error restoring user session:', err);
+  } finally {
+    isRestoringSession = false;
+  }
+}
+
 function connectTradovateWs(token, environment = 'demo') {
   activeToken = token;
   activeEnvironment = environment;
 
   if (activeWs) {
-    try {
-      activeWs.removeAllListeners();
-      activeWs.close();
-    } catch (e) {}
+    safeCloseWebSocket(activeWs);
     activeWs = null;
   }
 
@@ -379,27 +426,14 @@ ipcMain.handle('auth:login', async (event, { email, password }) => {
     const userCfg = loadStoredUserConfig(currentUserId);
     copierEngine.updateConfig(userCfg);
 
-    // If this user already has a Tradovate connection, restore it
+    // If this user already has a Tradovate connection, restore it cleanly
     if (userCfg.tradovateToken) {
-      activeToken = userCfg.tradovateToken;
-      activeEnvironment = userCfg.environment || 'demo';
-      fetchTradovateAccountsRest(activeToken, activeEnvironment).then((result) => {
-        if (result && result.accounts.length > 0) {
-          activeAccounts = result.accounts;
-          sendToRenderer('tradovate:accounts', activeAccounts);
-        }
-        connectTradovateWs(activeToken, activeEnvironment);
-      });
+      restoreUserTradovateSession(userCfg);
     } else {
       activeToken = null;
       activeAccounts = [];
-      if (activeWs) {
-        try {
-          activeWs.removeAllListeners();
-          activeWs.close();
-        } catch (e) {}
-        activeWs = null;
-      }
+      safeCloseWebSocket(activeWs);
+      activeWs = null;
       sendToRenderer('tradovate:accounts', []);
       sendToRenderer('ws:status', { status: 'disconnected', latency: 0 });
     }
@@ -417,15 +451,7 @@ ipcMain.handle('auth:get-session', async () => {
       copierEngine.updateConfig(userCfg);
 
       if (userCfg.tradovateToken) {
-        activeToken = userCfg.tradovateToken;
-        activeEnvironment = userCfg.environment || 'demo';
-        fetchTradovateAccountsRest(activeToken, activeEnvironment).then((result) => {
-          if (result && result.accounts.length > 0) {
-            activeAccounts = result.accounts;
-            sendToRenderer('tradovate:accounts', activeAccounts);
-          }
-          connectTradovateWs(activeToken, activeEnvironment);
-        });
+        restoreUserTradovateSession(userCfg);
       }
 
       return { authenticated: true, user: copierEngine.currentUser };
@@ -441,13 +467,8 @@ ipcMain.handle('auth:logout', async () => {
   currentUserId = null;
   activeToken = null;
   activeAccounts = [];
-  if (activeWs) {
-    try {
-      activeWs.removeAllListeners();
-      activeWs.close();
-    } catch (e) {}
-    activeWs = null;
-  }
+  safeCloseWebSocket(activeWs);
+  activeWs = null;
   sendToRenderer('tradovate:accounts', []);
   sendToRenderer('ws:status', { status: 'disconnected', latency: 0 });
   return { success: true };
@@ -556,13 +577,8 @@ ipcMain.handle('tradovate:liquidate-all', () => {
 ipcMain.handle('tradovate:disconnect', async () => {
   activeToken = null;
   activeAccounts = [];
-  if (activeWs) {
-    try {
-      activeWs.removeAllListeners();
-      activeWs.close();
-    } catch (e) {}
-    activeWs = null;
-  }
+  safeCloseWebSocket(activeWs);
+  activeWs = null;
   if (currentUserId) {
     saveUserConfig(currentUserId, { tradovateToken: null });
     try {
@@ -610,17 +626,7 @@ app.whenReady().then(async () => {
       copierEngine.updateConfig(userCfg);
 
       if (userCfg.tradovateToken) {
-        activeToken = userCfg.tradovateToken;
-        activeEnvironment = userCfg.environment || 'demo';
-
-        fetchTradovateAccountsRest(activeToken, activeEnvironment).then((result) => {
-          if (result && result.accounts.length > 0) {
-            activeAccounts = result.accounts;
-            activeEnvironment = result.env;
-            sendToRenderer('tradovate:accounts', activeAccounts);
-          }
-          connectTradovateWs(activeToken, activeEnvironment);
-        });
+        restoreUserTradovateSession(userCfg);
       }
     }
   }
