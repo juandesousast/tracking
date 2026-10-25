@@ -2,6 +2,9 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const WebSocket = require('ws');
+if (typeof global.WebSocket === 'undefined') {
+  global.WebSocket = WebSocket;
+}
 const { openTradovateLoginWindow } = require('./tradovate-auth');
 const { DesktopCopierEngine } = require('./copier-engine');
 

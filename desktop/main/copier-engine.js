@@ -1,3 +1,10 @@
+const WebSocket = require('ws');
+
+// Polyfill WebSocket for Node / Electron runtime for @supabase/realtime-js
+if (typeof global.WebSocket === 'undefined') {
+  global.WebSocket = WebSocket;
+}
+
 const { createClient } = require('@supabase/supabase-js');
 
 // Supabase configuration
@@ -33,7 +40,15 @@ class DesktopCopierEngine {
     this.onLog = onLog || console.log;
     this.onStatusChange = onStatusChange || (() => {});
 
-    this.supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    this.supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      realtime: {
+        transport: WebSocket,
+      },
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+      },
+    });
     this.realtimeChannel = null;
 
     // Config state
