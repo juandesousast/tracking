@@ -26,6 +26,8 @@ import {
   ShieldAlert,
   ArrowUpRight,
   Check,
+  DollarSign,
+  Wallet,
 } from "lucide-react";
 import { loginSchema } from "@/lib/validations/schemas";
 import { BrandLogo } from "@/components/brand-logo";
@@ -44,7 +46,7 @@ export default function LoginPage() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
-  // Live Trading Simulation State for the Chart
+  // Live Trading Simulation State
   const [livePrice, setLivePrice] = useState(20486.25);
   const [livePnl, setLivePnl] = useState(1460);
   const [priceChange, setPriceChange] = useState("+146.00 (+0.72%)");
@@ -69,18 +71,17 @@ export default function LoginPage() {
     const entryPrice = 20440.0;
     const interval = setInterval(() => {
       setLivePrice((prev) => {
-        const delta = (Math.random() - 0.45) * 1.25; // slight upward drift
+        const delta = (Math.random() - 0.45) * 1.5;
         const nextPrice = Number((prev + delta).toFixed(2));
-        // Calculate PnL for 2 contracts of NQ ($20/pt per contract = $40/pt total)
         const pts = nextPrice - entryPrice;
-        const currentPnl = Math.round(pts * 40);
+        const currentPnl = Math.round(pts * 40); // 2 contracts NQ ($40/pt)
         setLivePnl(currentPnl);
         const changePts = (nextPrice - 20340.0).toFixed(2);
         const changePct = ((Number(changePts) / 20340.0) * 100).toFixed(2);
         setPriceChange(`+${changePts} (+${changePct}%)`);
         return nextPrice;
       });
-    }, 1400);
+    }, 1300);
 
     return () => clearInterval(interval);
   }, []);
@@ -140,10 +141,10 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen w-full flex flex-col lg:flex-row bg-slate-50 dark:bg-[#07090e] text-slate-900 dark:text-white transition-colors duration-300">
       {/* ========================================================
-          LEFT COLUMN: The Authentication Console (42% - 46%)
-          Clean, modern, distraction-free
+          LEFT COLUMN: Authentication Form (40% - 44%)
+          Clean, distraction-free, fully responsive in Light & Dark
           ======================================================== */}
-      <div className="w-full lg:w-[48%] xl:w-[42%] min-h-screen flex flex-col justify-between p-6 sm:p-10 lg:p-14 relative z-10 bg-white dark:bg-[#090b11] border-r border-slate-200/80 dark:border-white/[0.06]">
+      <div className="w-full lg:w-[46%] xl:w-[40%] min-h-screen flex flex-col justify-between p-6 sm:p-10 lg:p-14 relative z-20 bg-white dark:bg-[#090b11] border-r border-slate-200/80 dark:border-white/[0.06] transition-colors duration-300">
         {/* Top Header */}
         <div className="flex items-center justify-between w-full">
           <Link href="/" className="transition-opacity hover:opacity-85">
@@ -154,7 +155,7 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* Center: Auth Form Container */}
+        {/* Center: Auth Form */}
         <div className="w-full max-w-sm mx-auto my-auto py-10 space-y-7">
           <div className="space-y-2 text-left">
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
@@ -277,7 +278,7 @@ export default function LoginPage() {
           </form>
         </div>
 
-        {/* Bottom Trust Indicators */}
+        {/* Bottom Security Footer */}
         <div className="pt-6 border-t border-slate-200/60 dark:border-white/[0.05] flex items-center justify-between text-[11px] text-slate-400 dark:text-zinc-500">
           <div className="flex items-center gap-1.5">
             <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
@@ -290,316 +291,316 @@ export default function LoginPage() {
       </div>
 
       {/* ========================================================
-          RIGHT COLUMN: Immersive Fluid Trading Chart (54% - 58%)
-          Live Candlestick Stream, Trade Execution Overlay & Telemetry
+          RIGHT COLUMN: Dynamic Fluid Trading Showcase (54% - 60%)
+          Seamless, borderless, organic trading animation with
+          distributed floating metric cards in Light & Dark Mode
           ======================================================== */}
-      <div className="hidden lg:flex flex-1 flex-col justify-between p-8 xl:p-12 bg-gradient-to-br from-[#06080e] via-[#080b15] to-[#04060a] relative overflow-hidden text-white select-none">
-        {/* Ambient Organic Atmosphere Glows */}
-        <div className="absolute top-1/4 -right-20 w-[600px] h-[500px] bg-blue-600/[0.12] rounded-full blur-[120px] pointer-events-none" />
-        <div className="absolute -bottom-20 left-10 w-[500px] h-[400px] bg-cyan-500/[0.08] rounded-full blur-[100px] pointer-events-none" />
+      <div className="hidden lg:flex flex-1 flex-col justify-between p-8 xl:p-12 relative overflow-hidden select-none bg-gradient-to-br from-slate-100/90 via-slate-50 to-blue-50/40 dark:from-[#06080e] dark:via-[#090c16] dark:to-[#04060a] text-slate-900 dark:text-white transition-colors duration-300">
+        {/* Ambient Glows adapting to Dark & Light */}
+        <div className="absolute top-1/4 -right-20 w-[600px] h-[500px] bg-blue-500/[0.08] dark:bg-blue-600/[0.12] rounded-full blur-[130px] pointer-events-none" />
+        <div className="absolute -bottom-20 left-10 w-[500px] h-[400px] bg-cyan-400/[0.08] dark:bg-cyan-500/[0.08] rounded-full blur-[110px] pointer-events-none" />
 
-        {/* Modern Dot Matrix Texture */}
+        {/* Subtle Geometric Matrix */}
         <div
-          className="absolute inset-0 opacity-[0.035] pointer-events-none"
+          className="absolute inset-0 opacity-[0.03] dark:opacity-[0.04] pointer-events-none"
           style={{
-            backgroundImage: `radial-gradient(circle at 1.5px 1.5px, #60a5fa 1px, transparent 0)`,
+            backgroundImage: `radial-gradient(circle at 1.5px 1.5px, currentColor 1px, transparent 0)`,
             backgroundSize: "32px 32px",
           }}
         />
 
-        {/* Top Floating Telemetry Strip */}
+        {/* Top Ticker Bar */}
         <div className="flex items-center justify-between w-full relative z-10">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.05] border border-white/10 backdrop-blur-md shadow-sm">
-              <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
-              <span className="text-[11px] font-mono font-semibold text-emerald-400 uppercase tracking-wider">
+          <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/80 dark:bg-white/[0.05] border border-slate-200/80 dark:border-white/10 shadow-sm backdrop-blur-md">
+              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-ping" />
+              <span className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
                 MERCADOS EN VIVO
               </span>
             </div>
 
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.03] border border-white/[0.08] text-xs font-mono text-zinc-300">
-              <span className="font-bold text-white">NQ FUTURES</span>
-              <span className="text-zinc-500">·</span>
-              <span className="text-emerald-400 font-bold tabular-nums">${livePrice.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
-              <span className="text-[10px] text-emerald-400/90 tabular-nums">{priceChange}</span>
+            <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/70 dark:bg-white/[0.03] border border-slate-200/70 dark:border-white/[0.08] text-xs font-mono shadow-2xs backdrop-blur-sm">
+              <span className="font-bold text-slate-900 dark:text-white">NQ FUTURES 5M</span>
+              <span className="text-slate-300 dark:text-zinc-600">·</span>
+              <span className="text-emerald-600 dark:text-emerald-400 font-bold tabular-nums">
+                ${livePrice.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+              </span>
+              <span className="text-[10px] text-emerald-600/90 dark:text-emerald-400/90 tabular-nums font-semibold">
+                {priceChange}
+              </span>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 text-xs font-mono text-zinc-400">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-            <span className="text-zinc-300">LATENCIA: 11ms</span>
+          <div className="flex items-center gap-2 text-xs font-mono text-slate-500 dark:text-zinc-400">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            <span>LATENCIA: 11ms</span>
           </div>
         </div>
 
-        {/* Center: Fluid Trading View with Live Order Execution */}
-        <div className="my-auto space-y-5 relative z-10 w-full max-w-2xl mx-auto">
-          {/* Main Chart Canvas Glass Container */}
-          <div className="rounded-3xl border border-white/[0.10] bg-[#090d19]/80 backdrop-blur-2xl shadow-2xl shadow-black/80 overflow-hidden">
-            {/* Chart Sub-header */}
-            <div className="px-6 py-4 border-b border-white/[0.08] bg-white/[0.02] flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="h-7 w-7 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
-                  <Activity className="h-4 w-4" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-extrabold tracking-tight text-white font-mono">
-                      NQ 100 E-MINI
-                    </span>
-                    <Badge variant="outline" className="border-blue-500/30 text-blue-400 font-mono text-[10px] px-1.5 py-0">
-                      5 MIN
-                    </Badge>
-                  </div>
-                  <span className="text-[10px] text-zinc-400 block font-mono">
-                    Orden Ejecutada via Tradovate Bridge
-                  </span>
-                </div>
+        {/* Center: Open Fluid Trading Space with Distributed Floating Cards */}
+        <div className="my-auto relative z-10 w-full max-w-2xl mx-auto py-6">
+          {/* Top Distributed Row: 2 Floating Cards */}
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            {/* Floating Card 1: Live Trade Execution */}
+            <div className="p-4 rounded-2xl bg-white/85 dark:bg-[#0c101c]/85 border border-slate-200/90 dark:border-white/[0.08] shadow-lg shadow-slate-900/5 dark:shadow-black/50 backdrop-blur-xl transition-transform hover:-translate-y-0.5 duration-200">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-slate-500 dark:text-zinc-400 font-bold">
+                  Operación en Curso
+                </span>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold font-mono uppercase bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30">
+                  LONG 2 CT
+                </span>
               </div>
-
-              {/* Live Position Execution Badge */}
-              <div className="flex items-center gap-2">
-                <div className="px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center gap-2">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  <span className="font-mono text-xs font-bold text-emerald-400 uppercase">
-                    LONG 2 CT
-                  </span>
-                  <span className="text-[11px] font-mono font-bold text-white tabular-nums">
+              <div className="flex items-baseline justify-between">
+                <div>
+                  <span className="text-xl sm:text-2xl font-black font-mono text-emerald-600 dark:text-emerald-400 tabular-nums">
                     +{livePnl >= 0 ? `$${livePnl.toLocaleString()}` : `-$${Math.abs(livePnl).toLocaleString()}`}
+                  </span>
+                  <span className="text-[11px] text-slate-400 dark:text-zinc-500 block font-mono mt-0.5">
+                    Entrada: 20,440.00 · Target: 20,540.00
+                  </span>
+                </div>
+                <div className="text-right">
+                  <span className="text-xs font-bold text-slate-700 dark:text-slate-300 font-mono">
+                    R:R 1:2.0
+                  </span>
+                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 block font-semibold">
+                    73% al TP
                   </span>
                 </div>
               </div>
             </div>
 
-            {/* SVG Live Candlestick & Trade Structure */}
-            <div className="p-6 relative bg-gradient-to-b from-[#070912]/80 to-[#06080f]/95">
-              <div className="relative w-full h-[270px] overflow-hidden">
-                <svg className="w-full h-full" viewBox="0 0 560 250" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <defs>
-                    {/* Glowing profit gradient between entry and current price */}
-                    <linearGradient id="profitZoneGlow" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#10b981" stopOpacity="0.22" />
-                      <stop offset="100%" stopColor="#10b981" stopOpacity="0.0" />
-                    </linearGradient>
-
-                    {/* Support & Demand Zone */}
-                    <linearGradient id="demandZoneGlow" x1="0" y1="0" x2="1" y2="0">
-                      <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.14" />
-                      <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.03" />
-                    </linearGradient>
-                  </defs>
-
-                  {/* Horizontal Grid & Price Ticks */}
-                  <line x1="0" y1="35" x2="560" y2="35" stroke="rgba(255,255,255,0.05)" strokeDasharray="3 3" />
-                  <line x1="0" y1="90" x2="560" y2="90" stroke="rgba(255,255,255,0.05)" strokeDasharray="3 3" />
-                  <line x1="0" y1="145" x2="560" y2="145" stroke="rgba(255,255,255,0.05)" strokeDasharray="3 3" />
-                  <line x1="0" y1="200" x2="560" y2="200" stroke="rgba(255,255,255,0.05)" strokeDasharray="3 3" />
-
-                  {/* Price Scale Text on Right */}
-                  <text x="512" y="38" fill="#64748b" fontSize="9" fontFamily="monospace">20,540</text>
-                  <text x="512" y="93" fill="#64748b" fontSize="9" fontFamily="monospace">20,490</text>
-                  <text x="512" y="148" fill="#64748b" fontSize="9" fontFamily="monospace">20,440</text>
-                  <text x="512" y="203" fill="#64748b" fontSize="9" fontFamily="monospace">20,390</text>
-
-                  {/* Demand Order Block Zone */}
-                  <rect x="75" y="135" width="135" height="38" fill="url(#demandZoneGlow)" stroke="#3b82f6" strokeWidth="1" strokeDasharray="3 3" rx="6" />
-                  <text x="82" y="148" fill="#60a5fa" fontSize="8" fontFamily="monospace" fontWeight="bold">DEMAND OB 5M</text>
-
-                  {/* Profit Area Shading between Entry and Current Level */}
-                  <rect x="155" y="55" width="280" height="90" fill="url(#profitZoneGlow)" rx="4" />
-
-                  {/* Volume Profile Bars at Bottom */}
-                  <rect x="25" y="228" width="6" height="12" fill="rgba(244,63,94,0.3)" rx="1" />
-                  <rect x="50" y="222" width="6" height="18" fill="rgba(244,63,94,0.4)" rx="1" />
-                  <rect x="75" y="215" width="6" height="25" fill="rgba(16,185,129,0.5)" rx="1" />
-                  <rect x="100" y="220" width="6" height="20" fill="rgba(16,185,129,0.4)" rx="1" />
-                  <rect x="125" y="226" width="6" height="14" fill="rgba(244,63,94,0.3)" rx="1" />
-                  <rect x="150" y="210" width="6" height="30" fill="rgba(16,185,129,0.7)" rx="1" />
-                  <rect x="175" y="216" width="6" height="24" fill="rgba(16,185,129,0.5)" rx="1" />
-                  <rect x="200" y="224" width="6" height="16" fill="rgba(244,63,94,0.3)" rx="1" />
-                  <rect x="225" y="218" width="6" height="22" fill="rgba(16,185,129,0.5)" rx="1" />
-                  <rect x="250" y="214" width="6" height="26" fill="rgba(16,185,129,0.6)" rx="1" />
-                  <rect x="275" y="226" width="6" height="14" fill="rgba(244,63,94,0.3)" rx="1" />
-                  <rect x="300" y="208" width="6" height="32" fill="rgba(16,185,129,0.7)" rx="1" />
-                  <rect x="325" y="218" width="6" height="22" fill="rgba(16,185,129,0.5)" rx="1" />
-                  <rect x="350" y="224" width="6" height="16" fill="rgba(244,63,94,0.3)" rx="1" />
-                  <rect x="375" y="205" width="6" height="35" fill="rgba(16,185,129,0.8)" rx="1" />
-                  <rect x="400" y="200" width="6" height="40" fill="rgba(16,185,129,0.9)" rx="1" />
-                  <rect x="425" y="212" width="6" height="28" fill="rgba(16,185,129,0.6)" rx="1" />
-
-                  {/* Candlestick Wave (Smooth modern candles with thin precise wicks) */}
-                  {/* C1: Red */}
-                  <line x1="28" y1="85" x2="28" y2="130" stroke="#f43f5e" strokeWidth="1" />
-                  <rect x="23" y="95" width="10" height="24" fill="#f43f5e" rx="1.5" />
-
-                  {/* C2: Red */}
-                  <line x1="53" y1="110" x2="53" y2="155" stroke="#f43f5e" strokeWidth="1" />
-                  <rect x="48" y="118" width="10" height="28" fill="#f43f5e" rx="1.5" />
-
-                  {/* C3: Rejection Pinbar at Demand */}
-                  <line x1="78" y1="130" x2="78" y2="170" stroke="#10b981" strokeWidth="1" />
-                  <rect x="73" y="138" width="10" height="14" fill="#10b981" rx="1.5" />
-
-                  {/* C4: Green Accumulation */}
-                  <line x1="103" y1="125" x2="103" y2="160" stroke="#10b981" strokeWidth="1" />
-                  <rect x="98" y="130" width="10" height="20" fill="#10b981" rx="1.5" />
-
-                  {/* C5: Small Red Doji */}
-                  <line x1="128" y1="122" x2="128" y2="155" stroke="#f43f5e" strokeWidth="1" />
-                  <rect x="123" y="130" width="10" height="12" fill="#f43f5e" rx="1.5" />
-
-                  {/* C6: Strong Green Breakout (ENTRY) */}
-                  <line x1="153" y1="105" x2="153" y2="150" stroke="#10b981" strokeWidth="1.2" />
-                  <rect x="148" y="112" width="10" height="32" fill="#10b981" rx="1.5" />
-
-                  {/* C7: Green Continuation */}
-                  <line x1="178" y1="92" x2="178" y2="130" stroke="#10b981" strokeWidth="1" />
-                  <rect x="173" y="100" width="10" height="24" fill="#10b981" rx="1.5" />
-
-                  {/* C8: Pullback Doji */}
-                  <line x1="203" y1="98" x2="203" y2="135" stroke="#f43f5e" strokeWidth="1" />
-                  <rect x="198" y="104" width="10" height="18" fill="#f43f5e" rx="1.5" />
-
-                  {/* C9: Green Bounce */}
-                  <line x1="228" y1="88" x2="228" y2="125" stroke="#10b981" strokeWidth="1" />
-                  <rect x="223" y="94" width="10" height="22" fill="#10b981" rx="1.5" />
-
-                  {/* C10: Green Extension */}
-                  <line x1="253" y1="78" x2="253" y2="115" stroke="#10b981" strokeWidth="1" />
-                  <rect x="248" y="82" width="10" height="26" fill="#10b981" rx="1.5" />
-
-                  {/* C11: Small Red pause */}
-                  <line x1="278" y1="75" x2="278" y2="110" stroke="#f43f5e" strokeWidth="1" />
-                  <rect x="273" y="80" width="10" height="16" fill="#f43f5e" rx="1.5" />
-
-                  {/* C12: Strong Expansion Candle */}
-                  <line x1="303" y1="62" x2="303" y2="100" stroke="#10b981" strokeWidth="1.2" />
-                  <rect x="298" y="68" width="10" height="26" fill="#10b981" rx="1.5" />
-
-                  {/* C13: Continuation Green */}
-                  <line x1="328" y1="58" x2="328" y2="88" stroke="#10b981" strokeWidth="1" />
-                  <rect x="323" y="62" width="10" height="18" fill="#10b981" rx="1.5" />
-
-                  {/* C14: Small Pullback */}
-                  <line x1="353" y1="60" x2="353" y2="94" stroke="#f43f5e" strokeWidth="1" />
-                  <rect x="348" y="65" width="10" height="18" fill="#f43f5e" rx="1.5" />
-
-                  {/* C15: Bullish Impulse */}
-                  <line x1="378" y1="46" x2="378" y2="84" stroke="#10b981" strokeWidth="1.2" />
-                  <rect x="373" y="52" width="10" height="26" fill="#10b981" rx="1.5" />
-
-                  {/* C16: Pre-current Candle */}
-                  <line x1="403" y1="42" x2="403" y2="76" stroke="#10b981" strokeWidth="1.2" />
-                  <rect x="398" y="48" width="10" height="22" fill="#10b981" rx="1.5" />
-
-                  {/* C17: LIVE ACTIVE PULSING CANDLE */}
-                  <line x1="428" y1="38" x2="428" y2="72" stroke="#10b981" strokeWidth="1.5" />
-                  <rect x="423" y="44" width="10" height="22" fill="#10b981" rx="1.5" className="animate-pulse" />
-
-                  {/* ========================================================
-                      ORDER LEVEL OVERLAYS (TP, CURRENT, ENTRY, SL)
-                      ======================================================== */}
-
-                  {/* 1. Take Profit Level (Green Dashed) */}
-                  <line x1="145" y1="32" x2="500" y2="32" stroke="#10b981" strokeWidth="1.5" strokeDasharray="4 4" />
-                  <rect x="150" y="23" width="155" height="18" fill="#064e3b" rx="4" />
-                  <text x="158" y="35" fill="#34d399" fontSize="8.5" fontFamily="monospace" fontWeight="bold">
-                    TP: 20,540.00 (+50.0 pts · +$2,000)
-                  </text>
-
-                  {/* 2. Live Price Line extending to right axis */}
-                  <line x1="145" y1="52" x2="500" y2="52" stroke="#10b981" strokeWidth="1" strokeDasharray="2 2" opacity="0.8" />
-                  <rect x="445" y="42" width="95" height="20" fill="#047857" rx="5" filter="drop-shadow(0px 3px 6px rgba(0,0,0,0.6))" />
-                  <text x="453" y="56" fill="#ffffff" fontSize="9" fontFamily="monospace" fontWeight="bold">
-                    ${livePrice.toFixed(2)}
-                  </text>
-
-                  {/* 3. Entry Price Level (Blue Solid) */}
-                  <line x1="145" y1="145" x2="500" y2="145" stroke="#3b82f6" strokeWidth="1.5" />
-                  <rect x="150" y="136" width="150" height="18" fill="#1e3a8a" rx="4" />
-                  <text x="158" y="148" fill="#93c5fd" fontSize="8.5" fontFamily="monospace" fontWeight="bold">
-                    ENTRADA: 2x NQ @ 20,440.00
-                  </text>
-
-                  {/* 4. Stop Loss Level (Red Dashed) */}
-                  <line x1="145" y1="180" x2="500" y2="180" stroke="#f43f5e" strokeWidth="1.5" strokeDasharray="4 4" />
-                  <rect x="150" y="171" width="150" height="18" fill="#881337" rx="4" />
-                  <text x="158" y="183" fill="#fda4af" fontSize="8.5" fontFamily="monospace" fontWeight="bold">
-                    SL: 20,415.00 (-25.0 pts · -$1,000)
-                  </text>
-                </svg>
+            {/* Floating Card 2: Payout & Retiro Aprobado */}
+            <div className="p-4 rounded-2xl bg-white/85 dark:bg-[#0c101c]/85 border border-slate-200/90 dark:border-white/[0.08] shadow-lg shadow-slate-900/5 dark:shadow-black/50 backdrop-blur-xl transition-transform hover:-translate-y-0.5 duration-200">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-slate-500 dark:text-zinc-400 font-bold">
+                  Último Retiro Aprobado
+                </span>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold font-mono uppercase bg-blue-500/15 text-blue-700 dark:text-blue-400 border border-blue-500/30 flex items-center gap-1">
+                  <Check className="h-3 w-3" /> Payout
+                </span>
               </div>
-
-              {/* Live Metric Strip Under Chart */}
-              <div className="grid grid-cols-3 gap-3 mt-3 pt-3 border-t border-white/[0.08]">
-                <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
-                  <span className="text-[10px] uppercase font-mono text-zinc-400 block tracking-wider">
-                    Ratio Riesgo / Beneficio
+              <div className="flex items-baseline justify-between">
+                <div>
+                  <span className="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white tabular-nums">
+                    $3,450.00
                   </span>
-                  <span className="text-sm font-bold font-mono text-emerald-400 mt-1 flex items-center gap-1.5">
-                    <Target className="h-3.5 w-3.5 text-emerald-400" />
-                    1 : 2.0 (Objetivo $2K)
+                  <span className="text-[11px] text-slate-400 dark:text-zinc-500 block truncate mt-0.5 font-medium">
+                    Apex 50K #8410 · Transferencia OK
                   </span>
                 </div>
-
-                <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
-                  <span className="text-[10px] uppercase font-mono text-zinc-400 block tracking-wider">
-                    Regla de Consistencia
-                  </span>
-                  <span className="text-sm font-bold font-mono text-blue-400 mt-1 flex items-center gap-1.5">
-                    <TrendingUp className="h-3.5 w-3.5 text-blue-400" />
-                    21.4% (Límite &lt;30%)
-                  </span>
-                </div>
-
-                <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
-                  <span className="text-[10px] uppercase font-mono text-zinc-400 block tracking-wider">
-                    Colchón Drawdown
-                  </span>
-                  <span className="text-sm font-bold font-mono text-amber-400 mt-1 flex items-center gap-1.5">
-                    <ShieldAlert className="h-3.5 w-3.5 text-amber-400" />
-                    Bloqueado $50,000
-                  </span>
+                <div className="h-8 w-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                  <Wallet className="h-4 w-4" />
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Value Prop Indicators Under Chart */}
-          <div className="grid grid-cols-3 gap-4 pt-1">
-            <div className="flex items-center gap-2.5">
-              <div className="h-8 w-8 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 shrink-0">
-                <Activity className="h-4 w-4" />
+          {/* Main Chart Graphic: Fluid borderless wave with live order overlays */}
+          <div className="relative rounded-3xl p-5 bg-white/70 dark:bg-[#080b14]/75 border border-slate-200/80 dark:border-white/[0.08] shadow-xl shadow-slate-900/5 dark:shadow-black/60 backdrop-blur-xl overflow-hidden">
+            {/* Chart Canvas */}
+            <div className="relative w-full h-[220px]">
+              <svg className="w-full h-full" viewBox="0 0 540 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  {/* Fluid Area Gradient under the wave */}
+                  <linearGradient id="fluidWaveArea" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#10b981" stopOpacity="0.28" />
+                    <stop offset="60%" stopColor="#3b82f6" stopOpacity="0.08" />
+                    <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.0" />
+                  </linearGradient>
+
+                  <linearGradient id="waveStroke" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stopColor="#3b82f6" />
+                    <stop offset="45%" stopColor="#06b6d4" />
+                    <stop offset="100%" stopColor="#10b981" />
+                  </linearGradient>
+
+                  <linearGradient id="demandZone" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.16" />
+                    <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.03" />
+                  </linearGradient>
+                </defs>
+
+                {/* Horizontal Level Guides */}
+                <line x1="0" y1="30" x2="540" y2="30" stroke="currentColor" strokeOpacity="0.07" strokeDasharray="4 4" />
+                <line x1="0" y1="80" x2="540" y2="80" stroke="currentColor" strokeOpacity="0.07" strokeDasharray="4 4" />
+                <line x1="0" y1="130" x2="540" y2="130" stroke="currentColor" strokeOpacity="0.07" strokeDasharray="4 4" />
+                <line x1="0" y1="180" x2="540" y2="180" stroke="currentColor" strokeOpacity="0.07" strokeDasharray="4 4" />
+
+                {/* Right Scale */}
+                <text x="495" y="34" fill="#94a3b8" fontSize="9" fontFamily="monospace">20,540</text>
+                <text x="495" y="84" fill="#94a3b8" fontSize="9" fontFamily="monospace">20,490</text>
+                <text x="495" y="134" fill="#94a3b8" fontSize="9" fontFamily="monospace">20,440</text>
+                <text x="495" y="184" fill="#94a3b8" fontSize="9" fontFamily="monospace">20,390</text>
+
+                {/* Demand Support Zone */}
+                <rect x="70" y="125" width="125" height="32" fill="url(#demandZone)" stroke="#3b82f6" strokeWidth="1" strokeDasharray="3 3" rx="5" />
+                <text x="76" y="138" fill="#3b82f6" fontSize="8" fontFamily="monospace" fontWeight="bold">DEMAND ZONE (5M)</text>
+
+                {/* Volume Profile Bars at Bottom */}
+                <rect x="25" y="200" width="7" height="12" fill="rgba(244,63,94,0.3)" rx="1.5" />
+                <rect x="55" y="194" width="7" height="18" fill="rgba(244,63,94,0.4)" rx="1.5" />
+                <rect x="85" y="188" width="7" height="24" fill="rgba(16,185,129,0.5)" rx="1.5" />
+                <rect x="115" y="192" width="7" height="20" fill="rgba(16,185,129,0.4)" rx="1.5" />
+                <rect x="145" y="184" width="7" height="28" fill="rgba(16,185,129,0.7)" rx="1.5" />
+                <rect x="175" y="190" width="7" height="22" fill="rgba(16,185,129,0.5)" rx="1.5" />
+                <rect x="205" y="196" width="7" height="16" fill="rgba(244,63,94,0.3)" rx="1.5" />
+                <rect x="235" y="186" width="7" height="26" fill="rgba(16,185,129,0.6)" rx="1.5" />
+                <rect x="265" y="182" width="7" height="30" fill="rgba(16,185,129,0.7)" rx="1.5" />
+                <rect x="295" y="194" width="7" height="18" fill="rgba(244,63,94,0.3)" rx="1.5" />
+                <rect x="325" y="180" width="7" height="32" fill="rgba(16,185,129,0.7)" rx="1.5" />
+                <rect x="355" y="174" width="7" height="38" fill="rgba(16,185,129,0.8)" rx="1.5" />
+                <rect x="385" y="170" width="7" height="42" fill="rgba(16,185,129,0.9)" rx="1.5" />
+                <rect x="415" y="178" width="7" height="34" fill="rgba(16,185,129,0.6)" rx="1.5" />
+
+                {/* Candlestick Bars (Natural trading rhythm) */}
+                {/* 1 */}
+                <line x1="28" y1="85" x2="28" y2="125" stroke="#f43f5e" strokeWidth="1" />
+                <rect x="23" y="93" width="10" height="22" fill="#f43f5e" rx="1.5" />
+                {/* 2 */}
+                <line x1="58" y1="105" x2="58" y2="148" stroke="#f43f5e" strokeWidth="1" />
+                <rect x="53" y="112" width="10" height="26" fill="#f43f5e" rx="1.5" />
+                {/* 3: Pinbar at demand */}
+                <line x1="88" y1="125" x2="88" y2="162" stroke="#10b981" strokeWidth="1" />
+                <rect x="83" y="132" width="10" height="15" fill="#10b981" rx="1.5" />
+                {/* 4 */}
+                <line x1="118" y1="120" x2="118" y2="152" stroke="#10b981" strokeWidth="1" />
+                <rect x="113" y="125" width="10" height="19" fill="#10b981" rx="1.5" />
+                {/* 5: Breakout impulse */}
+                <line x1="148" y1="102" x2="148" y2="145" stroke="#10b981" strokeWidth="1.2" />
+                <rect x="143" y="108" width="10" height="30" fill="#10b981" rx="1.5" />
+                {/* 6 */}
+                <line x1="178" y1="90" x2="178" y2="125" stroke="#10b981" strokeWidth="1" />
+                <rect x="173" y="96" width="10" height="22" fill="#10b981" rx="1.5" />
+                {/* 7 */}
+                <line x1="208" y1="95" x2="208" y2="128" stroke="#f43f5e" strokeWidth="1" />
+                <rect x="203" y="100" width="10" height="16" fill="#f43f5e" rx="1.5" />
+                {/* 8 */}
+                <line x1="238" y1="84" x2="238" y2="118" stroke="#10b981" strokeWidth="1" />
+                <rect x="233" y="89" width="10" height="22" fill="#10b981" rx="1.5" />
+                {/* 9 */}
+                <line x1="268" y1="74" x2="268" y2="108" stroke="#10b981" strokeWidth="1" />
+                <rect x="263" y="78" width="10" height="24" fill="#10b981" rx="1.5" />
+                {/* 10 */}
+                <line x1="298" y1="72" x2="298" y2="104" stroke="#f43f5e" strokeWidth="1" />
+                <rect x="293" y="76" width="10" height="15" fill="#f43f5e" rx="1.5" />
+                {/* 11 */}
+                <line x1="328" y1="58" x2="328" y2="95" stroke="#10b981" strokeWidth="1.2" />
+                <rect x="323" y="64" width="10" height="24" fill="#10b981" rx="1.5" />
+                {/* 12 */}
+                <line x1="358" y1="54" x2="358" y2="88" stroke="#10b981" strokeWidth="1" />
+                <rect x="353" y="58" width="10" height="20" fill="#10b981" rx="1.5" />
+                {/* 13 */}
+                <line x1="388" y1="44" x2="388" y2="78" stroke="#10b981" strokeWidth="1.2" />
+                <rect x="383" y="48" width="10" height="24" fill="#10b981" rx="1.5" />
+                {/* 14: ACTIVE PULSING CANDLE */}
+                <line x1="418" y1="36" x2="418" y2="68" stroke="#10b981" strokeWidth="1.5" />
+                <rect x="413" y="42" width="10" height="20" fill="#10b981" rx="1.5" className="animate-pulse" />
+
+                {/* Fluid Spline Path over candles with gradient area */}
+                <path
+                  d="M 28 104 C 88 140, 118 135, 148 115 C 178 95, 238 90, 268 80 C 298 75, 358 60, 418 48"
+                  fill="none"
+                  stroke="url(#waveStroke)"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                />
+
+                <path
+                  d="M 28 104 C 88 140, 118 135, 148 115 C 178 95, 238 90, 268 80 C 298 75, 358 60, 418 48 L 418 200 L 28 200 Z"
+                  fill="url(#fluidWaveArea)"
+                />
+
+                {/* Take Profit Target Line (Green Dashed) */}
+                <line x1="140" y1="28" x2="480" y2="28" stroke="#10b981" strokeWidth="1.5" strokeDasharray="4 4" />
+                <rect x="145" y="19" width="155" height="18" fill="#064e3b" rx="4" />
+                <text x="152" y="31" fill="#34d399" fontSize="8.5" fontFamily="monospace" fontWeight="bold">
+                  TP: 20,540.00 (+50.0 pts · +$2,000)
+                </text>
+
+                {/* Entry Price Line (Blue Solid) */}
+                <line x1="140" y1="130" x2="480" y2="130" stroke="#3b82f6" strokeWidth="1.5" />
+                <rect x="145" y="121" width="145" height="18" fill="#1e3a8a" rx="4" />
+                <text x="152" y="133" fill="#93c5fd" fontSize="8.5" fontFamily="monospace" fontWeight="bold">
+                  ENTRADA: 2x NQ @ 20,440.00
+                </text>
+
+                {/* Stop Loss Line (Red Dashed) */}
+                <line x1="140" y1="168" x2="480" y2="168" stroke="#f43f5e" strokeWidth="1.5" strokeDasharray="4 4" />
+                <rect x="145" y="159" width="145" height="18" fill="#881337" rx="4" />
+                <text x="152" y="171" fill="#fda4af" fontSize="8.5" fontFamily="monospace" fontWeight="bold">
+                  SL: 20,415.00 (-25.0 pts · -$1,000)
+                </text>
+
+                {/* Live Floating Price Beacon */}
+                <circle cx="418" cy="48" r="4" fill="#10b981" />
+                <circle cx="418" cy="48" r="8" fill="#10b981" opacity="0.3" className="animate-ping" />
+                <rect x="432" y="38" width="95" height="20" fill="#047857" rx="5" filter="drop-shadow(0px 3px 6px rgba(0,0,0,0.4))" />
+                <text x="440" y="52" fill="#ffffff" fontSize="9" fontFamily="monospace" fontWeight="bold">
+                  ${livePrice.toFixed(2)}
+                </text>
+              </svg>
+            </div>
+          </div>
+
+          {/* Bottom Distributed Row: 2 Floating Cards */}
+          <div className="grid grid-cols-2 gap-4 mt-4">
+            {/* Floating Card 3: Tradovate Copier */}
+            <div className="p-4 rounded-2xl bg-white/85 dark:bg-[#0c101c]/85 border border-slate-200/90 dark:border-white/[0.08] shadow-lg shadow-slate-900/5 dark:shadow-black/50 backdrop-blur-xl transition-transform hover:-translate-y-0.5 duration-200">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-slate-500 dark:text-zinc-400 font-bold">
+                  Copiador Tradovate API
+                </span>
+                <span className="flex items-center gap-1.5 text-[10px] font-bold text-amber-600 dark:text-amber-400 font-mono">
+                  <span className="h-2 w-2 rounded-full bg-amber-500 animate-pulse" />
+                  11ms Sync
+                </span>
               </div>
-              <div className="text-left">
-                <span className="text-xs font-bold text-white block">Multi-Firma</span>
-                <span className="text-[10px] text-zinc-400 block">Apex, Topstep, MFF</span>
+              <div className="flex items-baseline justify-between">
+                <div>
+                  <span className="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white">
+                    4 Cuentas
+                  </span>
+                  <span className="text-[11px] text-slate-400 dark:text-zinc-500 block truncate mt-0.5 font-medium">
+                    Apex · Topstep · MFF (0 deslices)
+                  </span>
+                </div>
+                <div className="h-8 w-8 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-600 dark:text-amber-400">
+                  <Zap className="h-4 w-4" />
+                </div>
               </div>
             </div>
 
-            <div className="flex items-center gap-2.5">
-              <div className="h-8 w-8 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shrink-0">
-                <Zap className="h-4 w-4" />
+            {/* Floating Card 4: Drawdown & Consistencia */}
+            <div className="p-4 rounded-2xl bg-white/85 dark:bg-[#0c101c]/85 border border-slate-200/90 dark:border-white/[0.08] shadow-lg shadow-slate-900/5 dark:shadow-black/50 backdrop-blur-xl transition-transform hover:-translate-y-0.5 duration-200">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-slate-500 dark:text-zinc-400 font-bold">
+                  Control de Reglas Prop Firm
+                </span>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold font-mono uppercase bg-blue-500/15 text-blue-700 dark:text-blue-400 border border-blue-500/30">
+                  Elegible
+                </span>
               </div>
-              <div className="text-left">
-                <span className="text-xs font-bold text-white block">Copiador Tradovate</span>
-                <span className="text-[10px] text-zinc-400 block">Copia a 11ms de latencia</span>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2.5">
-              <div className="h-8 w-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
-                <ShieldCheck className="h-4 w-4" />
-              </div>
-              <div className="text-left">
-                <span className="text-xs font-bold text-white block">Anti-Quiebre</span>
-                <span className="text-[10px] text-zinc-400 block">Vigilancia activa de saldo</span>
+              <div className="flex items-baseline justify-between">
+                <div>
+                  <span className="text-xl sm:text-2xl font-black font-mono text-blue-600 dark:text-blue-400 tabular-nums">
+                    21.4%
+                  </span>
+                  <span className="text-[11px] text-slate-400 dark:text-zinc-500 block truncate mt-0.5 font-medium">
+                    Mejor día (Límite 30% Apex/Topstep)
+                  </span>
+                </div>
+                <div className="h-8 w-8 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                  <ShieldCheck className="h-4 w-4" />
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         {/* Bottom Institutional Quote */}
-        <div className="flex items-center justify-between text-xs font-mono text-zinc-400 border-t border-white/[0.06] pt-5 relative z-10">
+        <div className="flex items-center justify-between text-xs font-mono text-slate-400 dark:text-zinc-500 border-t border-slate-200/60 dark:border-white/[0.06] pt-5 relative z-10">
           <span>SUITE PROFESIONAL DE TRADING</span>
           <span>© {new Date().getFullYear()} PROPFIRM TRACKER</span>
         </div>
