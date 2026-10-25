@@ -253,9 +253,14 @@ function connectTradovateWs(token, environment = 'demo') {
   activeWs = new WebSocket(wsUrl);
 
   let isAuthorized = false;
+  let authReqId = null;
+
   const authWatchdog = setTimeout(() => {
     if (!isAuthorized && activeWs) {
       console.warn(`[DesktopWS] Authorization timed out on ${wsUrl}`);
+      try {
+        activeWs.close();
+      } catch (e) {}
       sendToRenderer('ws:status', {
         status: 'error',
         error: `Tiempo de espera agotado en servidor ${environment.toUpperCase()}.`,
@@ -270,8 +275,8 @@ function connectTradovateWs(token, environment = 'demo') {
 
   activeWs.on('open', () => {
     console.log('[DesktopWS] Open! Sending authorization...');
-    const id = reqId++;
-    activeWs.send(`authorize\n${id}\n\n${token}`);
+    authReqId = reqId++;
+    activeWs.send(`authorize\n${authReqId}\n\n${token}`);
   });
 
   activeWs.on('message', (data) => {
@@ -291,7 +296,8 @@ function connectTradovateWs(token, environment = 'demo') {
         const msgs = Array.isArray(parsed) ? parsed : [parsed];
 
         for (const msg of msgs) {
-          if (msg.s === 200 && msg.i === 1) {
+          // Success: HTTP 200 response to authorize or incoming user payload
+          if (msg.s === 200 && (!isAuthorized || msg.i === authReqId)) {
             isAuthorized = true;
             clearTimeout(authWatchdog);
 
@@ -304,6 +310,18 @@ function connectTradovateWs(token, environment = 'demo') {
 
             const accListId = reqId++;
             activeWs.send(`account/list\n${accListId}\n\n{}`);
+          } else if (msg.s && msg.s !== 200 && (msg.i === authReqId || !isAuthorized)) {
+            clearTimeout(authWatchdog);
+            console.error(`[DesktopWS] Authorization rejected by Tradovate (${msg.s}):`, msg.d);
+            sendToRenderer('ws:status', {
+              status: 'error',
+              error: `Tradovate rechazo la autorizacion: ${msg.d?.errorText || msg.s}`,
+              environment,
+            });
+            sendToRenderer('app:log', {
+              time: new Date().toLocaleTimeString(),
+              msg: `<span style="color: #fb7185;">❌ Error de autorización en Tradovate (${environment.toUpperCase()}): ${msg.d?.errorText || 'Token inválido'}.</span>`,
+            });
           }
 
           if (msg.d && (msg.d.accounts || Array.isArray(msg.d))) {
