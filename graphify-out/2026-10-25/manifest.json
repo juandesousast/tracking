@@ -410,8 +410,8 @@
     "semantic_hash": ""
   },
   "src/app/copier/page.tsx": {
-    "mtime": 1792961388.2917135,
-    "ast_hash": "fbbd4a9ed6c4b61487fbf5b35ae079c9",
+    "mtime": 1792962163.8932774,
+    "ast_hash": "7f00d6c14c675724b1e8e63b18dfb2c9",
     "semantic_hash": ""
   },
   "src/components/modals/copier-rule-modal.tsx": {
@@ -820,8 +820,13 @@
     "semantic_hash": ""
   },
   "src/components/copier/desktop-download-banner.tsx": {
-    "mtime": 1792961368.4080844,
-    "ast_hash": "e3a598c4b1e1d87360caf2193e41a790",
+    "mtime": 1792962130.5776803,
+    "ast_hash": "85fbdce4afc9b9472844b220b1143ddf",
+    "semantic_hash": ""
+  },
+  "src/app/api/download/route.ts": {
+    "mtime": 1792962103.476026,
+    "ast_hash": "3b5bcfc77f23662917e6e187c6b1c69c",
     "semantic_hash": ""
   }
 }

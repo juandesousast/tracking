@@ -525,8 +525,8 @@
     "semantic_hash": ""
   },
   "src/app/risk-config/page.tsx": {
-    "mtime": 1792961879.303891,
-    "ast_hash": "8769acdc1132edf611973e70051d9fae",
+    "mtime": 1792962564.803106,
+    "ast_hash": "1084b8af3e7ea794ea452955cca55079",
     "semantic_hash": ""
   },
   "src/app/simulador/[id]/page.tsx": {
@@ -750,13 +750,13 @@
     "semantic_hash": ""
   },
   "desktop/main/index.js": {
-    "mtime": 1792961831.4758854,
-    "ast_hash": "c0b6121275bd7b41a2729eb5b77da11a",
+    "mtime": 1792962472.7157362,
+    "ast_hash": "48e4be4a7d650defcd856f9de0caf925",
     "semantic_hash": ""
   },
   "desktop/main/preload.js": {
-    "mtime": 1792961136.3629436,
-    "ast_hash": "39307b4f209e86f64e8a23db53a47bcc",
+    "mtime": 1792962482.983004,
+    "ast_hash": "1ba01c686c893fb2be97e56fa71e322f",
     "semantic_hash": ""
   },
   "desktop/main/tradovate-auth.js": {
@@ -770,8 +770,8 @@
     "semantic_hash": ""
   },
   "desktop/renderer/app.js": {
-    "mtime": 1792961765.860339,
-    "ast_hash": "a77db0d74c75f96a9cdcf3ce82d140c0",
+    "mtime": 1792962497.2789798,
+    "ast_hash": "cd5b94f728c2706bd29906850219b5aa",
     "semantic_hash": ""
   },
   "src/app/api/copier/sync-trade/route.ts": {
@@ -827,6 +827,11 @@
   "src/app/api/download/route.ts": {
     "mtime": 1792962103.476026,
     "ast_hash": "3b5bcfc77f23662917e6e187c6b1c69c",
+    "semantic_hash": ""
+  },
+  "src/app/api/risk-config/route.ts": {
+    "mtime": 1792962447.513888,
+    "ast_hash": "ac67ece89c221005478a8347419ffdb3",
     "semantic_hash": ""
   }
 }

@@ -577,9 +577,17 @@ ipcMain.handle('risk:save-config', async (event, riskCfg) => {
   saveUserConfig(currentUserId, { riskConfig: riskCfg });
   copierEngine.updateRiskConfig(riskCfg);
 
-  // Sync to Supabase account_risk_configs if user is authenticated
+  // Sync to Supabase user_metadata and accounts if user is authenticated
   if (copierEngine.currentUser) {
     try {
+      // 1. Persist directly in user_metadata (no FK constraint errors)
+      await copierEngine.supabase.auth.updateUser({
+        data: {
+          risk_config: riskCfg,
+        },
+      });
+
+      // 2. Best-effort sync to accounts table
       const cloudAccounts = await copierEngine.getCloudAccounts();
       if (cloudAccounts && cloudAccounts.length > 0) {
         for (const acc of cloudAccounts) {
@@ -607,6 +615,25 @@ ipcMain.handle('risk:save-config', async (event, riskCfg) => {
 
   return { success: true, riskConfig: riskCfg };
 });
+
+// Periodic Cloud-to-Desktop Risk Config Synchronization
+setInterval(async () => {
+  if (!copierEngine.currentUser || !currentUserId) return;
+  try {
+    const { data } = await copierEngine.supabase.auth.getUser();
+    const cloudRisk = data?.user?.user_metadata?.risk_config;
+    if (cloudRisk && typeof cloudRisk.isActive === 'boolean') {
+      const localCfg = loadStoredUserConfig(currentUserId);
+      const currentRisk = localCfg.riskConfig || copierEngine.riskConfig;
+      if (currentRisk.isActive !== cloudRisk.isActive) {
+        const merged = { ...currentRisk, ...cloudRisk };
+        saveUserConfig(currentUserId, { riskConfig: merged });
+        copierEngine.updateRiskConfig(merged);
+        sendToRenderer('app:risk-config-sync', merged);
+      }
+    }
+  } catch (err) {}
+}, 8000);
 
 // Tradovate Handlers (Scoped per user)
 ipcMain.handle('tradovate:get-accounts', async () => {

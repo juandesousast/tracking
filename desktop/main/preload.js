@@ -43,4 +43,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   onStatus: (callback) => {
     ipcRenderer.on('app:status', (event, data) => callback(data));
   },
+  onRiskConfigSync: (callback) => {
+    ipcRenderer.on('app:risk-config-sync', (event, data) => callback(data));
+  },
 });

@@ -6,11 +6,7 @@ import {
   PROP_FIRM_RISK_TEMPLATES,
   RiskTemplate,
 } from '@/lib/constants/risk-templates';
-import {
-  getAccountRiskConfig,
-  saveAccountRiskConfig,
-} from '@/lib/services/risk-config-actions';
-import { Account, AccountRiskConfig } from '@/types/database';
+import { Account } from '@/types/database';
 import { formatCurrency } from '@/lib/formatters';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/lib/services/toast';
@@ -25,13 +21,11 @@ import {
   CheckCircle2,
   Sliders,
   Wallet,
-  Lock,
   Wifi,
   Save,
   Info,
   Scale,
   Sparkles,
-  Layers,
 } from 'lucide-react';
 
 export default function RiskConfigPage() {
@@ -52,6 +46,27 @@ export default function RiskConfigPage() {
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>('topstep-50k');
   const [filterFirm, setFilterFirm] = useState<string>('all');
 
+  const loadConfig = async () => {
+    try {
+      const res = await fetch('/api/risk-config', { cache: 'no-store' });
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.success && data.config) {
+          const cfg = data.config;
+          if (typeof cfg.isActive === 'boolean') setIsActive(cfg.isActive);
+          if (cfg.dailyLossLimit) setDailyLossLimit(Number(cfg.dailyLossLimit));
+          if (cfg.dailyLossAction) setDailyLossAction(cfg.dailyLossAction);
+          if (cfg.dailyProfitLock) setDailyProfitLock(Number(cfg.dailyProfitLock));
+          if (cfg.maxContracts) setMaxContracts(Number(cfg.maxContracts));
+          if (cfg.eodCloseTime) setEodCloseTime(cfg.eodCloseTime);
+          if (cfg.templateId) setSelectedTemplateId(cfg.templateId);
+        }
+      }
+    } catch (e) {
+      console.warn('Error loading risk config via api:', e);
+    }
+  };
+
   useEffect(() => {
     async function init() {
       setIsLoading(true);
@@ -62,10 +77,8 @@ export default function RiskConfigPage() {
           const lastAccId = typeof window !== 'undefined' ? localStorage.getItem('last_selected_risk_account_id') : null;
           const initialAcc = accs.find((a) => a.id === lastAccId) || accs[0];
           setSelectedAccountId(initialAcc.id);
-          await loadConfig(initialAcc.id);
-        } else {
-          await loadConfig('');
         }
+        await loadConfig();
       } catch (e) {
         console.warn('Error loading accounts for risk config:', e);
       } finally {
@@ -78,58 +91,23 @@ export default function RiskConfigPage() {
   // Listen to window focus and periodic refresh to keep in sync with Desktop Copier
   useEffect(() => {
     const handleFocus = () => {
-      loadConfig(selectedAccountId);
+      loadConfig();
     };
     window.addEventListener('focus', handleFocus);
     const interval = setInterval(() => {
-      loadConfig(selectedAccountId);
-    }, 10000);
+      loadConfig();
+    }, 8000);
     return () => {
       window.removeEventListener('focus', handleFocus);
       clearInterval(interval);
     };
-  }, [selectedAccountId]);
+  }, []);
 
-  const loadConfig = async (accId: string) => {
-    const config = await getAccountRiskConfig(accId);
-    if (config && typeof config.is_active === 'boolean') {
-      setIsActive(config.is_active);
-      setDailyLossLimit(config.daily_loss_limit_amount || 1000);
-      setDailyLossAction(config.daily_loss_limit_action || 'liquidate');
-      setDailyProfitLock(config.daily_profit_target_amount || '');
-      setMaxContracts(config.max_contracts_limit || 5);
-      setConsistencyPercent(config.consistency_percentage_limit || 50);
-      setEodCloseTime(config.auto_eod_close_time || '22:10');
-      setSelectedTemplateId(config.template_id || 'topstep-50k');
-      return;
-    }
-
-    if (typeof window !== 'undefined') {
-      const local = localStorage.getItem(`risk_config_${accId}`);
-      if (local) {
-        try {
-          const parsed = JSON.parse(local);
-          if (typeof parsed.is_active === 'boolean') setIsActive(parsed.is_active);
-          setDailyLossLimit(parsed.daily_loss_limit_amount || 1000);
-          setDailyLossAction(parsed.daily_loss_limit_action || 'liquidate');
-          setDailyProfitLock(parsed.daily_profit_target_amount || '');
-          setMaxContracts(parsed.max_contracts_limit || 5);
-          setConsistencyPercent(parsed.consistency_percentage_limit || 50);
-          setEodCloseTime(parsed.auto_eod_close_time || '22:10');
-          setSelectedTemplateId(parsed.template_id || 'topstep-50k');
-        } catch (e) {
-          // Defaults
-        }
-      }
-    }
-  };
-
-  const handleAccountChange = async (accId: string) => {
+  const handleAccountChange = (accId: string) => {
     setSelectedAccountId(accId);
     if (typeof window !== 'undefined') {
       localStorage.setItem('last_selected_risk_account_id', accId);
     }
-    await loadConfig(accId);
   };
 
   const handleApplyTemplate = (template: RiskTemplate) => {
@@ -146,83 +124,73 @@ export default function RiskConfigPage() {
         setEodCloseTime('22:50');
       }
     }
-    toast.success('Plantilla de Referencia Seleccionada', `${template.label} cargada en el pre-configurador.`);
+    toast.success('Plantilla Seleccionada', `${template.label} cargada.`);
   };
 
   const handleToggleRiskShield = async () => {
     const nextState = !isActive;
     setIsActive(nextState);
 
-    const targetId = selectedAccountId || (accounts[0] ? accounts[0].id : '');
-    if (targetId) {
-      const config: AccountRiskConfig = {
-        account_id: targetId,
-        template_id: selectedTemplateId || null,
-        daily_loss_limit_amount: dailyLossLimit > 0 ? dailyLossLimit : null,
-        daily_loss_limit_action: dailyLossAction,
-        daily_profit_target_amount:
-          typeof dailyProfitLock === 'number' && dailyProfitLock > 0 ? dailyProfitLock : null,
-        max_contracts_limit: maxContracts > 0 ? maxContracts : null,
-        consistency_percentage_limit: consistencyPercent > 0 ? consistencyPercent : null,
-        auto_eod_close_time: eodCloseTime || null,
-        trailing_drawdown_limit: null,
-        is_active: nextState,
-      };
+    try {
+      const res = await fetch('/api/risk-config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          isActive: nextState,
+          templateId: selectedTemplateId,
+          dailyLossLimit,
+          dailyLossAction,
+          dailyProfitLock: typeof dailyProfitLock === 'number' && dailyProfitLock > 0 ? dailyProfitLock : null,
+          maxContracts,
+          eodCloseTime,
+        }),
+      });
 
-      try {
-        await saveAccountRiskConfig(config);
+      if (res.ok) {
         toast.success(
           nextState ? 'Escudo Activado' : 'Escudo Pausado',
           nextState
             ? 'Reglas de seguridad activadas y sincronizadas con la App de Escritorio.'
             : 'Supervisión de riesgo pausada y sincronizada con la App de Escritorio.'
         );
-      } catch (err) {
-        console.warn('Error saving risk shield toggle:', err);
       }
+    } catch (err) {
+      console.warn('Error saving risk shield toggle:', err);
     }
   };
 
   const handleSaveToCloud = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedAccountId) return;
-
     setIsSaving(true);
     setSaveSuccess(false);
 
-    const config: AccountRiskConfig = {
-      account_id: selectedAccountId,
-      template_id: selectedTemplateId || null,
-      daily_loss_limit_amount: dailyLossLimit > 0 ? dailyLossLimit : null,
-      daily_loss_limit_action: dailyLossAction,
-      daily_profit_target_amount: typeof dailyProfitLock === 'number' && dailyProfitLock > 0 ? dailyProfitLock : null,
-      max_contracts_limit: maxContracts > 0 ? maxContracts : null,
-      consistency_percentage_limit: consistencyPercent > 0 ? consistencyPercent : null,
-      auto_eod_close_time: eodCloseTime || null,
-      trailing_drawdown_limit: null,
-      is_active: isActive,
-    };
-
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(`risk_config_${selectedAccountId}`, JSON.stringify(config));
-    }
-
     try {
-      await saveAccountRiskConfig(config);
-      toast.success('Sincronizado con la Nube', 'Tus preferencias de riesgo se cargarán automáticamente en la App de Escritorio.');
-      setSaveSuccess(true);
-      setTimeout(() => setSaveSuccess(false), 4000);
+      const res = await fetch('/api/risk-config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          isActive,
+          templateId: selectedTemplateId,
+          dailyLossLimit,
+          dailyLossAction,
+          dailyProfitLock: typeof dailyProfitLock === 'number' && dailyProfitLock > 0 ? dailyProfitLock : null,
+          maxContracts,
+          eodCloseTime,
+        }),
+      });
+
+      if (res.ok) {
+        toast.success('Sincronizado con la Nube', 'Tus preferencias de riesgo se han actualizado y sincronizado.');
+        setSaveSuccess(true);
+        setTimeout(() => setSaveSuccess(false), 4000);
+      }
     } catch (err) {
-      console.warn('Saved locally:', err);
-      toast.success('Guardado Local', 'Configuración lista para la App de Escritorio.');
-      setSaveSuccess(true);
-      setTimeout(() => setSaveSuccess(false), 4000);
+      console.warn('Error saving to cloud:', err);
+      toast.error('Error de Guardado', 'No se pudo sincronizar la configuración.');
     } finally {
       setIsSaving(false);
     }
   };
-
-  const currentAccount = accounts.find((a) => a.id === selectedAccountId);
 
   const filteredTemplates = PROP_FIRM_RISK_TEMPLATES.filter((t) => {
     if (filterFirm === 'all') return true;
@@ -497,7 +465,7 @@ export default function RiskConfigPage() {
               Pre-Configuración y Respaldo en la Nube
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              Guarda tus parámetros por cuenta aquí para que la App de Escritorio los descargue automáticamente al iniciar sesión.
+              Guarda tus parámetros por cuenta aquí para que la App de Escritorio los descargue automáticamente.
             </p>
           </div>
 
@@ -602,9 +570,9 @@ export default function RiskConfigPage() {
 
             <Button
               type="submit"
-              disabled={isSaving || !selectedAccountId}
+              disabled={isSaving}
               size="lg"
-              className="gap-2 w-full sm:w-auto"
+              className="gap-2 w-full sm:w-auto cursor-pointer"
             >
               <Save className="h-4 w-4" />
               <span>{isSaving ? 'Sincronizando...' : 'Guardar y Sincronizar con App Desktop'}</span>

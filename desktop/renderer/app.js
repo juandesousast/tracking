@@ -206,6 +206,31 @@ if (riskShieldToggle) {
   });
 }
 
+if (window.electronAPI && typeof window.electronAPI.onRiskConfigSync === 'function') {
+  window.electronAPI.onRiskConfigSync((cfg) => {
+    if (riskShieldToggle && typeof cfg.isActive === 'boolean') {
+      if (riskShieldToggle.checked !== cfg.isActive) {
+        riskShieldToggle.checked = cfg.isActive;
+        if (cfg.isActive) {
+          if (riskShieldStatusBadge) riskShieldStatusBadge.className = 'pill-badge pill-green';
+          if (riskShieldStatusText) riskShieldStatusText.textContent = 'Escudo Activo';
+          if (riskConsoleStatus) {
+            riskConsoleStatus.innerHTML =
+              '<span style="color: #34d399;">[Activo] Escudo de riesgo sincronizado desde la web.</span>';
+          }
+        } else {
+          if (riskShieldStatusBadge) riskShieldStatusBadge.className = 'pill-badge pill-yellow';
+          if (riskShieldStatusText) riskShieldStatusText.textContent = 'Escudo Pausado';
+          if (riskConsoleStatus) {
+            riskConsoleStatus.innerHTML =
+              '<span style="color: #fbbf24;">[Pausado] Protección de riesgo pausada desde la nube.</span>';
+          }
+        }
+      }
+    }
+  });
+}
+
 async function loadRiskConfig() {
   if (!window.electronAPI || typeof window.electronAPI.getRiskConfig !== 'function') return;
   try {
