@@ -282,28 +282,32 @@ class DesktopCopierEngine {
   async getCloudAccounts() {
     if (!this.currentUser) return [];
     try {
-      const { data, error } = await this.supabase
-        .from('accounts')
-        .select(`
-          id,
-          account_size,
-          account_type,
-          status,
-          account_number,
-          alias,
-          firm_id,
-          prop_firms (
-            name,
-            logo_url
-          )
-        `)
-        .eq('user_id', this.currentUser.id);
+      const [accRes, firmsRes] = await Promise.all([
+        this.supabase
+          .from('accounts')
+          .select('*')
+          .eq('user_id', this.currentUser.id)
+          .order('created_at', { ascending: false }),
+        this.supabase
+          .from('prop_firms')
+          .select('*'),
+      ]);
 
-      if (error) {
-        console.error('[CopierEngine] Error fetching cloud accounts:', error.message);
+      if (accRes.error) {
+        console.error('[CopierEngine] Error fetching cloud accounts:', accRes.error.message);
         return [];
       }
-      return data || [];
+
+      const firms = firmsRes.data || [];
+      const accounts = (accRes.data || []).map((acc) => {
+        const firm = firms.find((f) => String(f.id) === String(acc.firm_id));
+        return {
+          ...acc,
+          prop_firms: firm ? { name: firm.name, logo_url: firm.logo_url } : null,
+        };
+      });
+
+      return accounts;
     } catch (e) {
       console.error('[CopierEngine] getCloudAccounts error:', e.message);
       return [];
