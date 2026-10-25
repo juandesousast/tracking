@@ -351,12 +351,15 @@ function connectTradovateWs(token, environment = 'demo') {
             console.log('[DesktopWS] Authorized successfully!');
             sendToRenderer('ws:status', { status: 'connected', latency: 12, environment });
 
-            // Request user sync and accounts list
+            // Request user sync, accounts list, and cash balances
             const syncId = reqId++;
             activeWs.send(`user/syncrequest\n${syncId}\n\n{}`);
 
             const accListId = reqId++;
             activeWs.send(`account/list\n${accListId}\n\n{}`);
+
+            const cashListId = reqId++;
+            activeWs.send(`cashBalance/list\n${cashListId}\n\n{}`);
           } else if (msg.s && msg.s !== 200 && (msg.i === authReqId || !isAuthorized)) {
             clearTimeout(authWatchdog);
             console.error(`[DesktopWS] Authorization rejected by Tradovate (${msg.s}):`, msg.d);
@@ -371,16 +374,66 @@ function connectTradovateWs(token, environment = 'demo') {
             });
           }
 
-          if (msg.d && (msg.d.accounts || Array.isArray(msg.d))) {
-            const rawAccounts = msg.d.accounts || (Array.isArray(msg.d) ? msg.d : []);
+          // 1. Check for incoming cash balances from cashBalance/list, user/syncrequest, or props
+          const incomingBalances =
+            msg.d?.cashBalances ||
+            (Array.isArray(msg.d) &&
+            msg.d.length > 0 &&
+            typeof msg.d[0].amount !== 'undefined' &&
+            typeof msg.d[0].accountId !== 'undefined'
+              ? msg.d
+              : null);
+
+          if (incomingBalances && incomingBalances.length > 0) {
+            let updated = false;
+            for (const cb of incomingBalances) {
+              const acc = activeAccounts.find((a) => a.id === cb.accountId);
+              if (acc) {
+                acc.balance = cb.amount;
+                updated = true;
+              }
+            }
+            if (updated) {
+              sendToRenderer('tradovate:accounts', activeAccounts);
+            }
+          }
+
+          if (msg.e === 'props' && msg.d?.entityType === 'cashBalance') {
+            const cb = msg.d.entity;
+            if (cb && typeof cb.accountId !== 'undefined' && typeof cb.amount !== 'undefined') {
+              const acc = activeAccounts.find((a) => a.id === cb.accountId);
+              if (acc) {
+                acc.balance = cb.amount;
+                sendToRenderer('tradovate:accounts', activeAccounts);
+              }
+            }
+          }
+
+          // 2. Check for incoming accounts list
+          const isAccountArray =
+            Array.isArray(msg.d) &&
+            msg.d.length > 0 &&
+            msg.d[0] &&
+            typeof msg.d[0].name === 'string' &&
+            typeof msg.d[0].amount === 'undefined';
+
+          if (msg.d && (msg.d.accounts || isAccountArray)) {
+            const rawAccounts = msg.d.accounts || msg.d;
             if (rawAccounts.length > 0) {
               const balances = msg.d.cashBalances || [];
               activeAccounts = rawAccounts.map((a) => {
+                const existing = activeAccounts.find((curr) => curr.id === a.id);
                 const cash = balances.find((c) => c.accountId === a.id);
+                const balance =
+                  cash?.amount ??
+                  (existing && typeof existing.balance === 'number' && existing.balance > 0
+                    ? existing.balance
+                    : a.balance ?? 0);
+
                 return {
                   id: a.id,
                   name: a.name,
-                  balance: cash?.amount ?? 0,
+                  balance,
                 };
               });
               sendToRenderer('tradovate:accounts', activeAccounts);
