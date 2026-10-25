@@ -215,37 +215,51 @@
       margin-left: 6px;
     }
 
-    /* Nav Tabs in Header */
-    .nav-tabs {
+    /* Sub-Header Navigation Bar */
+    .subnav-bar {
+      background: #070a12;
+      border-bottom: 1px solid var(--border-color);
+      padding: 8px 20px;
       display: flex;
       align-items: center;
-      gap: 4px;
-      background: #060911;
-      border: 1px solid var(--border-color);
-      padding: 3px 4px;
-      border-radius: 10px;
+      justify-content: flex-start;
       -webkit-app-region: no-drag;
+    }
+
+    .nav-tabs-container {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #0b101d;
+      border: 1px solid rgba(59, 130, 246, 0.15);
+      padding: 4px;
+      border-radius: 11px;
     }
 
     .nav-tab-btn {
       background: transparent;
-      border: none;
+      border: 1px solid transparent;
       color: var(--text-muted);
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 700;
-      padding: 6px 12px;
-      border-radius: 7px;
+      padding: 6px 14px;
+      border-radius: 8px;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 6px;
-      transition: all 0.15s;
+      gap: 7px;
+      transition: all 0.15s ease;
     }
 
-    .nav-tab-btn:hover { color: white; background: rgba(255, 255, 255, 0.05); }
+    .nav-tab-btn:hover {
+      color: white;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
     .nav-tab-btn.active {
       background: #1e293b;
-      color: white;
+      color: #60a5fa;
+      border-color: rgba(59, 130, 246, 0.3);
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
     }
 
@@ -690,14 +704,6 @@
         </div>
       </div>
 
-      <!-- Navigation Tabs -->
-      <nav class="nav-tabs">
-        <button id="navTabCopier" class="nav-tab-btn active">⚡ Copiador</button>
-        <button id="navTabAccounts" class="nav-tab-btn">🛡️ Cuentas de Fondeo</button>
-        <button id="navTabCalendar" class="nav-tab-btn">📰 Calendario Económico</button>
-        <button id="navTabLogs" class="nav-tab-btn">📜 Historial Nube</button>
-      </nav>
-
       <div class="header-actions">
         <div class="pill-badge pill-green" title="Tus órdenes salen directamente desde tu conexión a internet">
           <span class="dot"></span>
@@ -715,6 +721,16 @@
         </div>
       </div>
     </header>
+
+    <!-- Dedicated Sub-Header Navigation Bar -->
+    <div class="subnav-bar">
+      <nav class="nav-tabs-container">
+        <button id="navTabCopier" class="nav-tab-btn active">⚡ Copiador</button>
+        <button id="navTabAccounts" class="nav-tab-btn">🛡️ Cuentas de Fondeo</button>
+        <button id="navTabCalendar" class="nav-tab-btn">📰 Calendario Económico</button>
+        <button id="navTabLogs" class="nav-tab-btn">📜 Historial Nube</button>
+      </nav>
+    </div>
 
     <!-- Tab 1: Copier Terminal View -->
     <div id="viewCopier" class="view-container active">
