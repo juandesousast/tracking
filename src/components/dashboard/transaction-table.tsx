@@ -240,11 +240,11 @@ export function TransactionTable({
             <select
               value={firmFilter}
               onChange={(e) => setFirmFilter(e.target.value)}
-              className="h-8 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 px-2.5 text-[11px] font-semibold text-slate-700 dark:text-slate-300 focus-visible:outline-none"
+              className="h-8 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 text-xs font-semibold text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/60 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 cursor-pointer shadow-2xs transition-colors"
             >
-              <option value="all">Todas las firmas</option>
+              <option value="all" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Todas las firmas</option>
               {firms.map((f) => (
-                <option key={f.id} value={f.id}>
+                <option key={f.id} value={f.id} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
                   {f.name}
                 </option>
               ))}

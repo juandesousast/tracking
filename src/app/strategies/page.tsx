@@ -9,6 +9,7 @@ import {
 import { formatCurrency } from "@/lib/formatters";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
 import { Button } from "@/components/ui/button";
+import { AnimatedTabs } from "@/components/ui/animated-tabs";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -253,23 +254,18 @@ function StrategiesPageContent() {
       </div>
 
       {/* Filter Tabs & Search */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900">
-        <div className="flex items-center gap-1 overflow-x-auto pb-1 sm:pb-0">
-          {categories.map((cat) => (
-            <Button
-              key={cat}
-              size="sm"
-              variant={selectedCategory === cat ? "secondary" : "ghost"}
-              onClick={() => setSelectedCategory(cat)}
-              className={`h-8 px-3 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
-                selectedCategory === cat
-                  ? "bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-xs"
-                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
-              }`}
-            >
-              {cat === "all" ? "Todas las Categorías" : cat}
-            </Button>
-          ))}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
+        <div className="overflow-x-auto pb-1 sm:pb-0">
+          <AnimatedTabs
+            size="sm"
+            layoutId="strategies-category-tabs"
+            tabs={categories.map((cat) => ({
+              id: cat,
+              label: cat === "all" ? "Todas las Categorías" : cat,
+            }))}
+            activeTab={selectedCategory}
+            onChange={(id) => setSelectedCategory(id)}
+          />
         </div>
 
         <div className="relative w-full sm:w-64">
@@ -457,14 +453,14 @@ function StrategiesPageContent() {
               <select
                 value={newCategory}
                 onChange={(e) => setNewCategory(e.target.value as any)}
-                className="w-full text-xs h-9 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3"
+                className="w-full text-xs h-9 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 px-3 shadow-2xs focus:outline-none focus:ring-2 focus:ring-blue-500/20"
               >
-                <option value="ICT / SMC">ICT / SMC</option>
-                <option value="Momentum">Momentum</option>
-                <option value="Price Action">Price Action</option>
-                <option value="Mean Reversion">Mean Reversion</option>
-                <option value="Order Flow">Order Flow</option>
-                <option value="Custom">Personalizada</option>
+                <option value="ICT / SMC" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">ICT / SMC</option>
+                <option value="Momentum" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Momentum</option>
+                <option value="Price Action" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Price Action</option>
+                <option value="Mean Reversion" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Mean Reversion</option>
+                <option value="Order Flow" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Order Flow</option>
+                <option value="Custom" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Personalizada</option>
               </select>
             </div>
 

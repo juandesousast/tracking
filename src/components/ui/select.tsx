@@ -41,7 +41,7 @@ function SelectTrigger({
       data-slot="select-trigger"
       data-size={size}
       className={cn(
-        "flex w-fit items-center justify-between gap-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 py-2 pr-2.5 pl-3 text-xs whitespace-nowrap transition-colors outline-none select-none cursor-pointer focus-visible:border-blue-500 focus-visible:ring-2 focus-visible:ring-blue-500/20 disabled:cursor-not-allowed disabled:opacity-50 data-placeholder:text-slate-400 dark:data-placeholder:text-slate-500 data-[size=default]:h-9 data-[size=sm]:h-8 shadow-2xs text-slate-800 dark:text-slate-200",
+        "flex w-fit items-center justify-between gap-2 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 py-2 pr-2.5 pl-3 text-xs whitespace-nowrap transition-colors outline-none select-none cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/80 focus-visible:border-blue-500 focus-visible:ring-2 focus-visible:ring-blue-500/20 disabled:cursor-not-allowed disabled:opacity-50 data-placeholder:text-slate-400 dark:data-placeholder:text-slate-500 data-[size=default]:h-9 data-[size=sm]:h-8 shadow-2xs text-slate-800 dark:text-slate-200",
         className
       )}
       {...props}
@@ -117,7 +117,7 @@ function SelectItem({
     <SelectPrimitive.Item
       data-slot="select-item"
       className={cn(
-        "relative flex w-full cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
+        "relative flex w-full cursor-default items-center gap-1.5 rounded-lg py-1.5 pr-8 pl-2 text-xs outline-hidden select-none hover:bg-slate-100 dark:hover:bg-white/10 focus:bg-slate-100 dark:focus:bg-white/10 data-[highlighted]:bg-slate-100 dark:data-[highlighted]:bg-white/10 text-slate-800 dark:text-slate-200 data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2 cursor-pointer transition-colors",
         className
       )}
       {...props}

@@ -6,8 +6,8 @@
   "4": "devDependencies",
   "5": "compilerOptions",
   "6": "components.json",
-  "7": "dropdown-menu.tsx",
-  "8": "login/page.tsx",
+  "7": "analytics/page.tsx",
+  "8": "button.tsx",
   "9": "app/page.tsx",
   "10": "calendario/page.tsx",
   "11": "cn",
@@ -25,10 +25,9 @@
   "23": "2. Contratos de Datos y APIs Institucionales",
   "24": "PropFirm",
   "25": "drawer.tsx",
-  "26": "trades/page.tsx",
+  "26": "economic-events.ts",
   "27": "login/layout.tsx",
   "28": "schemas.ts",
-  "29": "tools/page.tsx",
-  "30": "dashboard-layout.tsx",
+  "29": "strategies/page.tsx",
   "31": "header.tsx"
 }

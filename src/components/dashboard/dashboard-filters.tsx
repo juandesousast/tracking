@@ -166,13 +166,13 @@ function DashboardFiltersContent({ firms, onFilterChange }: DashboardFiltersProp
         <select
           value={preset}
           onChange={(e) => handlePresetChange(e.target.value)}
-          className="h-8 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/80 px-2.5 text-xs font-medium text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
+          className="h-8 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 text-xs font-medium text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/60 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 cursor-pointer shadow-2xs transition-colors"
         >
-          <option value="this_month">Este Mes</option>
-          <option value="last_month">Mes Anterior</option>
-          <option value="year_2026">Año 2026</option>
-          <option value="all">Todo el Histórico</option>
-          <option value="custom">Personalizado</option>
+          <option value="this_month" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Este Mes</option>
+          <option value="last_month" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Mes Anterior</option>
+          <option value="year_2026" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Año 2026</option>
+          <option value="all" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Todo el Histórico</option>
+          <option value="custom" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Personalizado</option>
         </select>
       </div>
 
@@ -184,14 +184,14 @@ function DashboardFiltersContent({ firms, onFilterChange }: DashboardFiltersProp
             type="date"
             value={startDate}
             onChange={(e) => handleCustomDateChange(e.target.value, endDate)}
-            className="h-8 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/80 px-2 text-xs text-slate-700 dark:text-slate-200 focus:outline-none"
+            className="h-8 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 px-2.5 text-xs text-slate-800 dark:text-slate-200 shadow-2xs focus:outline-none focus:ring-2 focus:ring-blue-500/20"
           />
           <span className="text-slate-400">-</span>
           <input
             type="date"
             value={endDate}
             onChange={(e) => handleCustomDateChange(startDate, e.target.value)}
-            className="h-8 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/80 px-2 text-xs text-slate-700 dark:text-slate-200 focus:outline-none"
+            className="h-8 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 px-2.5 text-xs text-slate-800 dark:text-slate-200 shadow-2xs focus:outline-none focus:ring-2 focus:ring-blue-500/20"
           />
         </div>
       )}
@@ -201,11 +201,11 @@ function DashboardFiltersContent({ firms, onFilterChange }: DashboardFiltersProp
         <select
           value={firmId}
           onChange={(e) => handleFirmChange(e.target.value)}
-          className="h-8 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/80 px-2.5 text-xs font-medium text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
+          className="h-8 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 text-xs font-medium text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/60 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 cursor-pointer shadow-2xs transition-colors"
         >
-          <option value="all">Todas las Empresas</option>
+          <option value="all" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Todas las Empresas</option>
           {firms.map((f) => (
-            <option key={f.id} value={f.id}>
+            <option key={f.id} value={f.id} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
               {f.name}
             </option>
           ))}
@@ -216,7 +216,7 @@ function DashboardFiltersContent({ firms, onFilterChange }: DashboardFiltersProp
       <button
         onClick={handleReset}
         title="Restablecer filtros"
-        className="h-8 px-2.5 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors flex items-center gap-1 text-xs font-medium ml-auto"
+        className="h-8 px-3 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors flex items-center gap-1.5 text-xs font-semibold ml-auto shadow-2xs cursor-pointer"
       >
         <RotateCcw className="h-3 w-3" />
         <span className="hidden sm:inline">Restablecer</span>

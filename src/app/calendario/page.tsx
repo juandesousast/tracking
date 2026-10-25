@@ -307,7 +307,7 @@ function CalendarioContent() {
             Calendario Financiero PnL
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Visualización mensual estilo Tradelio / TradeSyncer del rendimiento, días ganadores y balance neto.
+            Visualización mensual institucional del rendimiento, días ganadores y balance neto.
           </p>
         </div>
 
@@ -395,7 +395,7 @@ function CalendarioContent() {
               value={selectedAccountId}
               onValueChange={(val) => setSelectedAccountId(val || "all")}
             >
-              <SelectTrigger className="h-10 w-full sm:w-[320px] rounded-xl bg-slate-50/70 dark:bg-slate-800/60 border-slate-200/80 dark:border-slate-700 shadow-2xs text-xs font-semibold px-3">
+              <SelectTrigger className="h-10 w-full sm:w-[320px] rounded-xl bg-white dark:bg-slate-900 border-slate-200/80 dark:border-slate-800 shadow-2xs text-xs font-semibold px-3 hover:bg-slate-50 dark:hover:bg-slate-800/60">
                 <SelectValue placeholder="Todas las Cuentas">
                   {(val) => {
                     if (!val || val === "all") {

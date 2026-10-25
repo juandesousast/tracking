@@ -53,7 +53,7 @@
 }
 
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
   --background: oklch(0.985 0.005 250);
   --foreground: oklch(0.18 0.02 250);
   --card: oklch(1 0 0);
@@ -93,6 +93,7 @@
 }
 
 .dark {
+  color-scheme: dark;
   --slate-950: #07080b;
   --slate-900: #0f1015;
   --slate-850: #15171e;
@@ -194,4 +195,27 @@
 
 .animate-linear-progress {
   animation: linear-progress 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* Explicit form select & option styling to guarantee pristine light/dark rendering */
+select {
+  color-scheme: light;
+  background-color: #ffffff;
+  color: #0f172a;
+}
+
+select option {
+  background-color: #ffffff;
+  color: #0f172a;
+}
+
+.dark select {
+  color-scheme: dark;
+  background-color: #0f1015;
+  color: #f8fafc;
+}
+
+.dark select option {
+  background-color: #0f1015;
+  color: #f8fafc;
 }

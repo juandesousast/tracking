@@ -245,11 +245,11 @@ export default function GastosPage() {
               id="filter-firm"
               value={firmFilter}
               onChange={(e) => setFirmFilter(e.target.value)}
-              className="h-9 rounded-lg border border-slate-200 dark:border-slate-800 bg-background px-2.5 text-xs focus:outline-none"
+              className="h-8 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 px-3 text-xs font-medium hover:bg-slate-50 dark:hover:bg-slate-800/60 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 cursor-pointer shadow-2xs transition-colors"
             >
-              <option value="all">Todas las empresas</option>
+              <option value="all" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Todas las empresas</option>
               {firms.map((f) => (
-                <option key={f.id} value={f.id}>
+                <option key={f.id} value={f.id} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
                   {f.name}
                 </option>
               ))}
@@ -262,11 +262,11 @@ export default function GastosPage() {
               id="filter-cat"
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
-              className="h-9 rounded-lg border border-slate-200 dark:border-slate-800 bg-background px-2.5 text-xs focus:outline-none"
+              className="h-8 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 px-3 text-xs font-medium hover:bg-slate-50 dark:hover:bg-slate-800/60 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 cursor-pointer shadow-2xs transition-colors"
             >
-              <option value="all">Todas las categorías</option>
+              <option value="all" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Todas las categorías</option>
               {categories.map((cat) => (
-                <option key={cat} value={cat}>
+                <option key={cat} value={cat} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
                   {cat}
                 </option>
               ))}

@@ -133,10 +133,10 @@ export default function TradingToolsPage() {
                 <select
                   value={selectedSymbol}
                   onChange={(e) => setSelectedSymbol(e.target.value)}
-                  className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 shadow-2xs"
                 >
                   {INSTRUMENT_SPECS.map((s) => (
-                    <option key={s.symbol} value={s.symbol}>
+                    <option key={s.symbol} value={s.symbol} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
                       {s.symbol} — {s.name}
                     </option>
                   ))}

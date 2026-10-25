@@ -637,8 +637,8 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "package_dependencies_react",
-      "community": 25,
-      "community_name": "drawer.tsx",
+      "community": 3,
+      "community_name": "dependencies",
       "norm_label": "react"
     },
     {
@@ -648,8 +648,8 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "react",
-      "community": 25,
-      "community_name": "drawer.tsx",
+      "community": 3,
+      "community_name": "dependencies",
       "norm_label": "react"
     },
     {
@@ -1088,8 +1088,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_app_analytics_page",
-      "community": 26,
-      "community_name": "trades/page.tsx",
+      "community": 7,
+      "community_name": "analytics/page.tsx",
       "norm_label": "analytics/page.tsx"
     },
     {
@@ -1112,8 +1112,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_app_analytics_page_analyticspage",
-      "community": 26,
-      "community_name": "trades/page.tsx",
+      "community": 7,
+      "community_name": "analytics/page.tsx",
       "norm_label": "analyticspage()"
     },
     {
@@ -1123,8 +1123,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_app_calendario_economico_page",
-      "community": 26,
-      "community_name": "trades/page.tsx",
+      "community": 16,
+      "community_name": "retiros/page.tsx",
       "norm_label": "calendario-economico/page.tsx"
     },
     {
@@ -1136,7 +1136,7 @@
       "_origin": "ast",
       "id": "src_app_calendario_economico_page_economiccalendarcontent",
       "community": 26,
-      "community_name": "trades/page.tsx",
+      "community_name": "economic-events.ts",
       "norm_label": "economiccalendarcontent()"
     },
     {
@@ -1147,8 +1147,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_app_calendario_economico_page_economiccalendarpage",
-      "community": 26,
-      "community_name": "trades/page.tsx",
+      "community": 16,
+      "community_name": "retiros/page.tsx",
       "norm_label": "economiccalendarpage()"
     },
     {
@@ -1318,8 +1318,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_app_dashboard_layout",
-      "community": 30,
-      "community_name": "dashboard-layout.tsx",
+      "community": 31,
+      "community_name": "header.tsx",
       "norm_label": "dashboard-layout.tsx"
     },
     {
@@ -1330,8 +1330,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_app_dashboard_layout_dashboardlayout",
-      "community": 30,
-      "community_name": "dashboard-layout.tsx",
+      "community": 3,
+      "community_name": "dependencies",
       "norm_label": "dashboardlayout()"
     },
     {
@@ -1377,8 +1377,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_app_empresas_page_firmfinancialmetric",
-      "community": 16,
-      "community_name": "retiros/page.tsx",
+      "community": 24,
+      "community_name": "PropFirm",
       "norm_label": "firmfinancialmetric"
     },
     {
@@ -1446,8 +1446,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_app_layout",
-      "community": 30,
-      "community_name": "dashboard-layout.tsx",
+      "community": 3,
+      "community_name": "dependencies",
       "norm_label": "app/layout.tsx"
     },
     {
@@ -1457,8 +1457,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_app_layout_plusjakartasans",
-      "community": 30,
-      "community_name": "dashboard-layout.tsx",
+      "community": 3,
+      "community_name": "dependencies",
       "norm_label": "plusjakartasans"
     },
     {
@@ -1468,8 +1468,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_app_layout_metadata",
-      "community": 30,
-      "community_name": "dashboard-layout.tsx",
+      "community": 3,
+      "community_name": "dependencies",
       "norm_label": "metadata"
     },
     {
@@ -1479,8 +1479,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "src_app_layout_viewport",
-      "community": 30,
-      "community_name": "dashboard-layout.tsx",
+      "community": 3,
+      "community_name": "dependencies",
       "norm_label": "viewport"
     },
     {
@@ -1491,8 +1491,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_app_layout_rootlayout",
-      "community": 30,
-      "community_name": "dashboard-layout.tsx",
+      "community": 3,
+      "community_name": "dependencies",
       "norm_label": "rootlayout()"
     },
     {
@@ -1549,7 +1549,7 @@
       "_origin": "ast",
       "id": "src_app_login_page",
       "community": 8,
-      "community_name": "login/page.tsx",
+      "community_name": "button.tsx",
       "norm_label": "login/page.tsx"
     },
     {
@@ -1561,7 +1561,7 @@
       "_origin": "ast",
       "id": "src_app_login_page_loginpage",
       "community": 8,
-      "community_name": "login/page.tsx",
+      "community_name": "button.tsx",
       "norm_label": "loginpage()"
     },
     {
@@ -1757,7 +1757,7 @@
       "_origin": "ast",
       "id": "src_app_settings_page",
       "community": 8,
-      "community_name": "login/page.tsx",
+      "community_name": "button.tsx",
       "norm_label": "settings/page.tsx"
     },
     {
@@ -1769,7 +1769,7 @@
       "_origin": "ast",
       "id": "src_app_settings_page_settingspage",
       "community": 8,
-      "community_name": "login/page.tsx",
+      "community_name": "button.tsx",
       "norm_label": "settingspage()"
     },
     {
@@ -1825,32 +1825,32 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_app_strategies_page",
-      "community": 24,
-      "community_name": "PropFirm",
+      "community": 29,
+      "community_name": "strategies/page.tsx",
       "norm_label": "strategies/page.tsx"
     },
     {
       "label": "StrategiesPageContent()",
       "file_type": "code",
       "source_file": "src/app/strategies/page.tsx",
-      "source_location": "L32",
+      "source_location": "L33",
       "_callable": true,
       "_origin": "ast",
       "id": "src_app_strategies_page_strategiespagecontent",
-      "community": 24,
-      "community_name": "PropFirm",
+      "community": 29,
+      "community_name": "strategies/page.tsx",
       "norm_label": "strategiespagecontent()"
     },
     {
       "label": "StrategiesPage()",
       "file_type": "code",
       "source_file": "src/app/strategies/page.tsx",
-      "source_location": "L544",
+      "source_location": "L540",
       "_callable": true,
       "_origin": "ast",
       "id": "src_app_strategies_page_strategiespage",
-      "community": 24,
-      "community_name": "PropFirm",
+      "community": 29,
+      "community_name": "strategies/page.tsx",
       "norm_label": "strategiespage()"
     },
     {
@@ -1861,7 +1861,7 @@
       "_origin": "ast",
       "id": "src_app_support_page",
       "community": 8,
-      "community_name": "login/page.tsx",
+      "community_name": "button.tsx",
       "norm_label": "support/page.tsx"
     },
     {
@@ -1873,7 +1873,7 @@
       "_origin": "ast",
       "id": "src_app_support_page_supportpage",
       "community": 8,
-      "community_name": "login/page.tsx",
+      "community_name": "button.tsx",
       "norm_label": "supportpage()"
     },
     {
@@ -1884,7 +1884,7 @@
       "_origin": "ast",
       "id": "src_app_tools_page",
       "community": 29,
-      "community_name": "tools/page.tsx",
+      "community_name": "strategies/page.tsx",
       "norm_label": "tools/page.tsx"
     },
     {
@@ -1896,7 +1896,7 @@
       "_origin": "ast",
       "id": "src_app_tools_page_tradingtoolspage",
       "community": 29,
-      "community_name": "tools/page.tsx",
+      "community_name": "strategies/page.tsx",
       "norm_label": "tradingtoolspage()"
     },
     {
@@ -1906,8 +1906,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_app_trades_page",
-      "community": 26,
-      "community_name": "trades/page.tsx",
+      "community": 16,
+      "community_name": "retiros/page.tsx",
       "norm_label": "trades/page.tsx"
     },
     {
@@ -1943,8 +1943,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_app_trades_page_tradespage",
-      "community": 26,
-      "community_name": "trades/page.tsx",
+      "community": 16,
+      "community_name": "retiros/page.tsx",
       "norm_label": "tradespage()"
     },
     {
@@ -2027,8 +2027,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_accounts_due_widget_accountsduewidget",
-      "community": 9,
-      "community_name": "app/page.tsx",
+      "community": 24,
+      "community_name": "PropFirm",
       "norm_label": "accountsduewidget()"
     },
     {
@@ -2039,7 +2039,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_charts_cumulative_profit_chart",
       "community": 8,
-      "community_name": "login/page.tsx",
+      "community_name": "button.tsx",
       "norm_label": "cumulative-profit-chart.tsx"
     },
     {
@@ -2065,7 +2065,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_charts_cumulative_profit_chart_chartpoint",
       "community": 8,
-      "community_name": "login/page.tsx",
+      "community_name": "button.tsx",
       "norm_label": "chartpoint"
     },
     {
@@ -2077,7 +2077,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_charts_cumulative_profit_chart_cumulativeprofitchart",
       "community": 8,
-      "community_name": "login/page.tsx",
+      "community_name": "button.tsx",
       "norm_label": "cumulativeprofitchart()"
     },
     {
@@ -2208,8 +2208,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_dashboard_dashboard_filters_dashboardfiltersprops",
-      "community": 16,
-      "community_name": "retiros/page.tsx",
+      "community": 24,
+      "community_name": "PropFirm",
       "norm_label": "dashboardfiltersprops"
     },
     {
@@ -2267,7 +2267,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_empty_state",
       "community": 8,
-      "community_name": "login/page.tsx",
+      "community_name": "button.tsx",
       "norm_label": "empty-state.tsx"
     },
     {
@@ -2280,7 +2280,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_empty_state_emptystateprops",
       "community": 8,
-      "community_name": "login/page.tsx",
+      "community_name": "button.tsx",
       "norm_label": "emptystateprops"
     },
     {
@@ -2292,7 +2292,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_empty_state_emptystate",
       "community": 8,
-      "community_name": "login/page.tsx",
+      "community_name": "button.tsx",
       "norm_label": "emptystate()"
     },
     {
@@ -2399,8 +2399,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_layout_header_header",
-      "community": 30,
-      "community_name": "dashboard-layout.tsx",
+      "community": 31,
+      "community_name": "header.tsx",
       "norm_label": "header()"
     },
     {
@@ -2410,8 +2410,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_layout_mobile_nav",
-      "community": 30,
-      "community_name": "dashboard-layout.tsx",
+      "community": 31,
+      "community_name": "header.tsx",
       "norm_label": "mobile-nav.tsx"
     },
     {
@@ -2421,8 +2421,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_components_layout_mobile_nav_mobilenavitems",
-      "community": 30,
-      "community_name": "dashboard-layout.tsx",
+      "community": 31,
+      "community_name": "header.tsx",
       "norm_label": "mobilenavitems"
     },
     {
@@ -2433,8 +2433,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_layout_mobile_nav_mobilenav",
-      "community": 30,
-      "community_name": "dashboard-layout.tsx",
+      "community": 31,
+      "community_name": "header.tsx",
       "norm_label": "mobilenav()"
     },
     {
@@ -2500,8 +2500,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_layout_sidebar_sidebar",
-      "community": 30,
-      "community_name": "dashboard-layout.tsx",
+      "community": 31,
+      "community_name": "header.tsx",
       "norm_label": "sidebar()"
     },
     {
@@ -2572,8 +2572,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_modals_add_expense_modal_addexpensemodal",
-      "community": 9,
-      "community_name": "app/page.tsx",
+      "community": 24,
+      "community_name": "PropFirm",
       "norm_label": "addexpensemodal()"
     },
     {
@@ -2608,8 +2608,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_modals_add_firm_modal_addfirmmodal",
-      "community": 16,
-      "community_name": "retiros/page.tsx",
+      "community": 24,
+      "community_name": "PropFirm",
       "norm_label": "addfirmmodal()"
     },
     {
@@ -2619,8 +2619,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_modals_add_tradovate_connection_modal",
-      "community": 24,
-      "community_name": "PropFirm",
+      "community": 19,
+      "community_name": "copier/page.tsx",
       "norm_label": "add-tradovate-connection-modal.tsx"
     },
     {
@@ -2632,8 +2632,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_modals_add_tradovate_connection_modal_addtradovateconnectionmodalprops",
-      "community": 24,
-      "community_name": "PropFirm",
+      "community": 19,
+      "community_name": "copier/page.tsx",
       "norm_label": "addtradovateconnectionmodalprops"
     },
     {
@@ -2680,8 +2680,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_modals_add_withdrawal_modal_addwithdrawalmodal",
-      "community": 9,
-      "community_name": "app/page.tsx",
+      "community": 24,
+      "community_name": "PropFirm",
       "norm_label": "addwithdrawalmodal()"
     },
     {
@@ -2691,8 +2691,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_modals_copier_rule_modal",
-      "community": 24,
-      "community_name": "PropFirm",
+      "community": 19,
+      "community_name": "copier/page.tsx",
       "norm_label": "copier-rule-modal.tsx"
     },
     {
@@ -2704,8 +2704,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_modals_copier_rule_modal_copierrulemodalprops",
-      "community": 24,
-      "community_name": "PropFirm",
+      "community": 19,
+      "community_name": "copier/page.tsx",
       "norm_label": "copierrulemodalprops"
     },
     {
@@ -2788,8 +2788,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_modals_edit_account_modal_editaccountmodal",
-      "community": 9,
-      "community_name": "app/page.tsx",
+      "community": 24,
+      "community_name": "PropFirm",
       "norm_label": "editaccountmodal()"
     },
     {
@@ -2860,8 +2860,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_modals_edit_firm_modal_editfirmmodal",
-      "community": 16,
-      "community_name": "retiros/page.tsx",
+      "community": 24,
+      "community_name": "PropFirm",
       "norm_label": "editfirmmodal()"
     },
     {
@@ -3265,8 +3265,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_animated_tabs",
-      "community": 10,
-      "community_name": "calendario/page.tsx",
+      "community": 29,
+      "community_name": "strategies/page.tsx",
       "norm_label": "animated-tabs.tsx"
     },
     {
@@ -3278,8 +3278,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_ui_animated_tabs_taboption",
-      "community": 10,
-      "community_name": "calendario/page.tsx",
+      "community": 29,
+      "community_name": "strategies/page.tsx",
       "norm_label": "taboption"
     },
     {
@@ -3291,8 +3291,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_ui_animated_tabs_animatedtabsprops",
-      "community": 10,
-      "community_name": "calendario/page.tsx",
+      "community": 29,
+      "community_name": "strategies/page.tsx",
       "norm_label": "animatedtabsprops"
     },
     {
@@ -3303,8 +3303,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_animated_tabs_animatedtabs",
-      "community": 10,
-      "community_name": "calendario/page.tsx",
+      "community": 29,
+      "community_name": "strategies/page.tsx",
       "norm_label": "animatedtabs()"
     },
     {
@@ -3431,8 +3431,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_button",
-      "community": 24,
-      "community_name": "PropFirm",
+      "community": 8,
+      "community_name": "button.tsx",
       "norm_label": "button.tsx"
     },
     {
@@ -3442,8 +3442,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_components_ui_button_buttonvariants",
-      "community": 24,
-      "community_name": "PropFirm",
+      "community": 8,
+      "community_name": "button.tsx",
       "norm_label": "buttonvariants"
     },
     {
@@ -3454,8 +3454,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_button_button",
-      "community": 24,
-      "community_name": "PropFirm",
+      "community": 8,
+      "community_name": "button.tsx",
       "norm_label": "button()"
     },
     {
@@ -3466,7 +3466,7 @@
       "_origin": "ast",
       "id": "src_components_ui_card",
       "community": 8,
-      "community_name": "login/page.tsx",
+      "community_name": "button.tsx",
       "norm_label": "card.tsx"
     },
     {
@@ -3478,7 +3478,7 @@
       "_origin": "ast",
       "id": "src_components_ui_card_card",
       "community": 8,
-      "community_name": "login/page.tsx",
+      "community_name": "button.tsx",
       "norm_label": "card()"
     },
     {
@@ -3490,7 +3490,7 @@
       "_origin": "ast",
       "id": "src_components_ui_card_cardheader",
       "community": 8,
-      "community_name": "login/page.tsx",
+      "community_name": "button.tsx",
       "norm_label": "cardheader()"
     },
     {
@@ -3502,7 +3502,7 @@
       "_origin": "ast",
       "id": "src_components_ui_card_cardtitle",
       "community": 8,
-      "community_name": "login/page.tsx",
+      "community_name": "button.tsx",
       "norm_label": "cardtitle()"
     },
     {
@@ -3514,7 +3514,7 @@
       "_origin": "ast",
       "id": "src_components_ui_card_carddescription",
       "community": 8,
-      "community_name": "login/page.tsx",
+      "community_name": "button.tsx",
       "norm_label": "carddescription()"
     },
     {
@@ -3525,8 +3525,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_card_cardaction",
-      "community": 8,
-      "community_name": "login/page.tsx",
+      "community": 11,
+      "community_name": "cn",
       "norm_label": "cardaction()"
     },
     {
@@ -3538,7 +3538,7 @@
       "_origin": "ast",
       "id": "src_components_ui_card_cardcontent",
       "community": 8,
-      "community_name": "login/page.tsx",
+      "community_name": "button.tsx",
       "norm_label": "cardcontent()"
     },
     {
@@ -3549,8 +3549,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_card_cardfooter",
-      "community": 8,
-      "community_name": "login/page.tsx",
+      "community": 11,
+      "community_name": "cn",
       "norm_label": "cardfooter()"
     },
     {
@@ -3560,8 +3560,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_dialog",
-      "community": 24,
-      "community_name": "PropFirm",
+      "community": 19,
+      "community_name": "copier/page.tsx",
       "norm_label": "dialog.tsx"
     },
     {
@@ -3572,8 +3572,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dialog_dialog",
-      "community": 24,
-      "community_name": "PropFirm",
+      "community": 19,
+      "community_name": "copier/page.tsx",
       "norm_label": "dialog()"
     },
     {
@@ -3584,8 +3584,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dialog_dialogtrigger",
-      "community": 24,
-      "community_name": "PropFirm",
+      "community": 19,
+      "community_name": "copier/page.tsx",
       "norm_label": "dialogtrigger()"
     },
     {
@@ -3596,8 +3596,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dialog_dialogportal",
-      "community": 24,
-      "community_name": "PropFirm",
+      "community": 19,
+      "community_name": "copier/page.tsx",
       "norm_label": "dialogportal()"
     },
     {
@@ -3608,8 +3608,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dialog_dialogclose",
-      "community": 24,
-      "community_name": "PropFirm",
+      "community": 19,
+      "community_name": "copier/page.tsx",
       "norm_label": "dialogclose()"
     },
     {
@@ -3620,8 +3620,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dialog_dialogoverlay",
-      "community": 11,
-      "community_name": "cn",
+      "community": 19,
+      "community_name": "copier/page.tsx",
       "norm_label": "dialogoverlay()"
     },
     {
@@ -3632,8 +3632,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dialog_dialogcontent",
-      "community": 24,
-      "community_name": "PropFirm",
+      "community": 19,
+      "community_name": "copier/page.tsx",
       "norm_label": "dialogcontent()"
     },
     {
@@ -3644,8 +3644,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dialog_dialogheader",
-      "community": 24,
-      "community_name": "PropFirm",
+      "community": 19,
+      "community_name": "copier/page.tsx",
       "norm_label": "dialogheader()"
     },
     {
@@ -3656,8 +3656,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dialog_dialogfooter",
-      "community": 24,
-      "community_name": "PropFirm",
+      "community": 19,
+      "community_name": "copier/page.tsx",
       "norm_label": "dialogfooter()"
     },
     {
@@ -3668,8 +3668,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dialog_dialogtitle",
-      "community": 24,
-      "community_name": "PropFirm",
+      "community": 19,
+      "community_name": "copier/page.tsx",
       "norm_label": "dialogtitle()"
     },
     {
@@ -3680,8 +3680,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dialog_dialogdescription",
-      "community": 24,
-      "community_name": "PropFirm",
+      "community": 19,
+      "community_name": "copier/page.tsx",
       "norm_label": "dialogdescription()"
     },
     {
@@ -3739,8 +3739,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_drawer_drawer",
-      "community": 25,
-      "community_name": "drawer.tsx",
+      "community": 3,
+      "community_name": "dependencies",
       "norm_label": "drawer()"
     },
     {
@@ -3870,8 +3870,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_dropdown_menu",
-      "community": 7,
-      "community_name": "dropdown-menu.tsx",
+      "community": 31,
+      "community_name": "header.tsx",
       "norm_label": "dropdown-menu.tsx"
     },
     {
@@ -3894,8 +3894,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dropdown_menu_dropdownmenuportal",
-      "community": 7,
-      "community_name": "dropdown-menu.tsx",
+      "community": 31,
+      "community_name": "header.tsx",
       "norm_label": "dropdownmenuportal()"
     },
     {
@@ -3930,8 +3930,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dropdown_menu_dropdownmenugroup",
-      "community": 7,
-      "community_name": "dropdown-menu.tsx",
+      "community": 31,
+      "community_name": "header.tsx",
       "norm_label": "dropdownmenugroup()"
     },
     {
@@ -3966,8 +3966,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dropdown_menu_dropdownmenusub",
-      "community": 7,
-      "community_name": "dropdown-menu.tsx",
+      "community": 31,
+      "community_name": "header.tsx",
       "norm_label": "dropdownmenusub()"
     },
     {
@@ -3978,8 +3978,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dropdown_menu_dropdownmenusubtrigger",
-      "community": 7,
-      "community_name": "dropdown-menu.tsx",
+      "community": 31,
+      "community_name": "header.tsx",
       "norm_label": "dropdownmenusubtrigger()"
     },
     {
@@ -3990,8 +3990,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dropdown_menu_dropdownmenusubcontent",
-      "community": 7,
-      "community_name": "dropdown-menu.tsx",
+      "community": 31,
+      "community_name": "header.tsx",
       "norm_label": "dropdownmenusubcontent()"
     },
     {
@@ -4002,8 +4002,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dropdown_menu_dropdownmenucheckboxitem",
-      "community": 7,
-      "community_name": "dropdown-menu.tsx",
+      "community": 31,
+      "community_name": "header.tsx",
       "norm_label": "dropdownmenucheckboxitem()"
     },
     {
@@ -4014,8 +4014,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dropdown_menu_dropdownmenuradiogroup",
-      "community": 7,
-      "community_name": "dropdown-menu.tsx",
+      "community": 31,
+      "community_name": "header.tsx",
       "norm_label": "dropdownmenuradiogroup()"
     },
     {
@@ -4026,8 +4026,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dropdown_menu_dropdownmenuradioitem",
-      "community": 7,
-      "community_name": "dropdown-menu.tsx",
+      "community": 31,
+      "community_name": "header.tsx",
       "norm_label": "dropdownmenuradioitem()"
     },
     {
@@ -4038,8 +4038,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dropdown_menu_dropdownmenuseparator",
-      "community": 7,
-      "community_name": "dropdown-menu.tsx",
+      "community": 31,
+      "community_name": "header.tsx",
       "norm_label": "dropdownmenuseparator()"
     },
     {
@@ -4050,8 +4050,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_dropdown_menu_dropdownmenushortcut",
-      "community": 7,
-      "community_name": "dropdown-menu.tsx",
+      "community": 31,
+      "community_name": "header.tsx",
       "norm_label": "dropdownmenushortcut()"
     },
     {
@@ -4107,8 +4107,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_linear_loader",
-      "community": 11,
-      "community_name": "cn",
+      "community": 22,
+      "community_name": "database.ts",
       "norm_label": "linear-loader.tsx"
     },
     {
@@ -4120,8 +4120,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_ui_linear_loader_linearloaderprops",
-      "community": 11,
-      "community_name": "cn",
+      "community": 22,
+      "community_name": "database.ts",
       "norm_label": "linearloaderprops"
     },
     {
@@ -4132,8 +4132,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_linear_loader_linearloader",
-      "community": 11,
-      "community_name": "cn",
+      "community": 22,
+      "community_name": "database.ts",
       "norm_label": "linearloader()"
     },
     {
@@ -4249,8 +4249,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_select",
-      "community": 26,
-      "community_name": "trades/page.tsx",
+      "community": 7,
+      "community_name": "analytics/page.tsx",
       "norm_label": "select.tsx"
     },
     {
@@ -4261,8 +4261,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_select_selectgroup",
-      "community": 26,
-      "community_name": "trades/page.tsx",
+      "community": 7,
+      "community_name": "analytics/page.tsx",
       "norm_label": "selectgroup()"
     },
     {
@@ -4273,8 +4273,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_select_selectvalue",
-      "community": 26,
-      "community_name": "trades/page.tsx",
+      "community": 7,
+      "community_name": "analytics/page.tsx",
       "norm_label": "selectvalue()"
     },
     {
@@ -4285,8 +4285,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_select_selecttrigger",
-      "community": 26,
-      "community_name": "trades/page.tsx",
+      "community": 7,
+      "community_name": "analytics/page.tsx",
       "norm_label": "selecttrigger()"
     },
     {
@@ -4297,8 +4297,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_select_selectcontent",
-      "community": 26,
-      "community_name": "trades/page.tsx",
+      "community": 7,
+      "community_name": "analytics/page.tsx",
       "norm_label": "selectcontent()"
     },
     {
@@ -4309,8 +4309,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_select_selectlabel",
-      "community": 26,
-      "community_name": "trades/page.tsx",
+      "community": 7,
+      "community_name": "analytics/page.tsx",
       "norm_label": "selectlabel()"
     },
     {
@@ -4321,8 +4321,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_select_selectitem",
-      "community": 26,
-      "community_name": "trades/page.tsx",
+      "community": 7,
+      "community_name": "analytics/page.tsx",
       "norm_label": "selectitem()"
     },
     {
@@ -4333,8 +4333,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_select_selectseparator",
-      "community": 26,
-      "community_name": "trades/page.tsx",
+      "community": 7,
+      "community_name": "analytics/page.tsx",
       "norm_label": "selectseparator()"
     },
     {
@@ -4345,8 +4345,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_select_selectscrollupbutton",
-      "community": 26,
-      "community_name": "trades/page.tsx",
+      "community": 7,
+      "community_name": "analytics/page.tsx",
       "norm_label": "selectscrollupbutton()"
     },
     {
@@ -4357,8 +4357,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_select_selectscrolldownbutton",
-      "community": 26,
-      "community_name": "trades/page.tsx",
+      "community": 7,
+      "community_name": "analytics/page.tsx",
       "norm_label": "selectscrolldownbutton()"
     },
     {
@@ -4392,8 +4392,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_sheet_sheettrigger",
-      "community": 10,
-      "community_name": "calendario/page.tsx",
+      "community": 31,
+      "community_name": "header.tsx",
       "norm_label": "sheettrigger()"
     },
     {
@@ -4593,8 +4593,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_table",
-      "community": 26,
-      "community_name": "trades/page.tsx",
+      "community": 16,
+      "community_name": "retiros/page.tsx",
       "norm_label": "table.tsx"
     },
     {
@@ -4605,8 +4605,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_table_table",
-      "community": 26,
-      "community_name": "trades/page.tsx",
+      "community": 16,
+      "community_name": "retiros/page.tsx",
       "norm_label": "table()"
     },
     {
@@ -4617,8 +4617,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_table_tableheader",
-      "community": 26,
-      "community_name": "trades/page.tsx",
+      "community": 16,
+      "community_name": "retiros/page.tsx",
       "norm_label": "tableheader()"
     },
     {
@@ -4629,8 +4629,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_table_tablebody",
-      "community": 26,
-      "community_name": "trades/page.tsx",
+      "community": 16,
+      "community_name": "retiros/page.tsx",
       "norm_label": "tablebody()"
     },
     {
@@ -4641,8 +4641,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_table_tablefooter",
-      "community": 26,
-      "community_name": "trades/page.tsx",
+      "community": 16,
+      "community_name": "retiros/page.tsx",
       "norm_label": "tablefooter()"
     },
     {
@@ -4653,8 +4653,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_table_tablerow",
-      "community": 26,
-      "community_name": "trades/page.tsx",
+      "community": 16,
+      "community_name": "retiros/page.tsx",
       "norm_label": "tablerow()"
     },
     {
@@ -4665,8 +4665,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_table_tablehead",
-      "community": 26,
-      "community_name": "trades/page.tsx",
+      "community": 16,
+      "community_name": "retiros/page.tsx",
       "norm_label": "tablehead()"
     },
     {
@@ -4677,8 +4677,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_table_tablecell",
-      "community": 26,
-      "community_name": "trades/page.tsx",
+      "community": 16,
+      "community_name": "retiros/page.tsx",
       "norm_label": "tablecell()"
     },
     {
@@ -4689,8 +4689,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_table_tablecaption",
-      "community": 26,
-      "community_name": "trades/page.tsx",
+      "community": 16,
+      "community_name": "retiros/page.tsx",
       "norm_label": "tablecaption()"
     },
     {
@@ -4770,8 +4770,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_top_nav_loader",
-      "community": 30,
-      "community_name": "dashboard-layout.tsx",
+      "community": 3,
+      "community_name": "dependencies",
       "norm_label": "top-nav-loader.tsx"
     },
     {
@@ -4782,8 +4782,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_top_nav_loader_topnavloader",
-      "community": 30,
-      "community_name": "dashboard-layout.tsx",
+      "community": 3,
+      "community_name": "dependencies",
       "norm_label": "topnavloader()"
     },
     {
@@ -5210,8 +5210,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_lib_constants_prop_firms_known_prop_firms",
-      "community": 16,
-      "community_name": "retiros/page.tsx",
+      "community": 24,
+      "community_name": "PropFirm",
       "norm_label": "known_prop_firms"
     },
     {
@@ -5222,8 +5222,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_constants_prop_firms_findknownpropfirm",
-      "community": 16,
-      "community_name": "retiros/page.tsx",
+      "community": 24,
+      "community_name": "PropFirm",
       "norm_label": "findknownpropfirm()"
     },
     {
@@ -5822,7 +5822,7 @@
       "_origin": "ast",
       "id": "src_lib_services_economic_events_test",
       "community": 26,
-      "community_name": "trades/page.tsx",
+      "community_name": "economic-events.ts",
       "norm_label": "economic-events.test.ts"
     },
     {
@@ -5833,7 +5833,7 @@
       "_origin": "ast",
       "id": "src_lib_services_economic_events",
       "community": 26,
-      "community_name": "trades/page.tsx",
+      "community_name": "economic-events.ts",
       "norm_label": "economic-events.ts"
     },
     {
@@ -5846,7 +5846,7 @@
       "_origin": "ast",
       "id": "src_lib_services_economic_events_impactedasset",
       "community": 26,
-      "community_name": "trades/page.tsx",
+      "community_name": "economic-events.ts",
       "norm_label": "impactedasset"
     },
     {
@@ -5859,7 +5859,7 @@
       "_origin": "ast",
       "id": "src_lib_services_economic_events_economicevent",
       "community": 26,
-      "community_name": "trades/page.tsx",
+      "community_name": "economic-events.ts",
       "norm_label": "economicevent"
     },
     {
@@ -5872,7 +5872,7 @@
       "_origin": "ast",
       "id": "src_lib_services_economic_events_economiceventsfilter",
       "community": 26,
-      "community_name": "trades/page.tsx",
+      "community_name": "economic-events.ts",
       "norm_label": "economiceventsfilter"
     },
     {
@@ -5884,7 +5884,7 @@
       "_origin": "ast",
       "id": "src_lib_services_economic_events_getimpactedassets",
       "community": 26,
-      "community_name": "trades/page.tsx",
+      "community_name": "economic-events.ts",
       "norm_label": "getimpactedassets()"
     },
     {
@@ -5896,7 +5896,7 @@
       "_origin": "ast",
       "id": "src_lib_services_economic_events_normalizereutersimportance",
       "community": 26,
-      "community_name": "trades/page.tsx",
+      "community_name": "economic-events.ts",
       "norm_label": "normalizereutersimportance()"
     },
     {
@@ -5908,7 +5908,7 @@
       "_origin": "ast",
       "id": "src_lib_services_economic_events_normalizeeconomicevent",
       "community": 26,
-      "community_name": "trades/page.tsx",
+      "community_name": "economic-events.ts",
       "norm_label": "normalizeeconomicevent()"
     },
     {
@@ -5920,7 +5920,7 @@
       "_origin": "ast",
       "id": "src_lib_services_economic_events_filtereconomicevents",
       "community": 26,
-      "community_name": "trades/page.tsx",
+      "community_name": "economic-events.ts",
       "norm_label": "filtereconomicevents()"
     },
     {
@@ -5932,7 +5932,7 @@
       "_origin": "ast",
       "id": "src_lib_services_economic_events_geteconomicevents",
       "community": 26,
-      "community_name": "trades/page.tsx",
+      "community_name": "economic-events.ts",
       "norm_label": "geteconomicevents()"
     },
     {
@@ -5944,7 +5944,7 @@
       "_origin": "ast",
       "id": "src_lib_services_economic_events_getfallbackeconomicevents",
       "community": 26,
-      "community_name": "trades/page.tsx",
+      "community_name": "economic-events.ts",
       "norm_label": "getfallbackeconomicevents()"
     },
     {
@@ -5955,7 +5955,7 @@
       "_origin": "ast",
       "id": "src_lib_services_economic_events_rationale_167",
       "community": 26,
-      "community_name": "trades/page.tsx",
+      "community_name": "economic-events.ts",
       "norm_label": "note: we do not filter by minimportance in the api query string because reuters..."
     },
     {
@@ -6319,8 +6319,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_services_strategies_test",
-      "community": 24,
-      "community_name": "PropFirm",
+      "community": 29,
+      "community_name": "strategies/page.tsx",
       "norm_label": "strategies.test.ts"
     },
     {
@@ -6330,8 +6330,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_services_strategies",
-      "community": 24,
-      "community_name": "PropFirm",
+      "community": 29,
+      "community_name": "strategies/page.tsx",
       "norm_label": "strategies.ts"
     },
     {
@@ -6343,8 +6343,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_services_strategies_strategysetup",
-      "community": 24,
-      "community_name": "PropFirm",
+      "community": 29,
+      "community_name": "strategies/page.tsx",
       "norm_label": "strategysetup"
     },
     {
@@ -6356,8 +6356,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_services_strategies_strategyperformancemetrics",
-      "community": 24,
-      "community_name": "PropFirm",
+      "community": 29,
+      "community_name": "strategies/page.tsx",
       "norm_label": "strategyperformancemetrics"
     },
     {
@@ -6367,8 +6367,8 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "src_lib_services_strategies_default_playbook_strategies",
-      "community": 24,
-      "community_name": "PropFirm",
+      "community": 29,
+      "community_name": "strategies/page.tsx",
       "norm_label": "default_playbook_strategies"
     },
     {
@@ -6379,8 +6379,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_services_strategies_calculatestrategymetrics",
-      "community": 24,
-      "community_name": "PropFirm",
+      "community": 29,
+      "community_name": "strategies/page.tsx",
       "norm_label": "calculatestrategymetrics()"
     },
     {
@@ -6391,7 +6391,7 @@
       "_origin": "ast",
       "id": "src_lib_services_trading_calculators_test",
       "community": 29,
-      "community_name": "tools/page.tsx",
+      "community_name": "strategies/page.tsx",
       "norm_label": "trading-calculators.test.ts"
     },
     {
@@ -6402,7 +6402,7 @@
       "_origin": "ast",
       "id": "src_lib_services_trading_calculators",
       "community": 29,
-      "community_name": "tools/page.tsx",
+      "community_name": "strategies/page.tsx",
       "norm_label": "trading-calculators.ts"
     },
     {
@@ -6415,7 +6415,7 @@
       "_origin": "ast",
       "id": "src_lib_services_trading_calculators_instrumentspec",
       "community": 29,
-      "community_name": "tools/page.tsx",
+      "community_name": "strategies/page.tsx",
       "norm_label": "instrumentspec"
     },
     {
@@ -6426,7 +6426,7 @@
       "_origin": "ast",
       "id": "src_lib_services_trading_calculators_instrument_specs",
       "community": 29,
-      "community_name": "tools/page.tsx",
+      "community_name": "strategies/page.tsx",
       "norm_label": "instrument_specs"
     },
     {
@@ -6439,7 +6439,7 @@
       "_origin": "ast",
       "id": "src_lib_services_trading_calculators_positionsizeresult",
       "community": 29,
-      "community_name": "tools/page.tsx",
+      "community_name": "strategies/page.tsx",
       "norm_label": "positionsizeresult"
     },
     {
@@ -6451,7 +6451,7 @@
       "_origin": "ast",
       "id": "src_lib_services_trading_calculators_calculatepositionsize",
       "community": 29,
-      "community_name": "tools/page.tsx",
+      "community_name": "strategies/page.tsx",
       "norm_label": "calculatepositionsize()"
     },
     {
@@ -6464,7 +6464,7 @@
       "_origin": "ast",
       "id": "src_lib_services_trading_calculators_consistencyresult",
       "community": 29,
-      "community_name": "tools/page.tsx",
+      "community_name": "strategies/page.tsx",
       "norm_label": "consistencyresult"
     },
     {
@@ -6476,7 +6476,7 @@
       "_origin": "ast",
       "id": "src_lib_services_trading_calculators_calculateconsistencyrule",
       "community": 29,
-      "community_name": "tools/page.tsx",
+      "community_name": "strategies/page.tsx",
       "norm_label": "calculateconsistencyrule()"
     },
     {
@@ -6489,7 +6489,7 @@
       "_origin": "ast",
       "id": "src_lib_services_trading_calculators_drawdownbufferresult",
       "community": 29,
-      "community_name": "tools/page.tsx",
+      "community_name": "strategies/page.tsx",
       "norm_label": "drawdownbufferresult"
     },
     {
@@ -6501,7 +6501,7 @@
       "_origin": "ast",
       "id": "src_lib_services_trading_calculators_calculatedrawdownbuffer",
       "community": 29,
-      "community_name": "tools/page.tsx",
+      "community_name": "strategies/page.tsx",
       "norm_label": "calculatedrawdownbuffer()"
     },
     {
@@ -6512,7 +6512,7 @@
       "_origin": "ast",
       "id": "src_lib_supabase_client",
       "community": 8,
-      "community_name": "login/page.tsx",
+      "community_name": "button.tsx",
       "norm_label": "client.ts"
     },
     {
@@ -6524,7 +6524,7 @@
       "_origin": "ast",
       "id": "src_lib_supabase_client_createclient",
       "community": 8,
-      "community_name": "login/page.tsx",
+      "community_name": "button.tsx",
       "norm_label": "createclient()"
     },
     {
@@ -6603,8 +6603,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_utils",
-      "community": 31,
-      "community_name": "header.tsx",
+      "community": 11,
+      "community_name": "cn",
       "norm_label": "utils.ts"
     },
     {
@@ -7037,8 +7037,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_types_database_tradovatecredential",
-      "community": 24,
-      "community_name": "PropFirm",
+      "community": 19,
+      "community_name": "copier/page.tsx",
       "norm_label": "tradovatecredential"
     },
     {
@@ -17595,7 +17595,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/app/strategies/page.tsx",
-      "source_location": "L544",
+      "source_location": "L540",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_strategies_page",
@@ -17606,7 +17606,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/app/strategies/page.tsx",
-      "source_location": "L32",
+      "source_location": "L33",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_strategies_page",
@@ -17618,7 +17618,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/strategies/page.tsx",
-      "source_location": "L30",
+      "source_location": "L31",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_strategies_page",
@@ -17630,7 +17630,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/strategies/page.tsx",
-      "source_location": "L30",
+      "source_location": "L31",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_strategies_page",
@@ -17646,7 +17646,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_strategies_page",
-      "target": "src_components_ui_badge",
+      "target": "src_components_ui_animated_tabs",
       "confidence_score": 1.0
     },
     {
@@ -17655,6 +17655,30 @@
       "confidence": "EXTRACTED",
       "source_file": "src/app/strategies/page.tsx",
       "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_strategies_page",
+      "target": "src_components_ui_animated_tabs_animatedtabs",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/strategies/page.tsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_strategies_page",
+      "target": "src_components_ui_badge",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/strategies/page.tsx",
+      "source_location": "L13",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_strategies_page",
@@ -17690,7 +17714,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/strategies/page.tsx",
-      "source_location": "L13",
+      "source_location": "L14",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_strategies_page",
@@ -17702,7 +17726,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/strategies/page.tsx",
-      "source_location": "L13",
+      "source_location": "L14",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_strategies_page",
@@ -17714,7 +17738,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/strategies/page.tsx",
-      "source_location": "L14",
+      "source_location": "L15",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_strategies_page",
@@ -17726,7 +17750,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/strategies/page.tsx",
-      "source_location": "L14",
+      "source_location": "L15",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_strategies_page",
@@ -17834,7 +17858,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/app/strategies/page.tsx",
-      "source_location": "L196",
+      "source_location": "L197",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_strategies_page_strategiespagecontent",
@@ -17846,7 +17870,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/app/strategies/page.tsx",
-      "source_location": "L289",
+      "source_location": "L285",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_strategies_page_strategiespagecontent",
@@ -32545,5 +32569,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "0535c64449039987222f19be47953f33c3cbe819"
+  "built_at_commit": "30fa56f5317d88eb92b5797c182f02f2a7c17e59"
 }
