@@ -18,17 +18,15 @@ import {
   Eye,
   EyeOff,
   ArrowRight,
-  Zap,
+  TrendingUp,
   Activity,
   Layers,
-  Terminal,
-  TrendingUp,
-  Cpu,
-  Check,
-  Sparkles,
+  Zap,
+  Target,
+  ShieldAlert,
 } from "lucide-react";
 import { loginSchema } from "@/lib/validations/schemas";
-import { BrandSymbol, BrandLogo } from "@/components/brand-logo";
+import { BrandLogo } from "@/components/brand-logo";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 export default function LoginPage() {
@@ -97,15 +95,12 @@ export default function LoginPage() {
     }
   };
 
-  const fillDemoCredentials = () => {
-    setEmail("trader@propfirm.com");
-    setPassword("Trader123456!");
-  };
-
   if (isCheckingAuth) {
     return (
       <div className="min-h-screen w-full flex flex-col items-center justify-center bg-slate-50 dark:bg-[#07090e] gap-4">
-        <BrandSymbol size={48} className="animate-pulse" />
+        <div className="h-10 w-10 rounded-2xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center text-blue-600 animate-pulse">
+          <Activity className="h-5 w-5" />
+        </div>
         <div className="flex items-center gap-2 text-xs font-mono text-slate-400">
           <Loader2 className="h-3.5 w-3.5 animate-spin text-blue-600" />
           <span>Verificando sesión segura...</span>
@@ -117,9 +112,9 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen w-full flex flex-col lg:flex-row bg-slate-50 dark:bg-[#07090e] text-slate-900 dark:text-white transition-colors duration-300">
       {/* ========================================================
-          LEFT COLUMN: The Authentication Console (45% - 50%)
+          LEFT COLUMN: The Authentication Console (45% - 48%)
           ======================================================== */}
-      <div className="w-full lg:w-[48%] xl:w-[44%] min-h-screen flex flex-col justify-between p-6 sm:p-10 lg:p-14 relative z-10 bg-white dark:bg-[#090b11] border-r border-slate-200/80 dark:border-white/[0.06]">
+      <div className="w-full lg:w-[48%] xl:w-[42%] min-h-screen flex flex-col justify-between p-6 sm:p-10 lg:p-14 relative z-10 bg-white dark:bg-[#090b11] border-r border-slate-200/80 dark:border-white/[0.06]">
         {/* Top Bar inside Left Column */}
         <div className="flex items-center justify-between w-full">
           <Link href="/" className="transition-opacity hover:opacity-85">
@@ -130,35 +125,15 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* Center: Auth Form Container */}
+        {/* Center: Clean Auth Form Container */}
         <div className="w-full max-w-sm mx-auto my-auto py-10 space-y-7">
           <div className="space-y-2 text-left">
-            <div className="flex items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold tracking-wider uppercase bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-900/50">
-                Consola v2.4
-              </span>
-            </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
               Iniciar Sesión
             </h1>
             <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
               Introduce tus credenciales para acceder a la gestión de cuentas, analítica cuantitativa y copiador.
             </p>
-          </div>
-
-          {/* Quick Demo Autofill Pill */}
-          <div className="p-3 rounded-2xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200/70 dark:border-white/[0.06] flex items-center justify-between text-xs">
-            <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
-              <Sparkles className="h-4 w-4 text-amber-500 shrink-0" />
-              <span className="text-[11px] font-medium">¿Modo prueba o demo?</span>
-            </div>
-            <button
-              type="button"
-              onClick={fillDemoCredentials}
-              className="text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
-            >
-              Cargar datos demo
-            </button>
           </div>
 
           {/* Alerts */}
@@ -286,12 +261,12 @@ export default function LoginPage() {
       </div>
 
       {/* ========================================================
-          RIGHT COLUMN: The Terminal & Live Telemetry Panel (52% - 56%)
-          Hidden on small viewports, high-tech fintech showcase on desktop
+          RIGHT COLUMN: The Live Trading Chart Showcase (52% - 58%)
+          Active Order Execution · Candlestick Telemetry · Risk Levels
           ======================================================== */}
-      <div className="hidden lg:flex flex-1 flex-col justify-between p-10 xl:p-14 bg-gradient-to-br from-[#080a10] via-[#090d18] to-[#06080e] relative overflow-hidden text-white select-none">
-        {/* Ambient Radial Lights */}
-        <div className="absolute -top-32 right-10 w-[500px] h-[400px] bg-blue-600/15 rounded-full blur-3xl pointer-events-none" />
+      <div className="hidden lg:flex flex-1 flex-col justify-between p-8 xl:p-12 bg-gradient-to-br from-[#07090e] via-[#090d18] to-[#05070c] relative overflow-hidden text-white select-none">
+        {/* Dynamic Glows */}
+        <div className="absolute -top-32 right-10 w-[550px] h-[400px] bg-blue-600/15 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-32 left-10 w-[450px] h-[350px] bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
 
         {/* Subtle Tech Grid Texture */}
@@ -303,119 +278,236 @@ export default function LoginPage() {
           }}
         />
 
-        {/* Top Header of Right Panel: Status Pill */}
+        {/* Top Header: Live Trading Status Pill */}
         <div className="flex items-center justify-between relative z-10">
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/10 backdrop-blur-md">
+          <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/10 backdrop-blur-md">
             <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
             <span className="text-[11px] font-mono font-semibold text-emerald-400 uppercase tracking-wider">
-              SISTEMAS OPERACIONALES · FEED EN TIEMPO REAL
+              MERCADOS EN VIVO · CME FUTURES
             </span>
           </div>
 
-          <div className="flex items-center gap-2 text-xs font-mono text-zinc-400">
-            <Cpu className="h-3.5 w-3.5 text-blue-400" />
-            <span>LATENCIA: 11ms</span>
+          <div className="flex items-center gap-3 text-xs font-mono text-zinc-400">
+            <span className="flex items-center gap-1.5 text-emerald-400 font-bold">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+              FEED CONECTADO
+            </span>
+            <span>·</span>
+            <span>12ms</span>
           </div>
         </div>
 
-        {/* Center: Interactive Glass Terminal & Mock Telemetry */}
-        <div className="my-auto space-y-6 relative z-10 max-w-xl">
-          {/* Main Terminal Window */}
-          <div className="rounded-3xl border border-white/[0.12] bg-[#0c0f1a]/85 backdrop-blur-xl shadow-2xl shadow-black/60 overflow-hidden">
-            {/* Terminal Chrome Header */}
+        {/* Center: Realistic Financial Trading Chart Window */}
+        <div className="my-auto space-y-4 relative z-10 w-full max-w-2xl mx-auto">
+          {/* Main Chart Container */}
+          <div className="rounded-3xl border border-white/[0.12] bg-[#0b0e19]/90 backdrop-blur-xl shadow-2xl shadow-black/70 overflow-hidden">
+            {/* Chart Top Chrome / Instrument Ticker */}
             <div className="px-5 py-3.5 border-b border-white/[0.08] bg-white/[0.02] flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="h-3 w-3 rounded-full bg-rose-500/80 inline-block" />
-                <span className="h-3 w-3 rounded-full bg-amber-500/80 inline-block" />
-                <span className="h-3 w-3 rounded-full bg-emerald-500/80 inline-block" />
-                <span className="text-xs font-mono text-zinc-400 ml-2 font-medium">
-                  telemetry-terminal :: session#8420
-                </span>
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1.5">
+                  <span className="h-3 w-3 rounded-full bg-rose-500/80 inline-block" />
+                  <span className="h-3 w-3 rounded-full bg-amber-500/80 inline-block" />
+                  <span className="h-3 w-3 rounded-full bg-emerald-500/80 inline-block" />
+                </div>
+                <div className="h-4 w-[1px] bg-white/10 mx-1" />
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-extrabold tracking-tight text-white font-mono">
+                    NQ 100
+                  </span>
+                  <Badge variant="outline" className="border-blue-500/30 text-blue-400 font-mono text-[10px] px-1.5 py-0">
+                    5M
+                  </Badge>
+                  <span className="text-xs font-mono text-emerald-400 font-bold ml-1">
+                    20,482.50
+                  </span>
+                  <span className="text-[10px] font-mono text-emerald-400/80">
+                    +142.25 (+0.70%)
+                  </span>
+                </div>
               </div>
-              <Badge variant="outline" className="border-blue-500/30 text-blue-400 font-mono text-[10px]">
-                TRADOVATE BRIDGE
-              </Badge>
+
+              <div className="flex items-center gap-2">
+                <Badge className="bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-mono text-[10px] uppercase font-bold px-2 py-0.5">
+                  ● LONG (BUY) · 2 CT
+                </Badge>
+              </div>
             </div>
 
-            {/* Metrics Dashboard Inside Terminal */}
-            <div className="p-6 space-y-6">
-              {/* KPIs Row */}
-              <div className="grid grid-cols-3 gap-3">
-                <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
-                  <span className="text-[10px] uppercase font-mono text-zinc-400 block tracking-wider">
-                    Capital Gestionado
-                  </span>
-                  <span className="text-lg font-bold font-mono text-white mt-1 block">
-                    $250,000.00
-                  </span>
-                  <span className="text-[10px] font-semibold text-emerald-400 flex items-center gap-1 mt-0.5">
-                    <TrendingUp className="h-3 w-3" />
-                    +$18,450.00 (+7.38%)
-                  </span>
-                </div>
+            {/* Trading Chart Visual Canvas */}
+            <div className="p-5 relative bg-[#090b14]/70">
+              {/* SVG Candlestick Chart with Order Overlay */}
+              <div className="relative w-full h-[260px] overflow-hidden rounded-2xl bg-[#070910] border border-white/[0.05] p-2">
+                {/* Background Grid Lines */}
+                <svg className="w-full h-full" viewBox="0 0 540 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="takeProfitGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#10b981" stopOpacity="0.15" />
+                      <stop offset="100%" stopColor="#10b981" stopOpacity="0.0" />
+                    </linearGradient>
+                    <linearGradient id="orderBlockGrad" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.12" />
+                      <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.04" />
+                    </linearGradient>
+                  </defs>
 
-                <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
-                  <span className="text-[10px] uppercase font-mono text-zinc-400 block tracking-wider">
-                    Cuentas Fondeadas
-                  </span>
-                  <span className="text-lg font-bold font-mono text-white mt-1 block">
-                    4 Activas
-                  </span>
-                  <span className="text-[10px] text-zinc-400 mt-0.5 block truncate">
-                    Apex · Topstep · MFF
-                  </span>
-                </div>
+                  {/* Horizontal Price Grid Lines */}
+                  <line x1="0" y1="40" x2="540" y2="40" stroke="rgba(255,255,255,0.05)" strokeDasharray="3 3" />
+                  <line x1="0" y1="95" x2="540" y2="95" stroke="rgba(255,255,255,0.05)" strokeDasharray="3 3" />
+                  <line x1="0" y1="150" x2="540" y2="150" stroke="rgba(255,255,255,0.05)" strokeDasharray="3 3" />
+                  <line x1="0" y1="205" x2="540" y2="205" stroke="rgba(255,255,255,0.05)" strokeDasharray="3 3" />
 
-                <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
-                  <span className="text-[10px] uppercase font-mono text-zinc-400 block tracking-wider">
-                    Colchón Drawdown
-                  </span>
-                  <span className="text-lg font-bold font-mono text-emerald-400 mt-1 block">
-                    Seguro ($50K)
-                  </span>
-                  <span className="text-[10px] text-zinc-400 mt-0.5 block">
-                    Trailing Bloqueado
-                  </span>
-                </div>
+                  {/* Price Scale Text on Right */}
+                  <text x="495" y="44" fill="#64748b" fontSize="9" fontFamily="monospace">20,540.0</text>
+                  <text x="495" y="99" fill="#64748b" fontSize="9" fontFamily="monospace">20,490.0</text>
+                  <text x="495" y="154" fill="#64748b" fontSize="9" fontFamily="monospace">20,440.0</text>
+                  <text x="495" y="209" fill="#64748b" fontSize="9" fontFamily="monospace">20,390.0</text>
+
+                  {/* Order Block / Demand Zone */}
+                  <rect x="70" y="140" width="130" height="35" fill="url(#orderBlockGrad)" stroke="#3b82f6" strokeWidth="1" strokeDasharray="2 2" rx="4" />
+                  <text x="76" y="152" fill="#60a5fa" fontSize="8" fontFamily="monospace" fontWeight="bold">DEMAND OB 5M</text>
+
+                  {/* ========================================================
+                      CANDLESTICK SERIES (16 candles)
+                      wick: line, body: rect
+                      ======================================================== */}
+                  {/* C1: Red */}
+                  <line x1="30" y1="90" x2="30" y2="135" stroke="#f43f5e" strokeWidth="1.2" />
+                  <rect x="25" y="100" width="10" height="25" fill="#f43f5e" rx="1.5" />
+
+                  {/* C2: Red */}
+                  <line x1="55" y1="115" x2="55" y2="160" stroke="#f43f5e" strokeWidth="1.2" />
+                  <rect x="50" y="122" width="10" height="30" fill="#f43f5e" rx="1.5" />
+
+                  {/* C3: Rejection Green Pinbar at Demand */}
+                  <line x1="80" y1="135" x2="80" y2="175" stroke="#10b981" strokeWidth="1.2" />
+                  <rect x="75" y="142" width="10" height="15" fill="#10b981" rx="1.5" />
+
+                  {/* C4: Green Accumulation */}
+                  <line x1="105" y1="130" x2="105" y2="165" stroke="#10b981" strokeWidth="1.2" />
+                  <rect x="100" y="135" width="10" height="20" fill="#10b981" rx="1.5" />
+
+                  {/* C5: Small Red Doji */}
+                  <line x1="130" y1="128" x2="130" y2="160" stroke="#f43f5e" strokeWidth="1.2" />
+                  <rect x="125" y="136" width="10" height="10" fill="#f43f5e" rx="1.5" />
+
+                  {/* C6: Strong Green Breakout (ENTRY TRIGGER) */}
+                  <line x1="155" y1="110" x2="155" y2="155" stroke="#10b981" strokeWidth="1.2" />
+                  <rect x="150" y="118" width="10" height="32" fill="#10b981" rx="1.5" />
+
+                  {/* C7: Green Continuation */}
+                  <line x1="180" y1="95" x2="180" y2="135" stroke="#10b981" strokeWidth="1.2" />
+                  <rect x="175" y="105" width="10" height="25" fill="#10b981" rx="1.5" />
+
+                  {/* C8: Small Red Retest */}
+                  <line x1="205" y1="102" x2="205" y2="138" stroke="#f43f5e" strokeWidth="1.2" />
+                  <rect x="200" y="108" width="10" height="18" fill="#f43f5e" rx="1.5" />
+
+                  {/* C9: Green Bounce */}
+                  <line x1="230" y1="90" x2="230" y2="130" stroke="#10b981" strokeWidth="1.2" />
+                  <rect x="225" y="98" width="10" height="24" fill="#10b981" rx="1.5" />
+
+                  {/* C10: Green Extension */}
+                  <line x1="255" y1="80" x2="255" y2="120" stroke="#10b981" strokeWidth="1.2" />
+                  <rect x="250" y="85" width="10" height="26" fill="#10b981" rx="1.5" />
+
+                  {/* C11: Red consolidation */}
+                  <line x1="280" y1="78" x2="280" y2="115" stroke="#f43f5e" strokeWidth="1.2" />
+                  <rect x="275" y="82" width="10" height="16" fill="#f43f5e" rx="1.5" />
+
+                  {/* C12: Green Impulse */}
+                  <line x1="305" y1="65" x2="305" y2="105" stroke="#10b981" strokeWidth="1.2" />
+                  <rect x="300" y="70" width="10" height="25" fill="#10b981" rx="1.5" />
+
+                  {/* C13: Small Green */}
+                  <line x1="330" y1="60" x2="330" y2="92" stroke="#10b981" strokeWidth="1.2" />
+                  <rect x="325" y="65" width="10" height="18" fill="#10b981" rx="1.5" />
+
+                  {/* C14: Red Pullback */}
+                  <line x1="355" y1="62" x2="355" y2="98" stroke="#f43f5e" strokeWidth="1.2" />
+                  <rect x="350" y="68" width="10" height="20" fill="#f43f5e" rx="1.5" />
+
+                  {/* C15: Bullish Expansion */}
+                  <line x1="380" y1="48" x2="380" y2="88" stroke="#10b981" strokeWidth="1.2" />
+                  <rect x="375" y="54" width="10" height="28" fill="#10b981" rx="1.5" />
+
+                  {/* C16: Current Active Candle */}
+                  <line x1="405" y1="42" x2="405" y2="78" stroke="#10b981" strokeWidth="1.5" />
+                  <rect x="400" y="48" width="10" height="24" fill="#10b981" rx="1.5" />
+
+                  {/* ========================================================
+                      ORDER EXECUTION OVERLAYS
+                      TP line, Entry Line, SL Line
+                      ======================================================== */}
+                  {/* Profit Area Shading between Entry and Current Price */}
+                  <rect x="150" y="48" width="265" height="102" fill="url(#takeProfitGradient)" />
+
+                  {/* 1. Take Profit Level (Green Dashed) */}
+                  <line x1="140" y1="36" x2="480" y2="36" stroke="#10b981" strokeWidth="1.5" strokeDasharray="4 4" />
+                  <rect x="145" y="26" width="150" height="18" fill="#064e3b" rx="4" />
+                  <text x="152" y="38" fill="#34d399" fontSize="8.5" fontFamily="monospace" fontWeight="bold">
+                    TP: 20,540.00 (+50.0 pts · +$2,000)
+                  </text>
+
+                  {/* 2. Floating PnL Marker attached to current candle */}
+                  <circle cx="405" cy="48" r="4" fill="#10b981" />
+                  <circle cx="405" cy="48" r="8" fill="#10b981" opacity="0.3" />
+                  <rect x="420" y="38" width="105" height="20" fill="#047857" rx="5" filter="drop-shadow(0px 2px 4px rgba(0,0,0,0.5))" />
+                  <text x="428" y="52" fill="#ffffff" fontSize="9" fontFamily="monospace" fontWeight="bold">
+                    +$1,420.00 PnL
+                  </text>
+
+                  {/* 3. Entry Price Level (Blue Solid) */}
+                  <line x1="140" y1="150" x2="480" y2="150" stroke="#3b82f6" strokeWidth="1.5" />
+                  <rect x="145" y="141" width="145" height="18" fill="#1e3a8a" rx="4" />
+                  <text x="152" y="153" fill="#93c5fd" fontSize="8.5" fontFamily="monospace" fontWeight="bold">
+                    ENTRADA: 2x NQ @ 20,440.00
+                  </text>
+
+                  {/* 4. Stop Loss Level (Red Dashed) */}
+                  <line x1="140" y1="185" x2="480" y2="185" stroke="#f43f5e" strokeWidth="1.5" strokeDasharray="4 4" />
+                  <rect x="145" y="176" width="145" height="18" fill="#881337" rx="4" />
+                  <text x="152" y="188" fill="#fda4af" fontSize="8.5" fontFamily="monospace" fontWeight="bold">
+                    SL: 20,415.00 (-25.0 pts · -$1,000)
+                  </text>
+                </svg>
               </div>
 
-              {/* Streaming Execution Logs */}
-              <div className="rounded-2xl bg-black/50 border border-white/[0.06] p-4 font-mono text-xs space-y-2">
-                <div className="flex items-center gap-2 text-zinc-500 text-[11px] pb-1 border-b border-white/[0.04]">
-                  <Terminal className="h-3.5 w-3.5 text-blue-400" />
-                  <span>REGISTRO DE EJECUCIÓN & REGLAS</span>
-                </div>
-
-                <div className="flex items-start gap-2 text-zinc-300">
-                  <span className="text-blue-400 font-bold shrink-0">[14:58:10]</span>
-                  <span>
-                    <span className="text-emerald-400">COPIER_DISPATCH</span>: Replicando orden NQ 1x en 4 cuentas esclavas
+              {/* Order Telemetry Strip */}
+              <div className="grid grid-cols-3 gap-2.5 mt-3 pt-3 border-t border-white/[0.08]">
+                <div className="p-3 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
+                  <span className="text-[10px] uppercase font-mono text-zinc-400 block tracking-wider">
+                    Ratio Beneficio / Riesgo
+                  </span>
+                  <span className="text-base font-bold font-mono text-emerald-400 mt-0.5 flex items-center gap-1.5">
+                    <Target className="h-4 w-4 text-emerald-400" />
+                    1 : 2.0 (Objetivo $2K)
                   </span>
                 </div>
 
-                <div className="flex items-start gap-2 text-zinc-300">
-                  <span className="text-blue-400 font-bold shrink-0">[15:00:22]</span>
-                  <span>
-                    <span className="text-cyan-400">DRAWDOWN_SHIELD</span>: Trailing threshold bloqueado en balance base
+                <div className="p-3 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
+                  <span className="text-[10px] uppercase font-mono text-zinc-400 block tracking-wider">
+                    Regla de Consistencia
+                  </span>
+                  <span className="text-base font-bold font-mono text-blue-400 mt-0.5 flex items-center gap-1.5">
+                    <TrendingUp className="h-4 w-4 text-blue-400" />
+                    21.4% (Límite 30%)
                   </span>
                 </div>
 
-                <div className="flex items-start gap-2 text-zinc-300">
-                  <span className="text-blue-400 font-bold shrink-0">[15:02:44]</span>
-                  <span>
-                    <span className="text-amber-400">CONSISTENCY_AUDIT</span>: Mejor día representa 24.5% (Regla 30% <span className="text-emerald-400 font-bold">CUMPLIDA</span>)
+                <div className="p-3 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
+                  <span className="text-[10px] uppercase font-mono text-zinc-400 block tracking-wider">
+                    Drawdown Trailing
                   </span>
-                </div>
-
-                <div className="flex items-center gap-2 text-emerald-400 pt-1">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-ping" />
-                  <span className="text-[11px]">Monitoreando actividad de mercado...</span>
+                  <span className="text-base font-bold font-mono text-amber-400 mt-0.5 flex items-center gap-1.5">
+                    <ShieldAlert className="h-4 w-4 text-amber-400" />
+                    Bloqueado $50K
+                  </span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Value Prop Row Under Terminal */}
+          {/* Institutional Features Row under Chart */}
           <div className="grid grid-cols-3 gap-4 pt-2">
             <div className="flex items-center gap-2.5">
               <div className="h-8 w-8 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 shrink-0">
@@ -423,7 +515,7 @@ export default function LoginPage() {
               </div>
               <div className="text-left">
                 <span className="text-xs font-bold text-white block">Multi-Firma</span>
-                <span className="text-[10px] text-zinc-400 block">Sincronización unificada</span>
+                <span className="text-[10px] text-zinc-400 block">Sincronización simultánea</span>
               </div>
             </div>
 
@@ -432,8 +524,8 @@ export default function LoginPage() {
                 <Zap className="h-4 w-4" />
               </div>
               <div className="text-left">
-                <span className="text-xs font-bold text-white block">Baja Latencia</span>
-                <span className="text-[10px] text-zinc-400 block">Copia en milisegundos</span>
+                <span className="text-xs font-bold text-white block">Tradovate Bridge</span>
+                <span className="text-[10px] text-zinc-400 block">Copia a baja latencia</span>
               </div>
             </div>
 
@@ -443,7 +535,7 @@ export default function LoginPage() {
               </div>
               <div className="text-left">
                 <span className="text-xs font-bold text-white block">Anti-Quiebre</span>
-                <span className="text-[10px] text-zinc-400 block">Supervisión en vivo</span>
+                <span className="text-[10px] text-zinc-400 block">Protección activa de saldo</span>
               </div>
             </div>
           </div>
