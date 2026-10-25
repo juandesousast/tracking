@@ -1,5 +1,4 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-// @ts-expect-error desktop module
 const { DesktopCopierEngine, convertSymbolToMicro } = require('../../../desktop/main/copier-engine');
 
 describe('Desktop Copier Engine & Symbol Converter', () => {

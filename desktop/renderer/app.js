@@ -503,16 +503,17 @@ function renderCloudAccounts(accounts) {
   cloudAccountsGrid.innerHTML = accounts
     .map((acc) => {
       const firmName = acc.prop_firms?.name || 'Prop Firm Desconocida';
+      const st = (acc.status || 'ACTIVE').toUpperCase();
       const statusColor =
-        acc.status === 'ACTIVE' || acc.status === 'PASSED'
+        st === 'ACTIVE' || st === 'PASSED'
           ? '#34d399'
-          : acc.status === 'BREACHED'
+          : st === 'BREACHED'
           ? '#fb7185'
           : '#94a3b8';
       const statusBg =
-        acc.status === 'ACTIVE' || acc.status === 'PASSED'
+        st === 'ACTIVE' || st === 'PASSED'
           ? 'rgba(52, 211, 153, 0.1)'
-          : acc.status === 'BREACHED'
+          : st === 'BREACHED'
           ? 'rgba(251, 113, 133, 0.1)'
           : 'rgba(148, 163, 184, 0.1)';
       const sizeFormatted = Number(acc.account_size || 0).toLocaleString();
@@ -529,7 +530,7 @@ function renderCloudAccounts(accounts) {
             </div>
           </div>
           <span style="font-size: 10px; font-weight: 800; color: ${statusColor}; background: ${statusBg}; border: 1px solid ${statusColor}33; padding: 2px 7px; border-radius: 6px;">
-            ${acc.status || 'ACTIVA'}
+            ${st}
           </span>
         </div>
 
