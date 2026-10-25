@@ -70,6 +70,24 @@ authForm.addEventListener('submit', async (e) => {
       userEmailLabel.textContent = res.user.email;
       authView.style.display = 'none';
       appendLog(new Date().toLocaleTimeString(), `Sesión iniciada con éxito (${res.user.email})`);
+
+      // Reload config & accounts for this specific user
+      const userCfg = await window.electronAPI.getConfig();
+      if (userCfg) {
+        currentConfig = { ...currentConfig, ...userCfg };
+        if (currentConfig.environment) {
+          envSelect.value = currentConfig.environment;
+        }
+      }
+
+      const accs = await window.electronAPI.getAccounts();
+      availableAccounts = accs || [];
+      if (!currentConfig.masterAccountId && availableAccounts.length > 0) {
+        currentConfig.masterAccountId = availableAccounts[0].id;
+        currentConfig.masterAccountName = availableAccounts[0].name;
+      }
+      renderMasterSelector();
+      renderSlavesList();
     } else {
       authError.textContent = res.error || 'Credenciales inválidas de EdgeFlow.';
       authError.style.display = 'block';

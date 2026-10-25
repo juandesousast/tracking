@@ -2,15 +2,19 @@ const { BrowserWindow, session } = require('electron');
 
 /**
  * Opens an in-app native browser window loading Tradovate.
- * Clears old cookies so user can type their username/password (Apex, Topstep or Demo),
- * and intercepts the session token without any manual copy-paste.
+ * Each EdgeFlow user has their own isolated session partition:
+ * `persist:tradovate-user-${userId}`.
+ * User A and User B never share Tradovate cookies, sessions, or credentials.
  */
-function openTradovateLoginWindow(parentWindow, chosenEnvironment = 'demo', onTokenCaptured) {
-  const partitionName = 'persist:tradovate-auth-session';
+function openTradovateLoginWindow(
+  parentWindow,
+  chosenEnvironment = 'demo',
+  userId = 'default',
+  onTokenCaptured
+) {
+  const safeId = userId ? userId.replace(/[^a-zA-Z0-9_\-]/g, '_') : 'default';
+  const partitionName = `persist:tradovate-user-${safeId}`;
   const authSession = session.fromPartition(partitionName);
-
-  // Clear previous session cookies so user can log in with their desired Tradovate account
-  authSession.clearStorageData();
 
   const authWin = new BrowserWindow({
     width: 1040,
@@ -42,10 +46,10 @@ function openTradovateLoginWindow(parentWindow, chosenEnvironment = 'demo', onTo
         captured = true;
 
         console.log(
-          `[TradovateAuth] Token captured successfully for environment: ${chosenEnvironment.toUpperCase()}`
+          `[TradovateAuth] Token captured for user [${safeId}] in env: ${chosenEnvironment.toUpperCase()}`
         );
 
-        // Remove listener immediately to avoid duplicates
+        // Remove listener immediately
         try {
           authSession.webRequest.onBeforeSendHeaders(filter, null);
         } catch (e) {}
@@ -73,7 +77,7 @@ function openTradovateLoginWindow(parentWindow, chosenEnvironment = 'demo', onTo
       authSession.webRequest.onBeforeSendHeaders(filter, null);
     } catch (e) {}
     if (!captured) {
-      console.log('[TradovateAuth] Window closed without capturing session.');
+      console.log(`[TradovateAuth] Window closed for user [${safeId}] without capturing session.`);
     }
   });
 

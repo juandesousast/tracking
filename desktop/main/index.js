@@ -14,28 +14,73 @@ let activeWs = null;
 let activeToken = null;
 let activeEnvironment = 'demo';
 let activeAccounts = [];
+let currentUserId = null;
 let reqId = 1;
 
-function getConfigPath() {
+// --- Per-User Storage Helpers ---
+function getBaseDataDir() {
   try {
     if (app && typeof app.getPath === 'function') {
-      return path.join(app.getPath('userData'), 'copier-config.json');
+      return app.getPath('userData');
     }
   } catch (e) {}
-  return path.join(__dirname, '../copier-config.json');
+  return path.join(__dirname, '..');
 }
 
-function loadStoredConfig() {
+function getGlobalAuthSessionPath() {
+  return path.join(getBaseDataDir(), 'edgeflow-session.json');
+}
+
+function loadGlobalAuthSession() {
   try {
-    const configPath = getConfigPath();
-    if (fs.existsSync(configPath)) {
-      return JSON.parse(fs.readFileSync(configPath, 'utf8'));
+    const p = getGlobalAuthSessionPath();
+    if (fs.existsSync(p)) {
+      return JSON.parse(fs.readFileSync(p, 'utf8'));
     }
   } catch (e) {
-    console.error('Error loading config:', e);
+    console.error('Error loading global auth session:', e);
+  }
+  return null;
+}
+
+function saveGlobalAuthSession(session) {
+  try {
+    const p = getGlobalAuthSessionPath();
+    if (!session) {
+      if (fs.existsSync(p)) fs.unlinkSync(p);
+    } else {
+      fs.writeFileSync(p, JSON.stringify(session, null, 2), 'utf8');
+    }
+  } catch (e) {
+    console.error('Error saving global auth session:', e);
+  }
+}
+
+function getUserConfigPath(userId) {
+  const safeId = userId ? String(userId).replace(/[^a-zA-Z0-9_\-]/g, '_') : 'guest';
+  return path.join(getBaseDataDir(), `copier-user-${safeId}.json`);
+}
+
+function loadStoredUserConfig(userId) {
+  if (!userId) {
+    return {
+      tradovateToken: null,
+      environment: 'demo',
+      masterAccountId: null,
+      masterAccountName: '',
+      slaves: [],
+      isPaused: false,
+    };
+  }
+  try {
+    const p = getUserConfigPath(userId);
+    if (fs.existsSync(p)) {
+      return JSON.parse(fs.readFileSync(p, 'utf8'));
+    }
+  } catch (e) {
+    console.error(`Error loading user config for ${userId}:`, e);
   }
   return {
-    authSession: null,
     tradovateToken: null,
     environment: 'demo',
     masterAccountId: null,
@@ -45,15 +90,16 @@ function loadStoredConfig() {
   };
 }
 
-function saveConfig(data) {
+function saveUserConfig(userId, data) {
+  if (!userId) return null;
   try {
-    const configPath = getConfigPath();
-    const current = loadStoredConfig();
+    const p = getUserConfigPath(userId);
+    const current = loadStoredUserConfig(userId);
     const updated = { ...current, ...data };
-    fs.writeFileSync(configPath, JSON.stringify(updated, null, 2), 'utf8');
+    fs.writeFileSync(p, JSON.stringify(updated, null, 2), 'utf8');
     return updated;
   } catch (e) {
-    console.error('Error saving config:', e);
+    console.error(`Error saving user config for ${userId}:`, e);
     return null;
   }
 }
@@ -302,35 +348,79 @@ function connectTradovateWs(token, environment = 'demo') {
   });
 }
 
-// IPC Handlers - Authentication
+// --- IPC Handlers ---
+
+// Auth Handlers
 ipcMain.handle('auth:login', async (event, { email, password }) => {
   const res = await copierEngine.login(email, password);
-  if (res.success) {
-    saveConfig({ authSession: res.session });
+  if (res.success && res.user) {
+    currentUserId = res.user.id;
+    saveGlobalAuthSession(res.session);
+
+    // Load this specific user's config
+    const userCfg = loadStoredUserConfig(currentUserId);
+    copierEngine.updateConfig(userCfg);
+
+    // If this user already has a Tradovate connection, restore it
+    if (userCfg.tradovateToken) {
+      activeToken = userCfg.tradovateToken;
+      activeEnvironment = userCfg.environment || 'demo';
+      fetchTradovateAccountsRest(activeToken, activeEnvironment).then((result) => {
+        if (result && result.accounts.length > 0) {
+          activeAccounts = result.accounts;
+          sendToRenderer('tradovate:accounts', activeAccounts);
+        }
+        connectTradovateWs(activeToken, activeEnvironment);
+      });
+    } else {
+      activeToken = null;
+      activeAccounts = [];
+      if (activeWs) {
+        try {
+          activeWs.removeAllListeners();
+          activeWs.close();
+        } catch (e) {}
+        activeWs = null;
+      }
+      sendToRenderer('tradovate:accounts', []);
+      sendToRenderer('ws:status', { status: 'disconnected', latency: 0 });
+    }
   }
   return res;
 });
 
 ipcMain.handle('auth:get-session', async () => {
-  const cfg = loadStoredConfig();
-  if (cfg.authSession) {
-    const ok = await copierEngine.restoreSession(cfg.authSession);
-    if (ok) {
+  const savedSession = loadGlobalAuthSession();
+  if (savedSession) {
+    const ok = await copierEngine.restoreSession(savedSession);
+    if (ok && copierEngine.currentUser) {
+      currentUserId = copierEngine.currentUser.id;
+      const userCfg = loadStoredUserConfig(currentUserId);
+      copierEngine.updateConfig(userCfg);
+
+      if (userCfg.tradovateToken) {
+        activeToken = userCfg.tradovateToken;
+        activeEnvironment = userCfg.environment || 'demo';
+        fetchTradovateAccountsRest(activeToken, activeEnvironment).then((result) => {
+          if (result && result.accounts.length > 0) {
+            activeAccounts = result.accounts;
+            sendToRenderer('tradovate:accounts', activeAccounts);
+          }
+          connectTradovateWs(activeToken, activeEnvironment);
+        });
+      }
+
       return { authenticated: true, user: copierEngine.currentUser };
     }
   }
+  currentUserId = null;
   return { authenticated: false };
 });
 
 ipcMain.handle('auth:logout', async () => {
   await copierEngine.logout();
-  saveConfig({
-    authSession: null,
-    tradovateToken: null,
-    masterAccountId: null,
-    masterAccountName: '',
-    slaves: [],
-  });
+  saveGlobalAuthSession(null);
+  currentUserId = null;
   activeToken = null;
   activeAccounts = [];
   if (activeWs) {
@@ -340,30 +430,35 @@ ipcMain.handle('auth:logout', async () => {
     } catch (e) {}
     activeWs = null;
   }
+  sendToRenderer('tradovate:accounts', []);
+  sendToRenderer('ws:status', { status: 'disconnected', latency: 0 });
   return { success: true };
 });
 
-// IPC Handlers - Config & Engine
-ipcMain.handle('app:get-config', () => loadStoredConfig());
+// User-Scoped Copier Configuration
+ipcMain.handle('app:get-config', () => {
+  return loadStoredUserConfig(currentUserId);
+});
 
 ipcMain.handle('copier:update-config', (event, cfg) => {
-  const updated = saveConfig(cfg);
+  const updated = saveUserConfig(currentUserId, cfg);
   copierEngine.updateConfig(cfg);
   return { success: true, config: updated };
 });
 
 ipcMain.handle('copier:set-paused', (event, isPaused) => {
-  saveConfig({ isPaused });
+  saveUserConfig(currentUserId, { isPaused });
   copierEngine.updateConfig({ isPaused });
   return { success: true, isPaused };
 });
 
-// IPC Handlers - Tradovate
+// Tradovate Handlers (Scoped per user)
 ipcMain.handle('tradovate:get-accounts', async () => {
   if (activeAccounts.length > 0) return activeAccounts;
-  const cfg = loadStoredConfig();
-  if (cfg.tradovateToken) {
-    const result = await fetchTradovateAccountsRest(cfg.tradovateToken, cfg.environment || 'demo');
+  if (!currentUserId) return [];
+  const userCfg = loadStoredUserConfig(currentUserId);
+  if (userCfg.tradovateToken) {
+    const result = await fetchTradovateAccountsRest(userCfg.tradovateToken, userCfg.environment || 'demo');
     if (result && result.accounts.length > 0) {
       activeAccounts = result.accounts;
       return activeAccounts;
@@ -374,18 +469,22 @@ ipcMain.handle('tradovate:get-accounts', async () => {
 
 ipcMain.handle('tradovate:open-login', (event, options = {}) => {
   return new Promise((resolve) => {
-    const cfg = loadStoredConfig();
-    const chosenEnv = options.environment || cfg.environment || 'demo';
+    const userCfg = loadStoredUserConfig(currentUserId);
+    const chosenEnv = options.environment || userCfg.environment || 'demo';
 
-    openTradovateLoginWindow(mainWindow, chosenEnv, async ({ token, environment }) => {
+    // Partition is strictly isolated per currentUserId
+    openTradovateLoginWindow(mainWindow, chosenEnv, currentUserId, async ({ token, environment }) => {
       activeToken = token;
 
-      // 1. Fetch accounts with intelligent auto-environment fallback
+      // 1. Fetch accounts
       const result = await fetchTradovateAccountsRest(token, environment);
       const effectiveEnv = result.env || environment;
       activeEnvironment = effectiveEnv;
 
-      saveConfig({ tradovateToken: token, environment: effectiveEnv });
+      saveUserConfig(currentUserId, {
+        tradovateToken: token,
+        environment: effectiveEnv,
+      });
 
       if (result.accounts && result.accounts.length > 0) {
         activeAccounts = result.accounts;
@@ -395,13 +494,15 @@ ipcMain.handle('tradovate:open-login', (event, options = {}) => {
           msg: `✅ Detectadas <strong>${result.accounts.length} cuenta(s)</strong> en Tradovate (${effectiveEnv.toUpperCase()}).`,
         });
       } else {
+        activeAccounts = [];
+        sendToRenderer('tradovate:accounts', []);
         sendToRenderer('app:log', {
           time: new Date().toLocaleTimeString(),
           msg: `<span style="color: #fbbf24;">⚠️ Sesión conectada, pero este usuario de Tradovate no tiene cuentas de trading registradas. Inicia sesión con tus credenciales de fondeo/demo en Tradovate.</span>`,
         });
       }
 
-      // 2. Connect WebSocket to effective environment
+      // 2. Connect WebSocket
       connectTradovateWs(token, effectiveEnv);
       resolve({ success: true, token, environment: effectiveEnv });
     });
@@ -411,7 +512,7 @@ ipcMain.handle('tradovate:open-login', (event, options = {}) => {
 ipcMain.handle('tradovate:connect-token', async (event, { token, environment }) => {
   activeToken = token;
   const env = environment || 'demo';
-  saveConfig({ tradovateToken: token, environment: env });
+  saveUserConfig(currentUserId, { tradovateToken: token, environment: env });
 
   const result = await fetchTradovateAccountsRest(token, env);
   if (result.accounts && result.accounts.length > 0) {
@@ -437,30 +538,37 @@ ipcMain.handle('tradovate:liquidate-all', () => {
 app.whenReady().then(async () => {
   createWindow();
 
-  const cfg = loadStoredConfig();
+  // Clean up any legacy flat config file
+  try {
+    const legacyPath = path.join(getBaseDataDir(), 'copier-config.json');
+    if (fs.existsSync(legacyPath)) {
+      fs.unlinkSync(legacyPath);
+    }
+  } catch (e) {}
 
   // Restore EdgeFlow Auth session if available
-  if (cfg.authSession) {
-    await copierEngine.restoreSession(cfg.authSession);
-  }
+  const savedSession = loadGlobalAuthSession();
+  if (savedSession) {
+    const ok = await copierEngine.restoreSession(savedSession);
+    if (ok && copierEngine.currentUser) {
+      currentUserId = copierEngine.currentUser.id;
+      const userCfg = loadStoredUserConfig(currentUserId);
+      copierEngine.updateConfig(userCfg);
 
-  // Restore Copier Config
-  copierEngine.updateConfig(cfg);
+      if (userCfg.tradovateToken) {
+        activeToken = userCfg.tradovateToken;
+        activeEnvironment = userCfg.environment || 'demo';
 
-  // Auto-connect Tradovate if token was saved
-  if (cfg.tradovateToken) {
-    activeToken = cfg.tradovateToken;
-    activeEnvironment = cfg.environment || 'demo';
-
-    // Fetch accounts via REST first with auto-fallback
-    fetchTradovateAccountsRest(cfg.tradovateToken, activeEnvironment).then((result) => {
-      if (result && result.accounts.length > 0) {
-        activeAccounts = result.accounts;
-        activeEnvironment = result.env;
-        sendToRenderer('tradovate:accounts', activeAccounts);
+        fetchTradovateAccountsRest(activeToken, activeEnvironment).then((result) => {
+          if (result && result.accounts.length > 0) {
+            activeAccounts = result.accounts;
+            activeEnvironment = result.env;
+            sendToRenderer('tradovate:accounts', activeAccounts);
+          }
+          connectTradovateWs(activeToken, activeEnvironment);
+        });
       }
-      connectTradovateWs(cfg.tradovateToken, activeEnvironment);
-    });
+    }
   }
 
   app.on('activate', () => {
