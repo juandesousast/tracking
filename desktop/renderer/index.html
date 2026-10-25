@@ -3,58 +3,225 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EdgeFlow Copier Desktop</title>
+  <title>EdgeFlow Futures Copier Pro</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg-dark: #08090d;
+      --card-bg: #0f131a;
+      --card-inner: #151b24;
+      --border-color: #1f2733;
+      --border-focus: #3b82f6;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --accent-green: #10b981;
+      --accent-red: #f43f5e;
+      --accent-amber: #f59e0b;
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: #090d16;
-      color: #f1f5f9;
+      background: var(--bg-dark);
+      color: var(--text-main);
       height: 100vh;
       overflow: hidden;
       display: flex;
       flex-direction: column;
       user-select: none;
+      -webkit-font-smoothing: antialiased;
     }
+
+    /* Scrollbars */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #263342; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #37475a; }
+
+    /* --- Auth View --- */
+    #authView {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 20%, #151d2c 0%, #08090d 70%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 20px;
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 420px;
+      background: rgba(15, 19, 26, 0.95);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      padding: 36px 32px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 40px rgba(37, 99, 235, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .auth-header {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .auth-logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
+    }
+
+    .auth-title { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
+    .auth-subtitle { font-size: 13px; color: var(--text-muted); line-height: 1.4; }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .form-input {
+      background: #090c12;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 11px 14px;
+      font-size: 13px;
+      color: white;
+      outline: none;
+      transition: all 0.15s;
+    }
+
+    .form-input:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+
+    .auth-btn {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+      transition: all 0.15s;
+      margin-top: 6px;
+    }
+
+    .auth-btn:hover {
+      background: linear-gradient(135deg, #1d4ed8, #1e40af);
+      transform: translateY(-1px);
+    }
+
+    .auth-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .auth-error {
+      background: rgba(244, 63, 94, 0.12);
+      border: 1px solid rgba(244, 63, 94, 0.3);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 12px;
+      color: #fb7185;
+      display: none;
+    }
+
+    /* --- Main App Layout --- */
+    #appView {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
     header {
-      background: #0f172a;
-      border-bottom: 1px solid #1e293b;
-      padding: 12px 20px;
+      background: #0d1117;
+      border-bottom: 1px solid var(--border-color);
+      padding: 10px 20px 10px 78px; /* Padding for Mac window buttons */
       display: flex;
       align-items: center;
       justify-content: space-between;
       -webkit-app-region: drag;
     }
-    .brand {
+
+    .brand-section {
       display: flex;
       align-items: center;
-      gap: 10px;
-      font-weight: 700;
-      font-size: 14px;
-      letter-spacing: -0.3px;
+      gap: 12px;
     }
-    .brand-icon {
+
+    .brand-badge {
       width: 28px;
       height: 28px;
       border-radius: 8px;
-      background: #2563eb;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 900;
+      font-size: 14px;
       color: white;
-      font-size: 13px;
+      font-weight: 800;
     }
-    .header-badges {
+
+    .brand-title {
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+    }
+
+    .brand-version {
+      font-size: 10px;
+      background: #1e293b;
+      color: #94a3b8;
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+    }
+
+    .header-actions {
       display: flex;
       align-items: center;
       gap: 10px;
       -webkit-app-region: no-drag;
     }
-    .badge {
+
+    .pill-badge {
       display: inline-flex;
       align-items: center;
       gap: 6px;
@@ -64,47 +231,232 @@
       font-weight: 600;
       font-family: 'JetBrains Mono', monospace;
     }
-    .badge-green { background: rgba(16, 185, 129, 0.12); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.25); }
-    .badge-yellow { background: rgba(245, 158, 11, 0.12); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.25); }
-    .badge-red { background: rgba(244, 63, 94, 0.12); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.25); }
-    .badge-blue { background: rgba(59, 130, 246, 0.12); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.25); }
-    .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 
-    .content {
+    .pill-green { background: rgba(16, 185, 129, 0.1); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.25); }
+    .pill-yellow { background: rgba(245, 158, 11, 0.1); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.25); }
+    .pill-red { background: rgba(244, 63, 94, 0.1); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.25); }
+    .pill-blue { background: rgba(59, 130, 246, 0.1); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.25); }
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+    .user-pill {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 3px 8px;
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-logout {
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      font-size: 11px;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+    .btn-logout:hover { color: #f43f5e; background: rgba(244,63,94,0.1); }
+
+    /* Ribbon */
+    .stats-ribbon {
+      background: #0a0d14;
+      border-bottom: 1px solid var(--border-color);
+      padding: 10px 20px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .stat-label { font-size: 10px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
+    .stat-val { font-size: 15px; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
+
+    /* Main Workspace */
+    .workspace {
       flex: 1;
       padding: 16px 20px;
       display: grid;
-      grid-template-columns: 1fr 1.15fr;
+      grid-template-columns: 360px 1fr;
       gap: 16px;
       overflow-y: auto;
     }
-    .card {
-      background: #0f172a;
-      border: 1px solid #1e293b;
-      border-radius: 12px;
+
+    .panel {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
       padding: 16px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 14px;
     }
-    .card-title {
-      font-size: 12px;
-      font-weight: 700;
-      color: #94a3b8;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+
+    .panel-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
-    .btn {
-      background: #2563eb;
+
+    .panel-title {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Master Account Card */
+    .master-selector {
+      background: var(--card-inner);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .account-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 12px;
+      background: #090c12;
+      border: 1px solid var(--border-color);
+      border-radius: 9px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .account-row:hover { border-color: #3b82f6; }
+    .account-row.selected-master {
+      border-color: #3b82f6;
+      background: rgba(37, 99, 235, 0.08);
+    }
+
+    .badge-master-chip {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
       color: white;
-      border: none;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+    }
+
+    /* Slaves List */
+    .slaves-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 280px;
+      overflow-y: auto;
+    }
+
+    .slave-card {
+      background: var(--card-inner);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: all 0.15s;
+    }
+
+    .slave-card.active { border-color: rgba(16, 185, 129, 0.4); }
+
+    .slave-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .slave-name {
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .slave-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: #090c12;
       padding: 8px 12px;
       border-radius: 8px;
-      font-size: 12px;
+      border: 1px solid var(--border-color);
+    }
+
+    .control-label {
+      font-size: 11px;
+      color: var(--text-muted);
       font-weight: 600;
+    }
+
+    .multiplier-select {
+      background: #1e293b;
+      color: white;
+      border: 1px solid #334155;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      outline: none;
+    }
+
+    /* Switch */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 36px;
+      height: 20px;
+    }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: #334155;
+      transition: .2s;
+      border-radius: 20px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 14px;
+      width: 14px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .2s;
+      border-radius: 50%;
+    }
+    input:checked + .slider { background-color: var(--accent-green); }
+    input:checked + .slider:before { transform: translateX(16px); }
+
+    /* Buttons */
+    .btn {
+      padding: 8px 14px;
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 700;
+      border: none;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
@@ -112,203 +464,188 @@
       gap: 6px;
       transition: all 0.15s;
     }
-    .btn:hover { background: #1d4ed8; }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .btn-danger { background: #e11d48; }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-danger { background: #e11d48; color: white; }
     .btn-danger:hover { background: #be123c; }
-    .btn-outline { background: transparent; border: 1px solid #334155; color: #cbd5e1; }
-    .btn-outline:hover { background: #1e293b; color: white; border-color: #475569; }
-    .btn-outline.active { background: #2563eb; color: white; border-color: #2563eb; }
-    .btn-sm { padding: 4px 8px; font-size: 11px; }
+    .btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); }
+    .btn-outline:hover { background: #1e293b; color: white; border-color: #334155; }
 
-    .input-group {
-      display: flex;
-      gap: 8px;
-    }
-    .input-text {
-      flex: 1;
-      background: #020617;
-      border: 1px solid #334155;
-      border-radius: 8px;
-      padding: 8px 10px;
-      font-size: 12px;
-      color: white;
-      font-family: 'JetBrains Mono', monospace;
-      outline: none;
-    }
-    .input-text:focus { border-color: #3b82f6; }
-
-    .account-item {
-      background: #1e293b;
-      border: 1px solid #334155;
-      padding: 8px 12px;
-      border-radius: 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 12px;
-    }
-    .account-name { font-weight: 700; color: white; display: flex; align-items: center; gap: 8px; }
-    .account-balance { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: #34d399; }
-
-    .console-box {
+    /* Bottom Console */
+    .console-panel {
       grid-column: 1 / -1;
-      background: #020617;
-      border: 1px solid #1e293b;
-      border-radius: 10px;
-      padding: 12px;
+      background: #05070a;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 12px 14px;
       font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
-      height: 170px;
+      height: 160px;
       overflow-y: auto;
       color: #94a3b8;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
-    .console-entry { margin-bottom: 4px; line-height: 1.4; }
-    .console-time { color: #64748b; }
+
+    .console-entry { line-height: 1.5; }
+    .console-time { color: #475569; }
     .console-buy { color: #34d399; font-weight: 700; }
     .console-sell { color: #fb7185; font-weight: 700; }
-
-    .mode-selector {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 6px;
-    }
-    .mode-btn {
-      padding: 8px 6px;
-      text-align: center;
-      border-radius: 8px;
-      font-size: 11px;
-      font-weight: 700;
-      border: 1px solid #334155;
-      background: #020617;
-      color: #94a3b8;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-    .mode-btn:hover { border-color: #475569; color: white; }
-    .mode-btn.active { background: #2563eb; color: white; border-color: #2563eb; }
-
-    .slave-config-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 6px 10px;
-      background: #020617;
-      border: 1px solid #1e293b;
-      border-radius: 6px;
-      font-size: 11px;
-    }
-    .select-sm {
-      background: #1e293b;
-      color: white;
-      border: 1px solid #334155;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 11px;
-      outline: none;
-    }
   </style>
 </head>
 <body>
-  <header>
-    <div class="brand">
-      <div class="brand-icon">⚡</div>
-      <span>EdgeFlow Copier Desktop</span>
-    </div>
-    <div class="header-badges">
-      <div id="relayBadge" class="badge badge-blue">
-        <span class="badge-dot"></span>
-        <span id="relayText">Relay: Listo</span>
-      </div>
-      <div id="statusBadge" class="badge badge-yellow">
-        <span class="badge-dot"></span>
-        <span id="statusText">Conectando...</span>
-      </div>
-    </div>
-  </header>
 
-  <div class="content">
-    <!-- Left Column: Tradovate Connection & Accounts -->
-    <div class="card">
-      <div class="card-title">
-        <span>Conexión Tradovate Local</span>
-        <span style="font-size: 10px; color: #10b981; font-weight: 600;">🛡️ IP Residencial Directa</span>
-      </div>
-      <p style="font-size: 11px; color: #94a3b8; line-height: 1.4;">
-        Captura de sesión nativa sin costo de API (0 €/mes). Sin intermediarios de datacenter ni riesgo de baneo por IP.
-      </p>
-
-      <div style="display: flex; gap: 8px;">
-        <button id="btnLogin" class="btn" style="flex: 1;">
-          🔑 Iniciar Sesión en Tradovate (0 €)
-        </button>
-        <select id="envSelect" class="select-sm" style="padding: 0 8px; font-weight: 600;">
-          <option value="demo">Demo</option>
-          <option value="live">Live (Real)</option>
-        </select>
-      </div>
-
-      <div style="margin-top: 6px;">
-        <span style="font-size: 11px; color: #64748b; text-transform: uppercase; font-weight: 700; display: block; margin-bottom: 6px;">
-          Cuentas Detectadas en Tradovate
-        </span>
-        <div id="accountsList" style="display: flex; flex-direction: column; gap: 6px; max-height: 220px; overflow-y: auto;">
-          <div style="font-size: 12px; color: #64748b; padding: 8px;">No hay sesión activa. Inicia sesión arriba.</div>
+  <!-- 1. SaaS Authentication Gate -->
+  <div id="authView">
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="auth-logo">⚡</div>
+        <div class="auth-title">EdgeFlow Copier Pro</div>
+        <div class="auth-subtitle">
+          Inicia sesión con tu cuenta de EdgeFlow para desbloquear el motor de replicación en tu máquina.
         </div>
       </div>
 
-      <div style="margin-top: auto; padding-top: 8px;">
-        <button id="btnLiquidate" class="btn btn-danger" style="width: 100%;">
-          ⚡ Aplanar Todo (Flatten All)
+      <div id="authError" class="auth-error"></div>
+
+      <form id="authForm" style="display: flex; flex-direction: column; gap: 14px;">
+        <div class="form-group">
+          <label class="form-label" for="loginEmail">Correo Electrónico</label>
+          <input type="email" id="loginEmail" class="form-input" placeholder="tu@email.com" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="loginPassword">Contraseña</label>
+          <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" required />
+        </div>
+
+        <button type="submit" id="btnLoginSubmit" class="auth-btn">
+          <span>Desbloquear Terminal</span>
+          <span>➔</span>
         </button>
+      </form>
+
+      <div style="text-align: center; font-size: 11px; color: var(--text-dim); line-height: 1.4;">
+        🔒 <strong>Licencia Local & IP Protegida:</strong> Toda orden se ejecuta desde tu adaptador de red residencial sin intermediarios.
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Main Copier Dashboard -->
+  <div id="appView">
+    <header>
+      <div class="brand-section">
+        <div class="brand-badge">⚡</div>
+        <div class="brand-title">EdgeFlow Copier</div>
+        <div class="brand-version">v1.2 PRO</div>
+      </div>
+
+      <div class="header-actions">
+        <div class="pill-badge pill-green" title="Tus órdenes salen directamente desde tu conexión a internet">
+          <span class="dot"></span>
+          <span>IP Residencial Casa</span>
+        </div>
+
+        <div id="wsStatusBadge" class="pill-badge pill-yellow">
+          <span class="dot"></span>
+          <span id="wsStatusText">Tradovate: Conectando...</span>
+        </div>
+
+        <div class="user-pill">
+          <span id="userEmailLabel">trader@edgeflow.app</span>
+          <button id="btnLogout" class="btn-logout" title="Cerrar sesión">Salir</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Stats Ribbon -->
+    <div class="stats-ribbon">
+      <div class="stat-item">
+        <span class="stat-label">Cuenta Master</span>
+        <span class="stat-val" id="statMasterName" style="color: #60a5fa;">Sin Seleccionar</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Cuentas Esclavas Activas</span>
+        <span class="stat-val" id="statSlavesCount" style="color: #34d399;">0</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Órdenes Replicadas Hoy</span>
+        <span class="stat-val" id="statReplicatedToday">0</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Latencia de Ejecución Local</span>
+        <span class="stat-val" id="statLatency" style="color: #38bdf8;">&lt; 3 ms</span>
       </div>
     </div>
 
-    <!-- Right Column: Mode & Replication Engine -->
-    <div class="card">
-      <div class="card-title">
-        <span>Modo de Operación</span>
-        <span id="activeModeLabel" style="color: #60a5fa; font-size: 11px;">LOCAL</span>
-      </div>
-
-      <div class="mode-selector">
-        <button id="modeLocal" class="mode-btn active">💻 Local (Mismo PC)</button>
-        <button id="modeMaster" class="mode-btn">📡 Master (Tú)</button>
-        <button id="modeSlave" class="mode-btn">📥 Slave (Amigo)</button>
-      </div>
-
-      <!-- Room Code -->
-      <div style="display: flex; flex-direction: column; gap: 4px;">
-        <span style="font-size: 11px; color: #94a3b8; font-weight: 600;">Canal de Replicación (Room ID):</span>
-        <div class="input-group">
-          <input type="text" id="channelInput" class="input-text" value="room-default" placeholder="ej: edgeflow-vip-room" />
-          <button id="btnSaveChannel" class="btn btn-outline btn-sm">Guardar</button>
+    <!-- Main Content Area -->
+    <div class="workspace">
+      
+      <!-- Left Panel: Connection & Master Selection -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span>Tradovate Local (0 €)</span>
+          </div>
+          <select id="envSelect" class="multiplier-select" style="padding: 2px 6px;">
+            <option value="demo">Demo</option>
+            <option value="live">Live (Real)</option>
+          </select>
         </div>
-      </div>
 
-      <!-- Slave Configuration Section -->
-      <div style="display: flex; flex-direction: column; gap: 6px;">
-        <span style="font-size: 11px; color: #64748b; text-transform: uppercase; font-weight: 700;">
-          Configuración de Cuentas Esclavas
-        </span>
-        <div id="slaveConfigList" style="display: flex; flex-direction: column; gap: 6px; max-height: 150px; overflow-y: auto;">
-          <div style="font-size: 11px; color: #64748b;">Selecciona cuentas en la columna izquierda para configurar réplica.</div>
-        </div>
-      </div>
-
-      <!-- Test Signal -->
-      <div style="margin-top: auto; display: flex; gap: 8px;">
-        <button id="btnTestSignal" class="btn btn-outline" style="flex: 1; font-size: 11px;">
-          🧪 Probar Señal Realtime (&lt;10ms)
+        <button id="btnConnectTradovate" class="btn btn-primary" style="width: 100%;">
+          🔑 Conectar Cuenta Tradovate (0 €)
         </button>
-      </div>
-    </div>
 
-    <!-- Bottom: Live Console -->
-    <div class="console-box" id="consoleBox">
-      <div class="console-entry">
-        <span class="console-time">[Sistema]</span> Motor local de réplica EdgeFlow inicializado.
+        <div class="panel-title" style="margin-top: 6px;">
+          <span>Selecciona Tu Cuenta Master</span>
+        </div>
+        <p style="font-size: 11px; color: var(--text-dim); line-height: 1.4;">
+          Elige la cuenta principal donde realizas tu operativa (Apex, Topstep o Personal):
+        </p>
+
+        <div id="masterAccountsList" class="master-selector" style="max-height: 180px; overflow-y: auto;">
+          <div style="font-size: 11px; color: var(--text-dim); padding: 6px;">
+            Inicia sesión en Tradovate arriba para cargar tus cuentas.
+          </div>
+        </div>
+
+        <div style="margin-top: auto; display: flex; flex-direction: column; gap: 8px;">
+          <button id="btnTogglePause" class="btn btn-outline" style="width: 100%;">
+            ⏸️ Pausar Replicación Global
+          </button>
+          <button id="btnPanicLiquidate" class="btn btn-danger" style="width: 100%;">
+            ⚡ Aplanar Todo (Flatten All Accounts)
+          </button>
+        </div>
       </div>
+
+      <!-- Right Panel: Slaves Replication Matrix -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span>Cuentas Esclavas (Slaves)</span>
+          </div>
+          <span style="font-size: 11px; color: var(--text-dim);">
+            Replicación simultánea en tu ordenador
+          </span>
+        </div>
+
+        <div id="slavesList" class="slaves-container">
+          <div style="font-size: 12px; color: var(--text-dim); padding: 12px; text-align: center;">
+            No se han detectado cuentas secundarias para replicar. Conecta Tradovate en la columna izquierda.
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Panel: Execution Console -->
+      <div class="console-panel" id="consoleBox">
+        <div class="console-entry">
+          <span class="console-time">[Sistema]</span> Motor local de réplica EdgeFlow listo.
+        </div>
+      </div>
+
     </div>
   </div>
 

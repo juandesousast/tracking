@@ -46,99 +46,123 @@ class DesktopCopierEngine {
       },
       auth: {
         persistSession: false,
-        autoRefreshToken: false,
+        autoRefreshToken: true,
       },
     });
-    this.realtimeChannel = null;
+
+    this.currentUser = null;
+    this.isPaused = false;
+    this.stats = {
+      replicatedToday: 0,
+      totalLatencyMs: 0,
+      lastLatencyMs: 0,
+    };
 
     // Config state
-    this.mode = 'local'; // 'local' | 'master' | 'slave'
-    this.channelId = 'room-default';
     this.masterAccountId = null;
     this.masterAccountName = '';
-    this.slaves = []; // [{ id, name, multiplier: 1, convertMiniToMicro: false }]
+    this.slaves = []; // [{ id, name, multiplier: 1, convertMiniToMicro: false, isActive: true, maxDailyLoss: null }]
     this.processedOrderIds = new Set();
   }
 
-  updateConfig(config) {
-    if (config.mode) this.mode = config.mode;
-    if (config.channelId && config.channelId !== this.channelId) {
-      this.channelId = config.channelId;
-      if (this.mode === 'master' || this.mode === 'slave') {
-        this.subscribeRealtime();
-      }
-    }
-    if (config.masterAccountId !== undefined) this.masterAccountId = config.masterAccountId;
-    if (config.masterAccountName !== undefined) this.masterAccountName = config.masterAccountName;
-    if (config.slaves !== undefined) this.slaves = config.slaves;
-
-    this.onLog(
-      new Date().toLocaleTimeString(),
-      `Configuración actualizada: Modo <strong>${this.mode.toUpperCase()}</strong> | Canal: <code>${this.channelId}</code> | Slaves: ${this.slaves.length}`
-    );
-  }
-
-  subscribeRealtime() {
-    if (this.realtimeChannel) {
-      this.supabase.removeChannel(this.realtimeChannel);
-      this.realtimeChannel = null;
-    }
-
-    const channelName = `copier-relay-${this.channelId}`;
-    this.onLog(new Date().toLocaleTimeString(), `Suscrito a canal Realtime: <code>${channelName}</code>`);
-
-    this.realtimeChannel = this.supabase.channel(channelName, {
-      config: { broadcast: { self: false } },
-    });
-
-    this.realtimeChannel.on('broadcast', { event: 'trade_signal' }, (payload) => {
-      if (payload && payload.payload) {
-        this.handleRemoteTradeSignal(payload.payload);
-      }
-    });
-
-    this.realtimeChannel.subscribe((status) => {
-      this.onLog(new Date().toLocaleTimeString(), `Estado de red Realtime: <strong>${status}</strong>`);
-      this.onStatusChange({ realtimeStatus: status });
-    });
-  }
-
-  async broadcastSignal(signal) {
-    if (!this.realtimeChannel) {
-      this.subscribeRealtime();
-    }
-    if (!this.realtimeChannel) return false;
-
+  // --- Auth Methods ---
+  async login(email, password) {
     try {
-      await this.realtimeChannel.send({
-        type: 'broadcast',
-        event: 'trade_signal',
-        payload: signal,
+      const { data, error } = await this.supabase.auth.signInWithPassword({
+        email,
+        password,
       });
+
+      if (error) {
+        return { success: false, error: error.message };
+      }
+
+      this.currentUser = data.user;
       this.onLog(
         new Date().toLocaleTimeString(),
-        `📡 Señal emitida a la red (<10ms): <strong>${signal.action}</strong> ${signal.quantity}x ${signal.symbol}`
+        `Sesión iniciada como <strong>${data.user.email}</strong> en EdgeFlow.`
+      );
+
+      return {
+        success: true,
+        user: {
+          id: data.user.id,
+          email: data.user.email,
+        },
+        session: data.session,
+      };
+    } catch (err) {
+      return { success: false, error: err.message };
+    }
+  }
+
+  async restoreSession(session) {
+    if (!session || !session.access_token || !session.refresh_token) {
+      return false;
+    }
+    try {
+      const { data, error } = await this.supabase.auth.setSession({
+        access_token: session.access_token,
+        refresh_token: session.refresh_token,
+      });
+
+      if (error || !data.user) {
+        return false;
+      }
+
+      this.currentUser = data.user;
+      this.onLog(
+        new Date().toLocaleTimeString(),
+        `Sesión restaurada para <strong>${data.user.email}</strong>.`
       );
       return true;
-    } catch (err) {
-      console.error('[CopierEngine] Broadcast error:', err);
-      this.onLog(new Date().toLocaleTimeString(), `Error emitiendo señal: ${err.message}`);
+    } catch (e) {
       return false;
     }
   }
 
+  async logout() {
+    this.currentUser = null;
+    try {
+      await this.supabase.auth.signOut();
+    } catch (e) {}
+    this.onLog(new Date().toLocaleTimeString(), 'Sesión de EdgeFlow cerrada.');
+    return { success: true };
+  }
+
+  // --- Copier Configuration ---
+  updateConfig(config) {
+    if (config.masterAccountId !== undefined) this.masterAccountId = config.masterAccountId;
+    if (config.masterAccountName !== undefined) this.masterAccountName = config.masterAccountName;
+    if (config.slaves !== undefined) this.slaves = config.slaves;
+    if (config.isPaused !== undefined) this.isPaused = config.isPaused;
+
+    const activeSlavesCount = (this.slaves || []).filter((s) => s.isActive !== false).length;
+    this.onLog(
+      new Date().toLocaleTimeString(),
+      `Configuración actualizada: Master <strong>${this.masterAccountName || 'Sin asignar'}</strong> | Slaves Activas: <strong>${activeSlavesCount}</strong>`
+    );
+  }
+
   /**
-   * Called when a native Tradovate WebSocket order event arrives.
+   * Called when an order event arrives from the local Tradovate WebSocket.
    */
   handleTradovateOrder(order) {
     if (!order || !order.id) return;
+    if (this.isPaused) {
+      this.onLog(
+        new Date().toLocaleTimeString(),
+        `<span style="color: #fbbf24;">⏸️ Réplica pausada globalmente. Orden ignorada.</span>`
+      );
+      return;
+    }
 
     // Prevent duplicate processing
     const dedupeKey = `${order.id}-${order.ordStatus}`;
     if (this.processedOrderIds.has(dedupeKey)) return;
     this.processedOrderIds.add(dedupeKey);
 
-    // Keep dedupe set memory bounded
+    // Keep set bounded
     if (this.processedOrderIds.size > 2000) {
       const iter = this.processedOrderIds.values();
       for (let i = 0; i < 500; i++) {
@@ -150,51 +174,50 @@ class DesktopCopierEngine {
       String(order.accountId) === String(this.masterAccountId) ||
       order.accountSpec === this.masterAccountName;
 
-    // We replicate when the master order is placed or filled
+    // Only process orders originating from the designated Master Account
     if (isMaster) {
       const action = order.action === 'Buy' ? 'BUY' : 'SELL';
       const qty = Number(order.orderQty) || 1;
       const symbol = order.symbol;
+      const status = order.ordStatus;
 
-      this.onLog(
-        new Date().toLocaleTimeString(),
-        `🎯 Orden Master detectada [${order.accountSpec || order.accountId}]: <strong>${action}</strong> ${qty} ${symbol} (${order.ordStatus})`
-      );
+      // Replicate on Working or Filled orders
+      if (status === 'Working' || status === 'Filled') {
+        const startTime = Date.now();
+        this.onLog(
+          new Date().toLocaleTimeString(),
+          `🎯 Orden Master en [${order.accountSpec || order.accountId}]: <strong class="${action === 'BUY' ? 'console-buy' : 'console-sell'}">${action}</strong> ${qty}x ${symbol} (${status})`
+        );
 
-      // 1. If in MASTER mode, broadcast signal to friend/slaves
-      if (this.mode === 'master') {
-        this.broadcastSignal({
-          id: `sig-${order.id}-${Date.now()}`,
-          groupId: this.channelId,
-          masterAccountId: String(order.accountId),
-          masterAccountName: order.accountSpec || '',
-          symbol: symbol,
-          action: action,
-          quantity: qty,
-          orderType: 'MARKET',
-          timestamp: new Date().toISOString(),
-        });
-      }
-
-      // 2. If LOCAL or MASTER with local slave accounts configured, copy to local slaves
-      if (this.slaves && this.slaves.length > 0) {
         this.replicateToLocalSlaves({
           masterOrderId: order.id,
           symbol,
           action,
           quantity: qty,
+          startTime,
         });
       }
     }
   }
 
   /**
-   * Replicates an order to locally configured Tradovate slave accounts on the same machine.
+   * Replicates an order to locally configured Tradovate slave accounts on this PC.
    */
-  replicateToLocalSlaves({ masterOrderId, symbol, action, quantity }) {
-    for (const slave of this.slaves) {
-      if (slave.isActive === false) continue;
+  async replicateToLocalSlaves({ masterOrderId, symbol, action, quantity, startTime }) {
+    const activeSlaves = (this.slaves || []).filter((s) => s.isActive !== false);
 
+    if (activeSlaves.length === 0) {
+      this.onLog(
+        new Date().toLocaleTimeString(),
+        `<span style="color: #64748b;">ℹ️ No hay cuentas esclavas activas asignadas a este Master.</span>`
+      );
+      return;
+    }
+
+    const tradovateAction = action === 'BUY' ? 'Buy' : 'Sell';
+    let executedCount = 0;
+
+    for (const slave of activeSlaves) {
       let targetSymbol = symbol;
       if (slave.convertMiniToMicro) {
         targetSymbol = convertSymbolToMicro(symbol);
@@ -203,12 +226,6 @@ class DesktopCopierEngine {
       const multiplier = Number(slave.multiplier) || 1;
       const finalQty = Math.max(1, Math.round(quantity * multiplier));
 
-      this.onLog(
-        new Date().toLocaleTimeString(),
-        `⚡ Replicando local a [${slave.name || slave.id}]: <strong>${action}</strong> ${finalQty}x ${targetSymbol}`
-      );
-
-      const tradovateAction = action === 'BUY' ? 'Buy' : 'Sell';
       const orderPayload = {
         accountSpec: slave.name || undefined,
         accountId: Number(slave.id),
@@ -219,72 +236,70 @@ class DesktopCopierEngine {
         isAutomated: true,
       };
 
-      this.sendWsMessage('order/placeorder', orderPayload);
+      const sent = this.sendWsMessage('order/placeorder', orderPayload);
+      if (sent) {
+        executedCount++;
+        const elapsedMs = Math.max(1, Date.now() - startTime);
+        this.stats.replicatedToday++;
+        this.stats.lastLatencyMs = elapsedMs;
+        this.stats.totalLatencyMs += elapsedMs;
+
+        const convBadge =
+          targetSymbol !== symbol
+            ? `<span style="font-size: 10px; background: rgba(59,130,246,0.15); color: #60a5fa; padding: 1px 4px; border-radius: 3px;">${symbol} ➔ ${targetSymbol}</span>`
+            : '';
+
+        this.onLog(
+          new Date().toLocaleTimeString(),
+          `⚡ Replicado en [${slave.name || slave.id}]: <strong class="${action === 'BUY' ? 'console-buy' : 'console-sell'}">${action}</strong> ${finalQty}x ${targetSymbol} ${convBadge} <span style="color: #34d399; font-size: 11px;">(${elapsedMs}ms)</span>`
+        );
+      }
     }
+
+    // Sync trade execution to user's EdgeFlow cloud account if authenticated
+    if (this.currentUser && executedCount > 0) {
+      const avgLatency = Math.round((Date.now() - startTime) / executedCount);
+      this.syncTradeLog({
+        masterOrderId: String(masterOrderId),
+        symbol,
+        action,
+        quantity,
+        slavesCount: executedCount,
+        latencyMs: avgLatency,
+      });
+    }
+
+    this.onStatusChange({
+      stats: {
+        replicatedToday: this.stats.replicatedToday,
+        avgLatencyMs: Math.round(this.stats.totalLatencyMs / Math.max(1, this.stats.replicatedToday)),
+      },
+    });
   }
 
   /**
-   * Called when a trade signal is received from the Supabase Realtime network (Friend or Remote Master).
+   * Syncs trade to Supabase `copier_logs` table so user sees it in their web dashboard.
    */
-  handleRemoteTradeSignal(signal) {
-    if (this.mode !== 'slave') {
-      return; // Ignore if not in slave mode
-    }
-
-    const startMs = Date.now();
-    const signalTime = new Date(signal.timestamp).getTime();
-    const networkLatency = isNaN(signalTime) ? 0 : Math.max(0, startMs - signalTime);
-
-    this.onLog(
-      new Date().toLocaleTimeString(),
-      `📥 Señal recibida de la Red (<${networkLatency}ms): <strong>${signal.action}</strong> ${signal.quantity}x ${signal.symbol}`
-    );
-
-    // Replicate to all slave accounts configured on this local machine
-    if (!this.slaves || this.slaves.length === 0) {
-      this.onLog(
-        new Date().toLocaleTimeString(),
-        `<span style="color: #fbbf24;">⚠️ Aviso: Señal recibida pero no hay cuentas Slave seleccionadas para ejecutar.</span>`
-      );
-      return;
-    }
-
-    for (const slave of this.slaves) {
-      if (slave.isActive === false) continue;
-
-      let targetSymbol = signal.symbol;
-      if (slave.convertMiniToMicro) {
-        targetSymbol = convertSymbolToMicro(signal.symbol);
-      }
-
-      const multiplier = Number(slave.multiplier) || 1;
-      const finalQty = Math.max(1, Math.round(signal.quantity * multiplier));
-
-      this.onLog(
-        new Date().toLocaleTimeString(),
-        `🚀 Ejecutando con IP Casa en [${slave.name || slave.id}]: <strong>${signal.action}</strong> ${finalQty}x ${targetSymbol}`
-      );
-
-      const tradovateAction = signal.action === 'BUY' ? 'Buy' : 'Sell';
-      const orderPayload = {
-        accountSpec: slave.name || undefined,
-        accountId: Number(slave.id),
-        action: tradovateAction,
-        symbol: targetSymbol,
-        orderQty: finalQty,
-        orderType: 'Market',
-        isAutomated: true,
-      };
-
-      this.sendWsMessage('order/placeorder', orderPayload);
+  async syncTradeLog({ masterOrderId, symbol, action, quantity, slavesCount, latencyMs }) {
+    if (!this.currentUser) return;
+    try {
+      await this.supabase.from('copier_logs').insert({
+        user_id: this.currentUser.id,
+        master_order_id: masterOrderId,
+        symbol: symbol.toUpperCase(),
+        action: action === 'BUY' ? 'BUY' : 'SELL',
+        quantity: quantity,
+        slaves_count: slavesCount,
+        latency_ms: latencyMs,
+        status: 'SUCCESS',
+      });
+    } catch (err) {
+      console.error('[CopierEngine] Error syncing trade to cloud:', err);
     }
   }
 
   cleanup() {
-    if (this.realtimeChannel) {
-      this.supabase.removeChannel(this.realtimeChannel);
-      this.realtimeChannel = null;
-    }
+    this.processedOrderIds.clear();
   }
 }
 

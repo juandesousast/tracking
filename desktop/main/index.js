@@ -5,6 +5,7 @@ const WebSocket = require('ws');
 if (typeof global.WebSocket === 'undefined') {
   global.WebSocket = WebSocket;
 }
+
 const { openTradovateLoginWindow } = require('./tradovate-auth');
 const { DesktopCopierEngine } = require('./copier-engine');
 
@@ -14,11 +15,18 @@ let activeToken = null;
 let activeAccounts = [];
 let reqId = 1;
 
-// Config file stored in user data directory
-const configPath = path.join(app.getPath('userData'), 'copier-config.json');
+function getConfigPath() {
+  try {
+    if (app && typeof app.getPath === 'function') {
+      return path.join(app.getPath('userData'), 'copier-config.json');
+    }
+  } catch (e) {}
+  return path.join(__dirname, '../copier-config.json');
+}
 
 function loadStoredConfig() {
   try {
+    const configPath = getConfigPath();
     if (fs.existsSync(configPath)) {
       return JSON.parse(fs.readFileSync(configPath, 'utf8'));
     }
@@ -26,18 +34,19 @@ function loadStoredConfig() {
     console.error('Error loading config:', e);
   }
   return {
-    token: null,
+    authSession: null,
+    tradovateToken: null,
     environment: 'demo',
-    mode: 'local',
-    channelId: 'room-default',
     masterAccountId: null,
     masterAccountName: '',
     slaves: [],
+    isPaused: false,
   };
 }
 
 function saveConfig(data) {
   try {
+    const configPath = getConfigPath();
     const current = loadStoredConfig();
     const updated = { ...current, ...data };
     fs.writeFileSync(configPath, JSON.stringify(updated, null, 2), 'utf8');
@@ -75,12 +84,13 @@ const copierEngine = new DesktopCopierEngine({
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 980,
-    height: 740,
-    minWidth: 840,
-    minHeight: 620,
-    title: 'EdgeFlow Copier Desktop',
+    width: 1060,
+    height: 780,
+    minWidth: 900,
+    minHeight: 640,
+    title: 'EdgeFlow Futures Copier Pro',
     backgroundColor: '#090d16',
+    titleBarStyle: 'hiddenInset',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
@@ -184,7 +194,33 @@ function connectTradovateWs(token, environment = 'demo') {
   });
 }
 
-// IPC Handlers
+// IPC Handlers - Authentication
+ipcMain.handle('auth:login', async (event, { email, password }) => {
+  const res = await copierEngine.login(email, password);
+  if (res.success) {
+    saveConfig({ authSession: res.session });
+  }
+  return res;
+});
+
+ipcMain.handle('auth:get-session', async () => {
+  const cfg = loadStoredConfig();
+  if (cfg.authSession) {
+    const ok = await copierEngine.restoreSession(cfg.authSession);
+    if (ok) {
+      return { authenticated: true, user: copierEngine.currentUser };
+    }
+  }
+  return { authenticated: false };
+});
+
+ipcMain.handle('auth:logout', async () => {
+  await copierEngine.logout();
+  saveConfig({ authSession: null });
+  return { success: true };
+});
+
+// IPC Handlers - Config & Engine
 ipcMain.handle('app:get-config', () => loadStoredConfig());
 
 ipcMain.handle('copier:update-config', (event, cfg) => {
@@ -193,16 +229,20 @@ ipcMain.handle('copier:update-config', (event, cfg) => {
   return { success: true, config: updated };
 });
 
-ipcMain.handle('copier:test-signal', async (event, signal) => {
-  return await copierEngine.broadcastSignal(signal);
+ipcMain.handle('copier:set-paused', (event, isPaused) => {
+  saveConfig({ isPaused });
+  copierEngine.updateConfig({ isPaused });
+  return { success: true, isPaused };
 });
 
+// IPC Handlers - Tradovate
 ipcMain.handle('tradovate:open-login', () => {
   return new Promise((resolve) => {
     openTradovateLoginWindow(mainWindow, (token) => {
       activeToken = token;
-      saveConfig({ token });
-      connectTradovateWs(token, 'demo');
+      const cfg = loadStoredConfig();
+      saveConfig({ tradovateToken: token });
+      connectTradovateWs(token, cfg.environment || 'demo');
       resolve({ success: true, token });
     });
   });
@@ -210,7 +250,7 @@ ipcMain.handle('tradovate:open-login', () => {
 
 ipcMain.handle('tradovate:connect-token', (event, { token, environment }) => {
   activeToken = token;
-  saveConfig({ token, environment });
+  saveConfig({ tradovateToken: token, environment });
   connectTradovateWs(token, environment || 'demo');
   return { success: true };
 });
@@ -224,16 +264,23 @@ ipcMain.handle('tradovate:liquidate-all', () => {
   return true;
 });
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   createWindow();
 
-  // Load stored config and initialize copier
   const cfg = loadStoredConfig();
+
+  // Restore EdgeFlow Auth session if available
+  if (cfg.authSession) {
+    await copierEngine.restoreSession(cfg.authSession);
+  }
+
+  // Restore Copier Config
   copierEngine.updateConfig(cfg);
 
-  if (cfg.token) {
-    activeToken = cfg.token;
-    connectTradovateWs(cfg.token, cfg.environment || 'demo');
+  // Auto-connect Tradovate if token was saved
+  if (cfg.tradovateToken) {
+    activeToken = cfg.tradovateToken;
+    connectTradovateWs(cfg.tradovateToken, cfg.environment || 'demo');
   }
 
   app.on('activate', () => {

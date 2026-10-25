@@ -1,30 +1,34 @@
-// Desktop Renderer Logic
-const statusBadge = document.getElementById('statusBadge');
-const statusText = document.getElementById('statusText');
-const relayBadge = document.getElementById('relayBadge');
-const relayText = document.getElementById('relayText');
-const btnLogin = document.getElementById('btnLogin');
+// Desktop Renderer Controller
+const authView = document.getElementById('authView');
+const authForm = document.getElementById('authForm');
+const authError = document.getElementById('authError');
+const loginEmail = document.getElementById('loginEmail');
+const loginPassword = document.getElementById('loginPassword');
+const btnLoginSubmit = document.getElementById('btnLoginSubmit');
+
+const wsStatusBadge = document.getElementById('wsStatusBadge');
+const wsStatusText = document.getElementById('wsStatusText');
+const userEmailLabel = document.getElementById('userEmailLabel');
+const btnLogout = document.getElementById('btnLogout');
+
+const statMasterName = document.getElementById('statMasterName');
+const statSlavesCount = document.getElementById('statSlavesCount');
+const statReplicatedToday = document.getElementById('statReplicatedToday');
+const statLatency = document.getElementById('statLatency');
+
 const envSelect = document.getElementById('envSelect');
-const btnLiquidate = document.getElementById('btnLiquidate');
-const accountsList = document.getElementById('accountsList');
+const btnConnectTradovate = document.getElementById('btnConnectTradovate');
+const masterAccountsList = document.getElementById('masterAccountsList');
+const slavesList = document.getElementById('slavesList');
+const btnTogglePause = document.getElementById('btnTogglePause');
+const btnPanicLiquidate = document.getElementById('btnPanicLiquidate');
 const consoleBox = document.getElementById('consoleBox');
 
-const modeLocal = document.getElementById('modeLocal');
-const modeMaster = document.getElementById('modeMaster');
-const modeSlave = document.getElementById('modeSlave');
-const activeModeLabel = document.getElementById('activeModeLabel');
-
-const channelInput = document.getElementById('channelInput');
-const btnSaveChannel = document.getElementById('btnSaveChannel');
-const slaveConfigList = document.getElementById('slaveConfigList');
-const btnTestSignal = document.getElementById('btnTestSignal');
-
 let currentConfig = {
-  mode: 'local',
-  channelId: 'room-default',
   masterAccountId: null,
   masterAccountName: '',
   slaves: [],
+  isPaused: false,
 };
 
 let availableAccounts = [];
@@ -38,102 +42,162 @@ function appendLog(time, message) {
   consoleBox.scrollTop = consoleBox.scrollHeight;
 }
 
-function updateModeUI(mode) {
-  currentConfig.mode = mode;
-  [modeLocal, modeMaster, modeSlave].forEach((b) => b.classList.remove('active'));
-
-  if (mode === 'local') {
-    modeLocal.classList.add('active');
-    activeModeLabel.textContent = 'LOCAL (MISMO PC)';
-    activeModeLabel.style.color = '#38bdf8';
-  } else if (mode === 'master') {
-    modeMaster.classList.add('active');
-    activeModeLabel.textContent = 'MASTER (TRANSMISOR)';
-    activeModeLabel.style.color = '#34d399';
+// --- Auth Handling ---
+async function checkAuthSession() {
+  if (!window.electronAPI) return;
+  const res = await window.electronAPI.getSession();
+  if (res && res.authenticated && res.user) {
+    userEmailLabel.textContent = res.user.email;
+    authView.style.display = 'none';
+    appendLog(new Date().toLocaleTimeString(), `Bienvenido de nuevo, ${res.user.email}`);
   } else {
-    modeSlave.classList.add('active');
-    activeModeLabel.textContent = 'SLAVE (RECEPTOR)';
-    activeModeLabel.style.color = '#fbbf24';
+    authView.style.display = 'flex';
   }
 }
 
-function renderAccounts() {
+authForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  authError.style.display = 'none';
+  btnLoginSubmit.disabled = true;
+  btnLoginSubmit.innerHTML = '<span>Verificando Licencia...</span>';
+
+  const email = loginEmail.value.trim();
+  const password = loginPassword.value;
+
+  try {
+    const res = await window.electronAPI.login(email, password);
+    if (res.success && res.user) {
+      userEmailLabel.textContent = res.user.email;
+      authView.style.display = 'none';
+      appendLog(new Date().toLocaleTimeString(), `Sesión iniciada con éxito (${res.user.email})`);
+    } else {
+      authError.textContent = res.error || 'Credenciales inválidas de EdgeFlow.';
+      authError.style.display = 'block';
+    }
+  } catch (err) {
+    authError.textContent = err.message || 'Error de conexión con el servidor de autenticación.';
+    authError.style.display = 'block';
+  } finally {
+    btnLoginSubmit.disabled = false;
+    btnLoginSubmit.innerHTML = '<span>Desbloquear Terminal</span><span>➔</span>';
+  }
+});
+
+btnLogout.addEventListener('click', async () => {
+  if (confirm('¿Cerrar sesión en EdgeFlow?')) {
+    await window.electronAPI.logout();
+    authView.style.display = 'flex';
+    loginPassword.value = '';
+  }
+});
+
+// --- Tradovate Accounts Rendering ---
+function renderMasterSelector() {
   if (!availableAccounts || availableAccounts.length === 0) {
-    accountsList.innerHTML = '<div style="font-size: 12px; color: #64748b; padding: 8px;">No hay sesión activa. Inicia sesión arriba.</div>';
-    slaveConfigList.innerHTML = '<div style="font-size: 11px; color: #64748b;">No hay cuentas disponibles.</div>';
+    masterAccountsList.innerHTML = '<div style="font-size: 11px; color: var(--text-dim); padding: 8px;">No hay cuentas detectadas. Conecta Tradovate arriba.</div>';
+    statMasterName.textContent = 'Sin Seleccionar';
     return;
   }
 
-  // Render accounts in left card
-  accountsList.innerHTML = availableAccounts
+  masterAccountsList.innerHTML = availableAccounts
     .map((acc) => {
-      const isMaster = String(currentConfig.masterAccountId) === String(acc.id);
+      const isSelected = String(currentConfig.masterAccountId) === String(acc.id);
       return `
-      <div class="account-item">
-        <div class="account-name">
-          <input type="radio" name="masterAccount" value="${acc.id}" ${isMaster ? 'checked' : ''} id="radio-${acc.id}">
-          <label for="radio-${acc.id}" style="cursor: pointer;">${acc.name}</label>
-          ${isMaster ? '<span style="font-size: 9px; background: #2563eb; color: white; padding: 1px 5px; border-radius: 4px; font-weight: 700;">MASTER</span>' : ''}
+      <div class="account-row ${isSelected ? 'selected-master' : ''}" data-id="${acc.id}">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <input type="radio" name="masterAccountRadio" value="${acc.id}" ${isSelected ? 'checked' : ''} style="cursor: pointer;">
+          <div>
+            <div style="font-weight: 700; font-size: 12px; color: white;">${acc.name}</div>
+            <div style="font-size: 10px; color: #64748b; font-family: 'JetBrains Mono', monospace;">ID: ${acc.id}</div>
+          </div>
         </div>
-        <span class="account-balance">$${Number(acc.balance || 0).toLocaleString()}</span>
+        <div style="text-align: right;">
+          <div style="font-weight: 700; font-size: 12px; color: #34d399; font-family: 'JetBrains Mono', monospace;">
+            $${Number(acc.balance || 0).toLocaleString()}
+          </div>
+          ${isSelected ? '<span class="badge-master-chip">MASTER</span>' : ''}
+        </div>
       </div>
     `;
     })
     .join('');
 
-  // Bind radio buttons
-  availableAccounts.forEach((acc) => {
-    const radio = document.getElementById(`radio-${acc.id}`);
-    if (radio) {
-      radio.addEventListener('change', () => {
+  // Bind click
+  masterAccountsList.querySelectorAll('.account-row').forEach((row) => {
+    row.addEventListener('click', () => {
+      const accId = row.getAttribute('data-id');
+      const acc = availableAccounts.find((a) => String(a.id) === String(accId));
+      if (acc) {
         currentConfig.masterAccountId = acc.id;
         currentConfig.masterAccountName = acc.name;
-        // Exclude master from slaves
-        currentConfig.slaves = currentConfig.slaves.filter((s) => String(s.id) !== String(acc.id));
+        statMasterName.textContent = acc.name;
+        // Remove master from slaves list if it was there
+        currentConfig.slaves = (currentConfig.slaves || []).filter(
+          (s) => String(s.id) !== String(acc.id)
+        );
         saveAndSyncConfig();
-        renderAccounts();
-        renderSlaveConfigs();
-      });
-    }
+        renderMasterSelector();
+        renderSlavesList();
+      }
+    });
   });
 
-  renderSlaveConfigs();
+  const currentMaster = availableAccounts.find((a) => String(a.id) === String(currentConfig.masterAccountId));
+  statMasterName.textContent = currentMaster ? currentMaster.name : 'Sin Seleccionar';
 }
 
-function renderSlaveConfigs() {
-  // Show potential slave accounts (all accounts other than master)
+function renderSlavesList() {
   const candidateAccounts = availableAccounts.filter(
     (acc) => String(acc.id) !== String(currentConfig.masterAccountId)
   );
 
   if (candidateAccounts.length === 0) {
-    slaveConfigList.innerHTML = '<div style="font-size: 11px; color: #64748b;">No hay cuentas disponibles como esclavas.</div>';
+    slavesList.innerHTML = '<div style="font-size: 12px; color: var(--text-dim); padding: 16px; text-align: center;">No hay cuentas esclavas disponibles para replicar. Conecta cuentas adicionales en Tradovate.</div>';
+    statSlavesCount.textContent = '0';
     return;
   }
 
-  slaveConfigList.innerHTML = candidateAccounts
+  slavesList.innerHTML = candidateAccounts
     .map((acc) => {
-      const existingSlave = currentConfig.slaves.find((s) => String(s.id) === String(acc.id));
-      const isSelected = !!existingSlave;
+      const existingSlave = (currentConfig.slaves || []).find((s) => String(s.id) === String(acc.id));
+      const isActive = existingSlave ? existingSlave.isActive !== false : false;
       const multiplier = existingSlave ? existingSlave.multiplier : 1;
-      const miniToMicro = existingSlave ? existingSlave.convertMiniToMicro : false;
+      const convertMiniToMicro = existingSlave ? existingSlave.convertMiniToMicro : false;
 
       return `
-      <div class="slave-config-row">
-        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
-          <input type="checkbox" id="slave-chk-${acc.id}" ${isSelected ? 'checked' : ''}>
-          <strong>${acc.name}</strong>
-        </label>
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <select id="slave-mul-${acc.id}" class="select-sm">
-            <option value="1" ${multiplier === 1 ? 'selected' : ''}>1x</option>
-            <option value="2" ${multiplier === 2 ? 'selected' : ''}>2x</option>
-            <option value="3" ${multiplier === 3 ? 'selected' : ''}>3x</option>
-            <option value="0.5" ${multiplier === 0.5 ? 'selected' : ''}>0.5x</option>
-          </select>
-          <label style="display: flex; align-items: center; gap: 4px; font-size: 10px; color: #94a3b8;">
-            <input type="checkbox" id="slave-m2m-${acc.id}" ${miniToMicro ? 'checked' : ''}>
-            Mini->Micro
+      <div class="slave-card ${isActive ? 'active' : ''}" id="slave-card-${acc.id}">
+        <div class="slave-header">
+          <div class="slave-name">
+            <span>🛡️ ${acc.name}</span>
+            <span style="font-size: 10px; color: #64748b; font-family: 'JetBrains Mono', monospace;">ID: ${acc.id}</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 12px; font-weight: 700; color: #34d399; font-family: 'JetBrains Mono', monospace;">
+              $${Number(acc.balance || 0).toLocaleString()}
+            </span>
+            <label class="switch" title="Activar / Desactivar réplica en esta cuenta">
+              <input type="checkbox" id="slave-toggle-${acc.id}" ${isActive ? 'checked' : ''}>
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="slave-controls">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span class="control-label">Multiplicador:</span>
+            <select id="slave-mul-${acc.id}" class="multiplier-select">
+              <option value="0.5" ${multiplier === 0.5 ? 'selected' : ''}>0.5x</option>
+              <option value="1" ${multiplier === 1 ? 'selected' : ''}>1.0x (Igual)</option>
+              <option value="2" ${multiplier === 2 ? 'selected' : ''}>2.0x</option>
+              <option value="3" ${multiplier === 3 ? 'selected' : ''}>3.0x</option>
+              <option value="4" ${multiplier === 4 ? 'selected' : ''}>4.0x</option>
+              <option value="5" ${multiplier === 5 ? 'selected' : ''}>5.0x</option>
+            </select>
+          </div>
+
+          <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+            <input type="checkbox" id="slave-m2m-${acc.id}" ${convertMiniToMicro ? 'checked' : ''} style="cursor: pointer;">
+            <span class="control-label" style="color: #60a5fa;">Convertir Mini a Micro (NQ ➔ MNQ)</span>
           </label>
         </div>
       </div>
@@ -141,15 +205,24 @@ function renderSlaveConfigs() {
     })
     .join('');
 
-  // Bind checkbox and select events
+  // Update active count
+  const activeCount = (currentConfig.slaves || []).filter((s) => s.isActive !== false).length;
+  statSlavesCount.textContent = activeCount;
+
+  // Bind change events
   candidateAccounts.forEach((acc) => {
-    const chk = document.getElementById(`slave-chk-${acc.id}`);
+    const toggle = document.getElementById(`slave-toggle-${acc.id}`);
     const mul = document.getElementById(`slave-mul-${acc.id}`);
     const m2m = document.getElementById(`slave-m2m-${acc.id}`);
+    const card = document.getElementById(`slave-card-${acc.id}`);
 
-    function updateThisSlave() {
-      currentConfig.slaves = currentConfig.slaves.filter((s) => String(s.id) !== String(acc.id));
-      if (chk.checked) {
+    function updateSlaveState() {
+      currentConfig.slaves = (currentConfig.slaves || []).filter(
+        (s) => String(s.id) !== String(acc.id)
+      );
+
+      if (toggle.checked) {
+        card.classList.add('active');
         currentConfig.slaves.push({
           id: acc.id,
           name: acc.name,
@@ -157,13 +230,20 @@ function renderSlaveConfigs() {
           convertMiniToMicro: m2m.checked,
           isActive: true,
         });
+      } else {
+        card.classList.remove('active');
       }
+
+      statSlavesCount.textContent = (currentConfig.slaves || []).filter(
+        (s) => s.isActive !== false
+      ).length;
+
       saveAndSyncConfig();
     }
 
-    if (chk) chk.addEventListener('change', updateThisSlave);
-    if (mul) mul.addEventListener('change', updateThisSlave);
-    if (m2m) m2m.addEventListener('change', updateThisSlave);
+    if (toggle) toggle.addEventListener('change', updateSlaveState);
+    if (mul) mul.addEventListener('change', updateSlaveState);
+    if (m2m) m2m.addEventListener('change', updateSlaveState);
   });
 }
 
@@ -173,58 +253,12 @@ async function saveAndSyncConfig() {
   }
 }
 
-// Mode Buttons
-modeLocal.addEventListener('click', () => {
-  updateModeUI('local');
-  saveAndSyncConfig();
-});
-
-modeMaster.addEventListener('click', () => {
-  updateModeUI('master');
-  saveAndSyncConfig();
-});
-
-modeSlave.addEventListener('click', () => {
-  updateModeUI('slave');
-  saveAndSyncConfig();
-});
-
-btnSaveChannel.addEventListener('click', () => {
-  currentConfig.channelId = channelInput.value.trim() || 'room-default';
-  saveAndSyncConfig();
-  appendLog(new Date().toLocaleTimeString(), `Canal guardado: <strong>${currentConfig.channelId}</strong>`);
-});
-
-// Test signal button
-btnTestSignal.addEventListener('click', async () => {
-  const testSignal = {
-    id: `test-${Date.now()}`,
-    groupId: currentConfig.channelId,
-    masterAccountId: String(currentConfig.masterAccountId || 'DEMO_TEST'),
-    masterAccountName: currentConfig.masterAccountName || 'Master Test',
-    symbol: 'MNQZ4',
-    action: 'BUY',
-    quantity: 1,
-    orderType: 'MARKET',
-    timestamp: new Date().toISOString(),
-  };
-
-  appendLog(new Date().toLocaleTimeString(), 'Enviando señal de prueba a la red Supabase Realtime...');
-  if (window.electronAPI) {
-    const ok = await window.electronAPI.sendTestSignal(testSignal);
-    if (ok) {
-      appendLog(new Date().toLocaleTimeString(), '✅ Señal de prueba emitida con éxito (<10ms).');
-    } else {
-      appendLog(new Date().toLocaleTimeString(), '⚠️ Error al emitir señal.');
-    }
-  }
-});
-
-// Handlers for Tradovate
-btnLogin.addEventListener('click', async () => {
-  btnLogin.disabled = true;
-  btnLogin.textContent = 'Cargando Tradovate...';
+// --- Tradovate Connection Action ---
+btnConnectTradovate.addEventListener('click', async () => {
+  btnConnectTradovate.disabled = true;
+  btnConnectTradovate.textContent = 'Cargando Tradovate...';
   appendLog(new Date().toLocaleTimeString(), 'Abriendo ventana de inicio de sesión de Tradovate...');
+
   try {
     if (window.electronAPI) {
       await window.electronAPI.openTradovateLogin();
@@ -232,69 +266,98 @@ btnLogin.addEventListener('click', async () => {
   } catch (e) {
     console.error(e);
   } finally {
-    btnLogin.disabled = false;
-    btnLogin.textContent = '🔑 Iniciar Sesión en Tradovate (0 €)';
+    btnConnectTradovate.disabled = false;
+    btnConnectTradovate.textContent = '🔑 Conectar Cuenta Tradovate (0 €)';
   }
 });
 
-btnLiquidate.addEventListener('click', async () => {
-  if (confirm('¿Aplanar y cerrar todas las posiciones abiertas ahora mismo?')) {
-    appendLog(new Date().toLocaleTimeString(), 'Enviando comando de liquidación total (Flatten All)...');
+// --- Pause & Panic Liquidate ---
+btnTogglePause.addEventListener('click', async () => {
+  currentConfig.isPaused = !currentConfig.isPaused;
+  if (currentConfig.isPaused) {
+    btnTogglePause.textContent = '▶️ Reanudar Replicación';
+    btnTogglePause.style.borderColor = '#fbbf24';
+    btnTogglePause.style.color = '#fbbf24';
+    appendLog(new Date().toLocaleTimeString(), 'Replicación pausada globalmente.');
+  } else {
+    btnTogglePause.textContent = '⏸️ Pausar Replicación Global';
+    btnTogglePause.style.borderColor = 'var(--border-color)';
+    btnTogglePause.style.color = 'var(--text-muted)';
+    appendLog(new Date().toLocaleTimeString(), 'Replicación reanudada.');
+  }
+  if (window.electronAPI) {
+    await window.electronAPI.setPaused(currentConfig.isPaused);
+  }
+});
+
+btnPanicLiquidate.addEventListener('click', async () => {
+  if (confirm('🚨 ATENCIÓN: ¿Cerrar y aplanar inmediatamente todas las posiciones abiertas en todas las cuentas?')) {
+    appendLog(new Date().toLocaleTimeString(), 'Enviando comando de liquidación de emergencia (Flatten All)...');
     if (window.electronAPI) {
       await window.electronAPI.liquidateAll();
     }
-    appendLog(new Date().toLocaleTimeString(), 'Comando de liquidación enviado.');
+    appendLog(new Date().toLocaleTimeString(), 'Órdenes de liquidación enviadas a todas las cuentas.');
   }
 });
 
-// IPC Listeners
+// --- WebSocket & IPC Event Listeners ---
 if (window.electronAPI) {
-  // Load initial config
+  // Check session on start
+  checkAuthSession();
+
+  // Load config
   window.electronAPI.getConfig().then((cfg) => {
     if (cfg) {
       currentConfig = { ...currentConfig, ...cfg };
-      updateModeUI(currentConfig.mode || 'local');
-      if (currentConfig.channelId) {
-        channelInput.value = currentConfig.channelId;
-      }
       if (currentConfig.environment) {
         envSelect.value = currentConfig.environment;
       }
+      if (currentConfig.isPaused) {
+        btnTogglePause.textContent = '▶️ Reanudar Replicación';
+        btnTogglePause.style.borderColor = '#fbbf24';
+        btnTogglePause.style.color = '#fbbf24';
+      }
     }
   });
 
+  // Tradovate WebSocket status
   window.electronAPI.onWsStatus((data) => {
     if (data.status === 'connected') {
-      statusBadge.className = 'badge badge-green';
-      statusText.textContent = `En Vivo (${data.latency || 12} ms) - IP Casa`;
+      wsStatusBadge.className = 'pill-badge pill-green';
+      wsStatusText.textContent = `Tradovate: En Vivo (${data.latency || 12} ms)`;
+      appendLog(new Date().toLocaleTimeString(), 'Conexión WebSocket establecida con Tradovate');
     } else if (data.status === 'connecting') {
-      statusBadge.className = 'badge badge-yellow';
-      statusText.textContent = 'Conectando...';
+      wsStatusBadge.className = 'pill-badge pill-yellow';
+      wsStatusText.textContent = 'Tradovate: Conectando...';
     } else {
-      statusBadge.className = 'badge badge-red';
-      statusText.textContent = 'Desconectado';
+      wsStatusBadge.className = 'pill-badge pill-red';
+      wsStatusText.textContent = 'Tradovate: Desconectado';
     }
   });
 
-  window.electronAPI.onStatus((status) => {
-    if (status.realtimeStatus === 'SUBSCRIBED') {
-      relayBadge.className = 'badge badge-green';
-      relayText.textContent = 'Relay: Conectado (<10ms)';
-    } else {
-      relayBadge.className = 'badge badge-yellow';
-      relayText.textContent = `Relay: ${status.realtimeStatus || 'Listo'}`;
-    }
-  });
-
+  // Accounts list
   window.electronAPI.onAccounts((accounts) => {
     availableAccounts = accounts || [];
     if (!currentConfig.masterAccountId && availableAccounts.length > 0) {
       currentConfig.masterAccountId = availableAccounts[0].id;
       currentConfig.masterAccountName = availableAccounts[0].name;
     }
-    renderAccounts();
+    renderMasterSelector();
+    renderSlavesList();
+    appendLog(new Date().toLocaleTimeString(), `Cargadas ${availableAccounts.length} cuenta(s) en Tradovate.`);
   });
 
+  // Engine Status & Stats updates
+  window.electronAPI.onStatus((status) => {
+    if (status.stats) {
+      statReplicatedToday.textContent = status.stats.replicatedToday;
+      if (status.stats.avgLatencyMs) {
+        statLatency.textContent = `${status.stats.avgLatencyMs} ms`;
+      }
+    }
+  });
+
+  // Native Order events
   window.electronAPI.onOrder((order) => {
     const time = new Date().toLocaleTimeString();
     const actionClass = order.action === 'Buy' ? 'console-buy' : 'console-sell';
@@ -305,6 +368,7 @@ if (window.electronAPI) {
     );
   });
 
+  // Live Console Logs from engine
   window.electronAPI.onLog((data) => {
     appendLog(data.time, data.msg);
   });
