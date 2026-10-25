@@ -33,13 +33,18 @@ describe('Desktop Copier Engine & Symbol Converter', () => {
   describe('DesktopCopierEngine execution & safety isolation', () => {
     let engine: any;
     let sentWsMessages: Array<{ endpoint: string; data: any }> = [];
+    let sentNotifications: Array<{ title: string; body: string }> = [];
 
     beforeEach(() => {
       sentWsMessages = [];
+      sentNotifications = [];
       engine = new DesktopCopierEngine({
         onLog: vi.fn(),
         onStatusChange: vi.fn(),
         onOrderFill: vi.fn(),
+        onNotify: (title: string, body: string) => {
+          sentNotifications.push({ title, body });
+        },
       });
 
       // Mock WS sender
@@ -201,6 +206,34 @@ describe('Desktop Copier Engine & Symbol Converter', () => {
       engine.liquidateAllAccounts();
       expect(sentWsMessages.length).toBeGreaterThanOrEqual(3);
       expect(sentWsMessages.every((m) => m.endpoint === 'order/liquidateposition')).toBe(true);
+      expect(sentNotifications.some((n) => n.title.includes('Aplanamiento'))).toBe(true);
+    });
+
+    it('triggers onNotify with success badge when orders are replicated', async () => {
+      await engine.handleTradovateOrder({
+        id: 99997,
+        accountId: 1001,
+        action: 'Buy',
+        symbol: 'ES',
+        orderQty: 1,
+        ordStatus: 'Filled',
+      });
+
+      expect(sentNotifications.some((n) => n.title.includes('Orden Replicada'))).toBe(true);
+    });
+
+    it('triggers onNotify with alert when order is blocked by maxContracts', async () => {
+      engine.updateRiskConfig({ isActive: true, maxContracts: 2 });
+      await engine.handleTradovateOrder({
+        id: 99998,
+        accountId: 1001,
+        action: 'Buy',
+        symbol: 'ES',
+        orderQty: 5,
+        ordStatus: 'Filled',
+      });
+
+      expect(sentNotifications.some((n) => n.title.includes('Guardián de Riesgo'))).toBe(true);
     });
   });
 });

@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, session } = require('electron');
+const { app, BrowserWindow, ipcMain, session, Notification } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const WebSocket = require('ws');
@@ -198,11 +198,27 @@ function sendTradovateWsMessage(endpoint, body) {
   return true;
 }
 
+function showNativeNotification(title, body) {
+  try {
+    if (Notification && Notification.isSupported()) {
+      const notif = new Notification({
+        title: title || 'EdgeFlow Copier Pro',
+        body: body || '',
+        silent: false,
+      });
+      notif.show();
+    }
+  } catch (err) {
+    console.warn('Native notification failed:', err);
+  }
+}
+
 // Instantiate Copier Engine
 const copierEngine = new DesktopCopierEngine({
   sendWsMessage: sendTradovateWsMessage,
   onLog: (time, msg) => sendToRenderer('app:log', { time, msg }),
   onStatusChange: (status) => sendToRenderer('app:status', status),
+  onNotify: (title, body) => showNativeNotification(title, body),
 });
 
 function createWindow() {
@@ -544,6 +560,11 @@ ipcMain.handle('copier:set-paused', (event, isPaused) => {
   saveUserConfig(currentUserId, { isPaused });
   copierEngine.updateConfig({ isPaused });
   return { success: true, isPaused };
+});
+
+ipcMain.handle('notify:show', (event, { title, body }) => {
+  showNativeNotification(title, body);
+  return { success: true };
 });
 
 // Risk Guardian Handlers (Strictly Scoped by Authenticated User)

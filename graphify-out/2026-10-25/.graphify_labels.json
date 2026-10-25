@@ -44,5 +44,5 @@
   "42": "@supabase/ssr",
   "43": "@supabase/supabase-js",
   "44": "tailwind-merge",
-  "45": "tw-animate-css"
+  "45": "class-variance-authority"
 }

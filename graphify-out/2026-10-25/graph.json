@@ -2234,8 +2234,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "package_dependencies_class_variance_authority",
-      "community": 3,
-      "community_name": "dependencies",
+      "community": 45,
+      "community_name": "class-variance-authority",
       "norm_label": "class-variance-authority"
     },
     {
@@ -2245,8 +2245,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "class_variance_authority",
-      "community": 3,
-      "community_name": "dependencies",
+      "community": 45,
+      "community_name": "class-variance-authority",
       "norm_label": "class-variance-authority"
     },
     {
@@ -2476,8 +2476,8 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "package_dependencies_tw_animate_css",
-      "community": 45,
-      "community_name": "tw-animate-css",
+      "community": 3,
+      "community_name": "dependencies",
       "norm_label": "tw-animate-css"
     },
     {
@@ -2487,8 +2487,8 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "tw_animate_css",
-      "community": 45,
-      "community_name": "tw-animate-css",
+      "community": 3,
+      "community_name": "dependencies",
       "norm_label": "tw-animate-css"
     },
     {
@@ -3493,7 +3493,7 @@
       "label": "RiskConfigPage()",
       "file_type": "code",
       "source_file": "src/app/risk-config/page.tsx",
-      "source_location": "L32",
+      "source_location": "L37",
       "_callable": true,
       "_origin": "ast",
       "id": "src_app_risk_config_page_riskconfigpage",
@@ -21747,7 +21747,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/app/risk-config/page.tsx",
-      "source_location": "L32",
+      "source_location": "L37",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_risk_config_page",
@@ -21988,7 +21988,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/risk-config/page.tsx",
-      "source_location": "L302",
+      "source_location": "L339",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_risk_config_page_riskconfigpage",
@@ -22000,7 +22000,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/risk-config/page.tsx",
-      "source_location": "L81",
+      "source_location": "L77",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_risk_config_page_riskconfigpage",
@@ -22012,7 +22012,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/risk-config/page.tsx",
-      "source_location": "L163",
+      "source_location": "L160",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_risk_config_page_riskconfigpage",
@@ -22024,7 +22024,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/risk-config/page.tsx",
-      "source_location": "L288",
+      "source_location": "L306",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_risk_config_page_riskconfigpage",
@@ -39951,5 +39951,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "525780a7807a7ad2d96bf6dae1dd4dfdb45daaed"
+  "built_at_commit": "836e4ddddfe720d47d19212c619b45f5c59f2895"
 }

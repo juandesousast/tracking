@@ -35,10 +35,11 @@ function convertSymbolToMicro(symbol) {
 }
 
 class DesktopCopierEngine {
-  constructor({ sendWsMessage, onLog, onStatusChange }) {
+  constructor({ sendWsMessage, onLog, onStatusChange, onNotify }) {
     this.sendWsMessage = sendWsMessage;
     this.onLog = onLog || console.log;
     this.onStatusChange = onStatusChange || (() => {});
+    this.onNotify = onNotify || (() => {});
 
     this.supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
       realtime: {
@@ -178,6 +179,12 @@ class DesktopCopierEngine {
           new Date().toLocaleTimeString(),
           `<span style="color: #fbbf24;">⏰ Guardián de Riesgo: Hora límite fin de día (${this.riskConfig.eodCloseTime}) alcanzada. Ejecutando aplanamiento automático...</span>`
         );
+        if (typeof this.onNotify === 'function') {
+          this.onNotify(
+            '⏰ Cierre Fin de Día (EOD)',
+            `Hora límite (${this.riskConfig.eodCloseTime}) alcanzada. Aplanando posiciones automáticamente.`
+          );
+        }
         this.liquidateAllAccounts();
       }
     }, 10000);
@@ -193,6 +200,12 @@ class DesktopCopierEngine {
       if (typeof this.sendWsMessage === 'function') {
         this.sendWsMessage('order/liquidateposition', { accountId: Number(acc.id), admin: true });
       }
+    }
+    if (typeof this.onNotify === 'function') {
+      this.onNotify(
+        '🚨 Aplanamiento Forzoso',
+        `Órdenes de liquidación enviadas a cuenta master y ${this.slaves?.length || 0} esclava(s).`
+      );
     }
   }
 
@@ -240,6 +253,12 @@ class DesktopCopierEngine {
             new Date().toLocaleTimeString(),
             `<span style="color: #fb7185;">🛡️ Guardián de Riesgo: Orden master de ${qty}x ${symbol} BLOQUEADA porque excede el tope de seguridad (${this.riskConfig.maxContracts} lotes).</span>`
           );
+          if (typeof this.onNotify === 'function') {
+            this.onNotify(
+              '🛡️ Guardián de Riesgo: Orden Bloqueada',
+              `Orden de ${qty}x ${symbol} bloqueada: excede el tope permitido de ${this.riskConfig.maxContracts} lotes.`
+            );
+          }
           return;
         }
       }
@@ -330,6 +349,14 @@ class DesktopCopierEngine {
         slavesCount: executedCount,
         latencyMs: avgLatency,
       });
+    }
+
+    if (typeof this.onNotify === 'function' && executedCount > 0) {
+      const avgElapsed = Math.round((Date.now() - startTime) / executedCount);
+      this.onNotify(
+        '🟢 Orden Replicada con Éxito',
+        `${action} ${quantity}x ${symbol} copiado a ${executedCount} cuenta(s) (${avgElapsed}ms)`
+      );
     }
 
     this.onStatusChange({

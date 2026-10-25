@@ -35,6 +35,7 @@ import { Switch } from "@/components/ui/switch";
 import { CopierGroupModal } from "@/components/modals/copier-group-modal";
 import { AddTradovateConnectionModal } from "@/components/modals/add-tradovate-connection-modal";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
+import { DesktopDownloadBanner } from "@/components/copier/desktop-download-banner";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -350,6 +351,9 @@ export default function CopierPage() {
         <PageSkeleton />
       ) : (
         <div className="space-y-6">
+          {/* EdgeFlow Desktop App Download Zone */}
+          <DesktopDownloadBanner />
+
           {/* Header Section */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
             <div>

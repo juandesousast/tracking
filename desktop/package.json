@@ -26,15 +26,22 @@
     "directories": {
       "output": "dist"
     },
+    "files": [
+      "main/**/*",
+      "renderer/**/*",
+      "package.json"
+    ],
     "mac": {
       "category": "public.app-category.finance",
       "target": [
-        "dmg"
+        "dmg",
+        "zip"
       ]
     },
     "win": {
       "target": [
-        "nsis"
+        "nsis",
+        "portable"
       ]
     }
   }
