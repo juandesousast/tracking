@@ -7,6 +7,7 @@ import { getFirms, getAccounts, getExpenses, getWithdrawals } from "@/lib/action
 import { getDailyPnLMap, getMonthPnLSummary, DailyPnL } from "@/lib/financials";
 import { formatCurrency, formatPercent } from "@/lib/formatters";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
+import { AnimatedTabs } from "@/components/ui/animated-tabs";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -495,38 +496,15 @@ function CalendarioContent() {
           <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider hidden sm:inline-block">
             Vista:
           </span>
-          <div className="flex items-center rounded-xl bg-slate-100 dark:bg-slate-800/80 p-1 border border-slate-200/80 dark:border-slate-700/80 shadow-2xs">
-            <Button
-              type="button"
-              size="sm"
-              variant={viewMode === "currency" ? "secondary" : "ghost"}
-              onClick={() => setViewMode("currency")}
-              className={cn(
-                "h-8 px-3 rounded-lg text-xs font-semibold gap-1.5",
-                viewMode === "currency"
-                  ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
-                  : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
-              )}
-            >
-              <CircleDollarSign className="h-3.5 w-3.5 text-slate-600 dark:text-slate-300" />
-              <span>Monetario (€)</span>
-            </Button>
-            <Button
-              type="button"
-              size="sm"
-              variant={viewMode === "percentage" ? "secondary" : "ghost"}
-              onClick={() => setViewMode("percentage")}
-              className={cn(
-                "h-8 px-3 rounded-lg text-xs font-semibold gap-1.5",
-                viewMode === "percentage"
-                  ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
-                  : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
-              )}
-            >
-              <Percent className="h-3.5 w-3.5 text-slate-600 dark:text-slate-300" />
-              <span>Porcentaje (%)</span>
-            </Button>
-          </div>
+          <AnimatedTabs
+            layoutId="calendar-view-mode"
+            tabs={[
+              { id: "currency", label: "Monetario (€)", icon: CircleDollarSign },
+              { id: "percentage", label: "Porcentaje (%)", icon: Percent },
+            ]}
+            activeTab={viewMode}
+            onChange={(val) => setViewMode(val as "currency" | "percentage")}
+          />
         </div>
       </div>
 

@@ -9,6 +9,7 @@ import {
 } from '@/lib/services/trading-calculators';
 import { formatCurrency } from '@/lib/formatters';
 import { Button } from '@/components/ui/button';
+import { AnimatedTabs } from '@/components/ui/animated-tabs';
 import { cn } from '@/lib/utils';
 import {
   Calculator,
@@ -101,51 +102,17 @@ export default function TradingToolsPage() {
       </div>
 
       {/* Tabs Menu */}
-      <div className="flex items-center gap-1.5 border-b border-slate-200 dark:border-slate-800 overflow-x-auto pb-2">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setActiveTab('position')}
-          className={cn(
-            "h-8 gap-2 px-3 text-xs font-semibold rounded-lg whitespace-nowrap transition-all",
-            activeTab === 'position'
-              ? 'bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400 font-bold'
-              : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-          )}
-        >
-          <Calculator className="h-4 w-4" />
-          <span>Calculadora de Contratos / Tamaño</span>
-        </Button>
-
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setActiveTab('consistency')}
-          className={cn(
-            "h-8 gap-2 px-3 text-xs font-semibold rounded-lg whitespace-nowrap transition-all",
-            activeTab === 'consistency'
-              ? 'bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400 font-bold'
-              : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-          )}
-        >
-          <Scale className="h-4 w-4" />
-          <span>Regla de Consistencia (Apex / Topstep)</span>
-        </Button>
-
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setActiveTab('drawdown')}
-          className={cn(
-            "h-8 gap-2 px-3 text-xs font-semibold rounded-lg whitespace-nowrap transition-all",
-            activeTab === 'drawdown'
-              ? 'bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400 font-bold'
-              : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-          )}
-        >
-          <ShieldAlert className="h-4 w-4" />
-          <span>Colchón de Drawdown & Umbral</span>
-        </Button>
+      <div className="overflow-x-auto pb-1">
+        <AnimatedTabs
+          layoutId="tools-main-tabs"
+          tabs={[
+            { id: 'position', label: 'Calculadora de Contratos / Tamaño', icon: Calculator },
+            { id: 'consistency', label: 'Regla de Consistencia (Apex / Topstep)', icon: Scale },
+            { id: 'drawdown', label: 'Colchón de Drawdown & Umbral', icon: ShieldAlert },
+          ]}
+          activeTab={activeTab}
+          onChange={(val) => setActiveTab(val as any)}
+        />
       </div>
 
       {/* TAB 1: POSITION SIZE CALCULATOR */}
@@ -195,24 +162,16 @@ export default function TradingToolsPage() {
                 <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
                   Riesgo Máximo Deseado
                 </span>
-                <div className="flex items-center gap-1 bg-white dark:bg-slate-900 p-1 rounded-xl border border-slate-200 dark:border-slate-800">
-                  <Button
-                    size="sm"
-                    variant={riskMode === 'amount' ? 'default' : 'ghost'}
-                    onClick={() => setRiskMode('amount')}
-                    className="h-7 px-3 text-xs font-semibold rounded-lg"
-                  >
-                    Dólares Fijos ($)
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant={riskMode === 'percent' ? 'default' : 'ghost'}
-                    onClick={() => setRiskMode('percent')}
-                    className="h-7 px-3 text-xs font-semibold rounded-lg"
-                  >
-                    % de Cuenta
-                  </Button>
-                </div>
+                <AnimatedTabs
+                  size="sm"
+                  layoutId="tools-risk-mode"
+                  tabs={[
+                    { id: 'amount', label: 'Dólares Fijos ($)' },
+                    { id: 'percent', label: '% de Cuenta' },
+                  ]}
+                  activeTab={riskMode}
+                  onChange={(val) => setRiskMode(val as any)}
+                />
               </div>
 
               {riskMode === 'amount' ? (

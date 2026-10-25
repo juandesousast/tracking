@@ -110,16 +110,16 @@ export function Sidebar() {
                     className={cn(
                       "flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium transition-all duration-150 cursor-pointer",
                       isActive
-                        ? "bg-blue-600/10 text-blue-600 font-semibold dark:bg-blue-500/15 dark:text-blue-400 ring-1 ring-blue-600/20 dark:ring-blue-400/20 shadow-2xs"
-                        : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/80 dark:hover:bg-slate-800/60"
+                        ? "bg-slate-900 text-white dark:bg-white/[0.08] dark:text-white font-semibold shadow-xs dark:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)]"
+                        : "text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/[0.04]"
                     )}
                   >
                     <Icon
                       className={cn(
-                        "h-4 w-4 shrink-0",
+                        "h-4 w-4 shrink-0 transition-colors",
                         isActive
-                          ? "text-blue-600 dark:text-blue-400"
-                          : "text-slate-400 dark:text-slate-500"
+                          ? "text-blue-500 dark:text-white"
+                          : "text-slate-400 dark:text-zinc-500"
                       )}
                     />
                     <span>{item.name}</span>
@@ -132,13 +132,16 @@ export function Sidebar() {
       </div>
 
       {/* Footer Status Badge */}
-      <div className="p-3.5 m-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400">
-        <div className="flex items-center gap-2 font-semibold text-slate-900 dark:text-white mb-0.5">
-          <ShieldCheck className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-          <span className="text-[11px]">Sistema Sincronizado</span>
+      <div className="p-3 m-3 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/[0.06] text-xs">
+        <div className="flex items-center gap-2 font-medium text-slate-900 dark:text-zinc-200">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+          </span>
+          <span className="text-[11px] font-semibold">Sistema Conectado</span>
         </div>
-        <p className="text-[10px] leading-tight text-slate-400 dark:text-slate-500">
-          Cuentas y flujo protegidos con RLS.
+        <p className="text-[10px] text-slate-400 dark:text-zinc-500 mt-0.5">
+          Cuentas y flujos protegidos por RLS
         </p>
       </div>
     </aside>

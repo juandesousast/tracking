@@ -39,6 +39,10 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  --color-slate-950: var(--slate-950);
+  --color-slate-900: var(--slate-900);
+  --color-slate-850: var(--slate-850);
+  --color-slate-800: var(--slate-800);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -82,9 +86,17 @@
   --sidebar-accent-foreground: oklch(0.20 0.02 250);
   --sidebar-border: oklch(0.90 0.008 250);
   --sidebar-ring: oklch(0.55 0.22 255 / 40%);
+  --slate-950: #020617;
+  --slate-900: #0f172a;
+  --slate-850: #1e293b;
+  --slate-800: #334155;
 }
 
 .dark {
+  --slate-950: #07080b;
+  --slate-900: #0f1015;
+  --slate-850: #15171e;
+  --slate-800: rgba(255, 255, 255, 0.08);
   --background: oklch(0.09 0.006 260);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.13 0.008 260);
@@ -124,10 +136,17 @@
   }
   body {
     @apply bg-background text-foreground;
+    background-image: radial-gradient(ellipse 85% 60% at 50% -20%, rgba(59, 130, 246, 0.07), transparent);
+    background-attachment: fixed;
   }
   html {
     @apply font-sans;
   }
+}
+
+.dark .rounded-2xl,
+.dark .rounded-3xl {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
 }
 
 @keyframes skeleton-shimmer {

@@ -32,6 +32,7 @@ import {
 } from "@/lib/actions/actions";
 
 import { Button } from "@/components/ui/button";
+import { StatCard } from "@/components/ui/stat-card";
 import {
   Select,
   SelectContent,
@@ -418,94 +419,44 @@ function HomePageContent() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Today's Net PnL (Hero Card) */}
-          <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs relative overflow-hidden">
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                PnL Neto de Hoy
-              </span>
-              <span
-                className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                  today.todayPnL > 0
-                    ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400"
-                    : today.todayPnL < 0
-                    ? "bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400"
-                    : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
-                }`}
-              >
-                {today.todayPnL > 0 ? "Positivo" : today.todayPnL < 0 ? "En Negativo" : "Sin Cambios"}
-              </span>
-            </div>
-            <div className="flex items-baseline gap-2 mt-2">
-              <span
-                className={`text-3xl font-black tabular-nums tracking-tight ${
-                  today.todayPnL > 0
-                    ? "text-emerald-600 dark:text-emerald-400"
-                    : today.todayPnL < 0
-                    ? "text-rose-600 dark:text-rose-400"
-                    : "text-slate-900 dark:text-white"
-                }`}
-              >
-                {today.todayPnL > 0 ? "+" : ""}
-                {formatCurrency(today.todayPnL)}
-              </span>
-            </div>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-              Resultado neto en la sesión de hoy
-            </p>
-          </div>
-
-          {/* Today Trades Count */}
-          <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-              Operaciones de Hoy
-            </span>
-            <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-3xl font-black tabular-nums text-slate-900 dark:text-white">
-                {today.winsCount + today.lossesCount}
-              </span>
-              <span className="text-xs text-slate-500 font-medium">movimientos</span>
-            </div>
-            <div className="flex items-center gap-3 text-[11px] mt-1">
-              <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
-                {today.winsCount} Ganadores
-              </span>
-              <span className="text-slate-300 dark:text-slate-700">•</span>
-              <span className="text-rose-600 dark:text-rose-400 font-semibold">
-                {today.lossesCount} Perdedores
-              </span>
-            </div>
-          </div>
-
-          {/* Best Trade of Today */}
-          <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-              Mejor Operación de Hoy
-            </span>
-            <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-2xl font-bold tabular-nums text-emerald-600 dark:text-emerald-400">
-                {today.bestTrade !== null ? `+${formatCurrency(today.bestTrade)}` : "—"}
-              </span>
-            </div>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-              Pico máximo de beneficio de hoy
-            </p>
-          </div>
-
-          {/* Worst Trade of Today */}
-          <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-              Peor Operación de Hoy
-            </span>
-            <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-2xl font-bold tabular-nums text-rose-600 dark:text-rose-400">
-                {today.worstTrade !== null ? formatCurrency(today.worstTrade) : "—"}
-              </span>
-            </div>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-              Mayor pérdida controlada de hoy
-            </p>
-          </div>
+          <StatCard
+            title="PnL Neto de Hoy"
+            value={`${today.todayPnL > 0 ? "+" : ""}${formatCurrency(today.todayPnL)}`}
+            subtitle="Sesión activa de hoy"
+            badge={{
+              text: today.todayPnL > 0 ? "Positivo" : today.todayPnL < 0 ? "En Negativo" : "Sin Cambios",
+              variant: today.todayPnL > 0 ? "positive" : today.todayPnL < 0 ? "negative" : "neutral",
+            }}
+            icon={today.todayPnL >= 0 ? TrendingUp : TrendingDown}
+            iconColor={today.todayPnL >= 0 ? "text-emerald-500 bg-emerald-500/10" : "text-rose-500 bg-rose-500/10"}
+          />
+          <StatCard
+            title="Operaciones de Hoy"
+            value={today.winsCount + today.lossesCount}
+            subtitle={`${today.winsCount} Ganadores • ${today.lossesCount} Perdedores`}
+            badge={{
+              text: `${today.winsCount + today.lossesCount} trades`,
+              variant: "info",
+            }}
+            icon={Layers}
+            iconColor="text-blue-500 bg-blue-500/10"
+          />
+          <StatCard
+            title="Mejor Operación de Hoy"
+            value={today.bestTrade !== null ? `+${formatCurrency(today.bestTrade)}` : "—"}
+            subtitle="Pico máximo de beneficio"
+            badge={{ text: "Máximo PnL", variant: "positive" }}
+            icon={Award}
+            iconColor="text-amber-500 bg-amber-500/10"
+          />
+          <StatCard
+            title="Peor Operación de Hoy"
+            value={today.worstTrade !== null ? formatCurrency(today.worstTrade) : "—"}
+            subtitle="Mayor pérdida controlada"
+            badge={{ text: "Control de Riesgo", variant: "negative" }}
+            icon={ShieldCheck}
+            iconColor="text-rose-500 bg-rose-500/10"
+          />
         </div>
       </div>
 
@@ -515,86 +466,44 @@ function HomePageContent() {
           Métricas de Consistencia Institucional
         </span>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Total Net Profit */}
-          <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-              PnL Neto Acumulado
-            </span>
-            <div className="flex items-baseline gap-2 mt-2">
-              <span
-                className={`text-2xl font-bold tabular-nums tracking-tight ${
-                  consistency.totalPnL >= 0
-                    ? "text-emerald-600 dark:text-emerald-400"
-                    : "text-rose-600 dark:text-rose-400"
-                }`}
-              >
-                {consistency.totalPnL >= 0 ? "+" : ""}
-                {formatCurrency(consistency.totalPnL)}
-              </span>
-            </div>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-              Beneficio limpio descontando gastos
-            </p>
-          </div>
-
-          {/* Win Rate */}
-          <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-              Win Rate de Días
-            </span>
-            <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-2xl font-bold tabular-nums tracking-tight text-blue-600 dark:text-blue-400">
-                {consistency.winRate.toFixed(1)}%
-              </span>
-              <span className="text-xs text-slate-500 font-medium">días verdes</span>
-            </div>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-              Sobre {consistency.totalTrades} jornadas activas
-            </p>
-          </div>
-
-          {/* Profit Factor */}
-          <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs">
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                Profit Factor
-              </span>
-              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-sm bg-blue-50 text-blue-600 dark:bg-blue-950/40 dark:text-blue-400">
-                Ratio
-              </span>
-            </div>
-            <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-2xl font-bold tabular-nums tracking-tight text-slate-900 dark:text-white">
-                {consistency.profitFactor.toFixed(2)}
-              </span>
-            </div>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-              Ganancias brutas vs pérdidas
-            </p>
-          </div>
-
-          {/* Avg Daily PnL */}
-          <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-              Promedio Diario de PnL
-            </span>
-            <div className="flex items-baseline gap-2 mt-2">
-              <span
-                className={`text-2xl font-bold tabular-nums tracking-tight ${
-                  consistency.avgDailyPnL >= 0
-                    ? "text-emerald-600 dark:text-emerald-400"
-                    : "text-rose-600 dark:text-rose-400"
-                }`}
-              >
-                {consistency.avgDailyPnL >= 0 ? "+" : ""}
-                {formatCurrency(consistency.avgDailyPnL)}
-              </span>
-              <span className="text-xs text-slate-500 font-medium">/ jornada</span>
-            </div>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-              Rendimiento diario esperado
-            </p>
-          </div>
+          <StatCard
+            title="PnL Neto Acumulado"
+            value={`${consistency.totalPnL >= 0 ? "+" : ""}${formatCurrency(consistency.totalPnL)}`}
+            subtitle="Beneficio limpio descontando gastos"
+            badge={{
+              text: consistency.totalPnL >= 0 ? "En Ganancia" : "En Pérdida",
+              variant: consistency.totalPnL >= 0 ? "positive" : "negative",
+            }}
+            icon={Wallet}
+            iconColor="text-emerald-500 bg-emerald-500/10"
+          />
+          <StatCard
+            title="Win Rate de Días"
+            value={`${consistency.winRate.toFixed(1)}%`}
+            subtitle={`Sobre ${consistency.totalTrades} jornadas activas`}
+            badge={{ text: "Consistencia", variant: "info" }}
+            icon={TrendingUp}
+            iconColor="text-blue-500 bg-blue-500/10"
+          />
+          <StatCard
+            title="Profit Factor"
+            value={consistency.profitFactor.toFixed(2)}
+            subtitle="Ganancias brutas vs pérdidas"
+            badge={{ text: "Ratio", variant: "neutral" }}
+            icon={Award}
+            iconColor="text-purple-500 bg-purple-500/10"
+          />
+          <StatCard
+            title="Promedio Diario de PnL"
+            value={`${consistency.avgDailyPnL >= 0 ? "+" : ""}${formatCurrency(consistency.avgDailyPnL)}`}
+            subtitle="Rendimiento diario esperado"
+            badge={{
+              text: "Por Jornada",
+              variant: consistency.avgDailyPnL >= 0 ? "positive" : "negative",
+            }}
+            icon={Sparkles}
+            iconColor="text-cyan-500 bg-cyan-500/10"
+          />
         </div>
       </div>
 
